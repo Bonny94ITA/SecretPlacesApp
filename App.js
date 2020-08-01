@@ -11,7 +11,7 @@ const fetchFonts = () => {
         'Caveat': require('./assets/fonts/Caveat-Bold.ttf')
     });
 }
-
+//SDADS
 export default function App() {
     const [dataLoaded, setDataLoaded] = useState(false);
 
