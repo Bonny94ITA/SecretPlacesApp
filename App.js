@@ -22,7 +22,9 @@ export default function App() {
     return (
         <View style={styles.container}>
             <ImageBackground source={require(image)} style={styles.image}>
-                <Text style={styles.textTitle}>Secret Places</Text>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.textTitle}>Secret Places</Text>
+                </View>
                 <Login/>
             </ImageBackground>
         </View>
@@ -39,15 +41,15 @@ const styles = StyleSheet.create({
         resizeMode: "cover",
         justifyContent: "center"
     },
-    textTitle: {
-        marginVertical: 100,
-        marginLeft: "13%",
-        color: '#ffe0cc',
-        fontSize: 60,
-        fontFamily: 'Caveat',
+    titleContainer: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    textTitle: {
+        color: '#ffe0cc',
+        fontSize: 60,
+        fontFamily: 'Caveat',
     }
 });
