@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, ImageBackground, Button, Alert, TextInput} from 'react-native';
+import {StyleSheet, Text, View, ImageBackground, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 
+import Colors from './constants/colors';
 import Login from './screens/Login';
 
-const image = './assets/sunset2.jpg';
+const image = './assets/sunset3.jpg';
 const fetchFonts = () => {
     return Font.loadAsync({
         'Caveat': require('./assets/fonts/Caveat-Bold.ttf')
     });
 }
-//SDADSsdsfsfsf
+
 export default function App() {
     const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -20,14 +21,18 @@ export default function App() {
     }
 
     return (
-        <View style={styles.container}>
-            <ImageBackground source={require(image)} style={styles.image}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.textTitle}>Secret Places</Text>
-                </View>
-                <Login/>
-            </ImageBackground>
-        </View>
+        <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+        }}>
+            <View style={styles.container}>
+                <ImageBackground source={require(image)} style={styles.image}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.textTitle}>Secret Places</Text>
+                    </View>
+                    <Login/>
+                </ImageBackground>
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -42,14 +47,14 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     titleContainer: {
-        flex: 1,
+        flex: 0.5,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },
     textTitle: {
-        color: '#ffe0cc',
-        fontSize: 60,
+        color: Colors.title,
+        fontSize: 70,
         fontFamily: 'Caveat',
     }
 });

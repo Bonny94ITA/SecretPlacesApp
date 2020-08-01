@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TextInput, Button, Alert} from 'react-native';
 
 import Colors from '../constants/colors';
 
-const Login = props => {
+const Registration = props => {
     return (
         <View style={styles.screen}>
             <View style={styles.inputContainer}>
@@ -64,5 +64,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Login;
+export default Registration;
 
