@@ -3,6 +3,8 @@ import {StyleSheet, Text, View, ImageBackground, Button, Alert, TextInput} from 
 import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 
+import Login from './screens/Login';
+
 const image = './assets/sunset2.jpg';
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -21,21 +23,7 @@ export default function App() {
         <View style={styles.container}>
             <ImageBackground source={require(image)} style={styles.image}>
                 <Text style={styles.textTitle}>Secret Places</Text>
-                <TextInput
-                    placeholder={"username"}
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                />
-                <TextInput
-                    placeholder={"password"}
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                />
-                <Button
-                    style={styles.login}
-                    title="Login"
-                    onPress={() => Alert.alert('Simple Button pressed')}
-                />
-                <Text> {'Login come ospite'} </Text>
-                <Text> {'Registrazione'} </Text>
+                <Login/>
             </ImageBackground>
         </View>
     );
@@ -52,7 +40,7 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     textTitle: {
-        marginTop: "60%",
+        marginVertical: 100,
         marginLeft: "13%",
         color: '#ffe0cc',
         fontSize: 60,
@@ -61,11 +49,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    textInput: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1
-    },
-    login: {}
+    }
 });
