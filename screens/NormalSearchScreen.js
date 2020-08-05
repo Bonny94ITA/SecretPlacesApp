@@ -1,10 +1,16 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Button, StyleSheet, Text, View} from "react-native";
 import React from "react";
+import Colors from "../constants/colors";
 
 const NormalSearchScreen = props => {
     return (
         <View style={styles.screen}>
-            <Text>Ricerca Normale</Text>
+            <Text>Normal Search</Text>
+            <Button
+                title="Go to Secret Search"
+                onPress={() => props.navigation.navigate('SecretSearch')}
+                color={Colors.primary}
+            />
         </View>
     );
 };

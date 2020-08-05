@@ -2,11 +2,9 @@ import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import * as Font from 'expo-font';
 import {AppLoading} from "expo";
-
-import Colors from './constants/colors';
+import {Provider as PaperProvider} from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import Navigator from './navigator/Navigator';
-import LoginScreen from "./screens/LoginScreen";
+import RootNavigator from './navigator/Navigator';
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -22,12 +20,10 @@ export default function App() {
     }
 
     return (
-        <NavigationContainer>
-            <Navigator />
-        </NavigationContainer>
+        <PaperProvider>
+            <RootNavigator/>
+        </PaperProvider>
     );
 }
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});

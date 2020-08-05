@@ -1,10 +1,11 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Button, StyleSheet, Text, View} from "react-native";
 import React from "react";
+import Colors from "../constants/colors";
 
 const SecretSearchScreen = props => {
     return (
         <View style={styles.screen}>
-            <Text>Ricerca Segreta</Text>
+            <Text>Secret Search</Text>
         </View>
     );
 };

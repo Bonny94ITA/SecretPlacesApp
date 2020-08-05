@@ -1,10 +1,16 @@
-import {StyleSheet, Text, View} from "react-native";
+import {Button, StyleSheet, Text, View} from "react-native";
 import React from "react";
+import Colors from "../constants/colors";
 
 const BookingsScreen = props => {
     return (
         <View style={styles.screen}>
             <Text>Bookings</Text>
+            <Button
+                title="Go to Normal Search"
+                onPress={() => props.navigation.navigate('NormalSearch')}
+                color={Colors.primary}
+            />
         </View>
     );
 };
