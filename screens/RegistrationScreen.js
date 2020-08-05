@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TextInput, Button, Alert} from 'react-native';
 
 import Colors from '../constants/colors';
 
-const Registration = props => {
+const RegistrationScreen = props => {
     return (
         <View style={styles.screen}>
             <View style={styles.inputContainer}>
@@ -18,12 +18,12 @@ const Registration = props => {
                 />
                 <Button
                     style={styles.login}
-                    title="Login"
+                    title="LoginScreen"
                     onPress={() => Alert.alert('Simple Button pressed')}
                     color={Colors.primary}
                 />
                 <Text> {'Registrazione'} </Text>
-                <Text> {'Login come ospite'} </Text>
+                <Text> {'LoginScreen come ospite'} </Text>
             </View>
         </View>
     );
@@ -64,5 +64,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Registration;
+export default RegistrationScreen;
 
