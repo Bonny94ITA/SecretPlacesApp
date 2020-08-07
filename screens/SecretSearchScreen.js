@@ -2,7 +2,7 @@ import {Button, StyleSheet, Text, View} from "react-native";
 import React from "react";
 import Colors from "../constants/colors";
 
-const SecretSearchScreen = props => {
+const SecretSearchScreen = () => {
     return (
         <View style={styles.screen}>
             <Text>Secret Search</Text>

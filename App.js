@@ -3,7 +3,6 @@ import {StyleSheet} from 'react-native';
 import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 import {Provider as PaperProvider} from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './navigator/Navigator';
 
 const fetchFonts = () => {
