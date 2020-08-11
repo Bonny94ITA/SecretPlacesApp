@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, Text } from 'react-native';
-import { createAppContainer } from 'react-navigation';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -15,8 +15,7 @@ import BookingsScreen from '../screens/BookingsScreen';
 import Colors from "../constants/colors";
 
 const tabScreenConfig = {
-    Homepage: HomepageScreen,
-    "Ricerca Normale": {
+    NormalSearch: {
         screen: NormalSearchScreen,
         navigationOptions: {
             tabBarIcon: tabInfo => {
@@ -33,7 +32,10 @@ const tabScreenConfig = {
                 )
         }
     },
-    "Ricerca Segreta": {
+    Homepage: {
+        screen: HomepageScreen,
+    },
+    SecretSearch: {
         screen: SecretSearchScreen,
         navigationOptions: {
             tabBarIcon: tabInfo => {
@@ -53,13 +55,15 @@ const tabScreenConfig = {
 const TabNavigator =
     Platform.OS === 'android'
         ? createMaterialBottomTabNavigator(tabScreenConfig, {
+            initialRouteName: 'Homepage',
             activeTintColor: 'white',
             shifting: true,
             barStyle: {
                 backgroundColor: Colors.primaryColor
-            }
+            },
         })
         : createBottomTabNavigator(tabScreenConfig, {
+            initialRouteName: 'Homepage',
             tabBarOptions: {
                 activeTintColor: Colors.accentColor
             }
@@ -67,19 +71,22 @@ const TabNavigator =
 
 const DrawerNavigator = createDrawerNavigator(
     {
-        Login: LoginScreen,
         Homepage: {
             screen: TabNavigator
         },
         NormalSearch: NormalSearchScreen,
         SecretSearch: SecretSearchScreen,
         Bookings: BookingsScreen,
-    },
-    {
-        contentOptions: {
-            activeTintColor: Colors.accentColor
-        }
     }
 );
 
-export default createAppContainer(DrawerNavigator);
+const AuthNavigator = createStackNavigator({
+    Login: LoginScreen
+});
+
+const MainNavigator = createSwitchNavigator({
+    Login: AuthNavigator,
+    Homepage: DrawerNavigator
+});
+
+export default createAppContainer(MainNavigator);
