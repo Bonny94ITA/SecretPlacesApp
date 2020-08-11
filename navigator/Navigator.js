@@ -14,83 +14,20 @@ import SecretSearchScreen from '../screens/SecretSearchScreen';
 import BookingsScreen from '../screens/BookingsScreen';
 import Colors from "../constants/colors";
 
-const tabScreenConfig = {
-    NormalSearch: {
-        screen: NormalSearchScreen,
-        navigationOptions: {
-            tabBarIcon: tabInfo => {
-                return (
-                    <Ionicons name="ios-restaurant" size={25} color={tabInfo.tintColor} />
-                );
-            },
-            tabBarColor: Colors.primaryColor,
-            tabBarLabel:
-                Platform.OS === 'android' ? (
-                    <Text>Meals</Text>
-                ) : (
-                    'Meals'
-                )
-        }
-    },
-    Homepage: {
-        screen: HomepageScreen,
-        navigationOptions: {
-            tabBarIcon: tabInfo => {
-                return (
-                    <Ionicons name="ios-restaurant" size={25} color={tabInfo.tintColor} />
-                );
-            },
-            tabBarColor: Colors.primaryColor,
-            tabBarLabel:
-                Platform.OS === 'android' ? (
-                    <Text>Meals</Text>
-                ) : (
-                    'Meals'
-                )
-        }
-    },
-    SecretSearch: {
-        screen: SecretSearchScreen,
-        navigationOptions: {
-            tabBarIcon: tabInfo => {
-                return <Ionicons name="ios-star" size={25} color={tabInfo.tintColor} />;
-            },
-            tabBarColor: Colors.accentColor,
-            tabBarLabel:
-                Platform.OS === 'android' ? (
-                    <Text>Favorites</Text>
-                ) : (
-                    'Favorites'
-                )
-        }
-    }
-};
-
-const TabNavigator =
-    Platform.OS === 'android'
-        ? createMaterialBottomTabNavigator(tabScreenConfig, {
-            initialRouteName: 'Homepage',
-            activeTintColor: 'white',
-            shifting: true,
-            barStyle: {
-                backgroundColor: Colors.primaryColor
-            },
-        })
-        : createBottomTabNavigator(tabScreenConfig, {
-            initialRouteName: 'Homepage',
-            tabBarOptions: {
-                activeTintColor: Colors.accentColor
-            }
-        });
-
 const DrawerNavigator = createDrawerNavigator(
     {
-        Homepage: {
-            screen: TabNavigator
-        },
-        NormalSearch: NormalSearchScreen,
-        SecretSearch: SecretSearchScreen,
-        Bookings: BookingsScreen,
+        Homepage: createStackNavigator({
+            Homepage: HomepageScreen
+        }),
+        "Ricerca Normale": createStackNavigator({
+            NormalSearch: NormalSearchScreen
+        }),
+        "Ricerca Segreta": createStackNavigator({
+            SecretSearch: SecretSearchScreen
+        }),
+        "Prenotazioni": createStackNavigator({
+            Bookings: BookingsScreen
+        })
     },
     {
         resetOnBlur: true
@@ -99,7 +36,12 @@ const DrawerNavigator = createDrawerNavigator(
 
 const AuthNavigator = createStackNavigator({
     Login: LoginScreen
-});
+    },
+    {
+    headerMode: 'none',
+    navigationOptions: {
+        headerVisible: false,
+    }});
 
 const MainNavigator = createSwitchNavigator({
     Login: AuthNavigator,

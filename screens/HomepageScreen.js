@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, Button} from 'react-native';
 import Colors from "../constants/colors";
 import HeaderButton from '../components/HeaderButton';
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import NormalSearchScreen from "./NormalSearchScreen";
 
 const HomepageScreen = props => {
     return (

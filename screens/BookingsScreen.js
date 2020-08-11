@@ -1,6 +1,7 @@
 import {Button, StyleSheet, Text, View} from "react-native";
 import React from "react";
 import Colors from "../constants/colors";
+import HomepageScreen from "./HomepageScreen";
 
 const BookingsScreen = () => {
     return (
@@ -17,5 +18,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+BookingsScreen.navigationOptions = {
+    headerTitle: 'Prenotazioni'
+}
 
 export default BookingsScreen;

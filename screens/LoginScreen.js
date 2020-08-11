@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import Colors from '../constants/colors';
+import HomepageScreen from "./HomepageScreen";
 
 const LoginScreen = props => {
     return (
