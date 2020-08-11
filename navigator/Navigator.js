@@ -34,6 +34,20 @@ const tabScreenConfig = {
     },
     Homepage: {
         screen: HomepageScreen,
+        navigationOptions: {
+            tabBarIcon: tabInfo => {
+                return (
+                    <Ionicons name="ios-restaurant" size={25} color={tabInfo.tintColor} />
+                );
+            },
+            tabBarColor: Colors.primaryColor,
+            tabBarLabel:
+                Platform.OS === 'android' ? (
+                    <Text>Meals</Text>
+                ) : (
+                    'Meals'
+                )
+        }
     },
     SecretSearch: {
         screen: SecretSearchScreen,
@@ -77,6 +91,9 @@ const DrawerNavigator = createDrawerNavigator(
         NormalSearch: NormalSearchScreen,
         SecretSearch: SecretSearchScreen,
         Bookings: BookingsScreen,
+    },
+    {
+        resetOnBlur: true
     }
 );
 
