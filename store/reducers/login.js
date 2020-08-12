@@ -9,7 +9,7 @@ const initialState = {
 const loginReducer = (state = initialState, action) => {
     switch(action.type) {
         case SUBMIT_LOGIN:
-            return { id: 1, email: 'markoff@maicol.com', password: 'MirkoMarkoModel' };
+            return state;
         default:
             return state;
     }

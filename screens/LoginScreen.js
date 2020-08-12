@@ -21,7 +21,7 @@ const LoginScreen = props => {
 
     const submitLoginHandler = () => {
         //Chiamata HTTP
-        dispatch(submitLogin());
+        submitLogin("ciao", "ciao");
         props.navigation.navigate('Homepage');
     }
 

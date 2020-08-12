@@ -2,8 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import Colors from "../constants/colors";
 import Header from '../components/Header';
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import NormalSearchScreen from "./NormalSearchScreen";
 import {useSelector} from "react-redux";
 
 const HomepageScreen = props => {
