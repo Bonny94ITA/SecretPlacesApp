@@ -17,9 +17,9 @@ import Colors from "../constants/colors";
 const DrawerNavigator = createDrawerNavigator(
     {
         Homepage: HomepageScreen,
-        NormalSearch: NormalSearchScreen,
-        SecretSearch: SecretSearchScreen,
-        Bookings: BookingsScreen
+        "Ricerca Normale": NormalSearchScreen,
+        "Ricerca Segreta": SecretSearchScreen,
+        "Prenotazioni": BookingsScreen
     },
     {
         resetOnBlur: true
