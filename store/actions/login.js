@@ -10,11 +10,12 @@ export const submitLogin = (email, password) => {
         const response = await fetch('https://secret-places-test.firebaseio.com/testlogin.json', {
             method: 'POST',
             headers: {
+                Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email,
-                password
+                email: email,
+                pwd: password
             })
         });
 
