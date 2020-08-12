@@ -4,6 +4,15 @@ import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 import {Provider as PaperProvider} from 'react-native-paper';
 import RootNavigator from './navigator/Navigator';
+import { createStore, combineReducers } from 'redux';
+import loginReducer from './store/reducers/login';
+import { Provider } from 'react-redux'
+
+const rootReducer = combineReducers({
+    login: loginReducer
+});
+
+const store = createStore(rootReducer);
 
 const fetchFonts = () => {
     return Font.loadAsync({
@@ -19,9 +28,11 @@ export default function App() {
     }
 
     return (
-        <PaperProvider>
-            <RootNavigator/>
-        </PaperProvider>
+        <Provider store={store}>
+            <PaperProvider>
+                <RootNavigator/>
+            </PaperProvider>
+         </Provider>
     );
 }
 

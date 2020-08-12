@@ -4,8 +4,11 @@ import Colors from "../constants/colors";
 import Header from '../components/Header';
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import NormalSearchScreen from "./NormalSearchScreen";
+import {useSelector} from "react-redux";
 
 const HomepageScreen = props => {
+    const loginState = useSelector(state => state.login);
+    console.log(loginState);
     return (
         <View style={styles.header}>
             <Header title = {"Homepage"}/>

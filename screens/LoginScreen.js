@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -11,9 +11,20 @@ import {
 } from 'react-native';
 
 import Colors from '../constants/colors';
-import HomepageScreen from "./HomepageScreen";
+import {useSelector, useDispatch} from "react-redux";
+import {submitLogin} from "../store/actions/login";
 
 const LoginScreen = props => {
+    const loginState = useSelector(state => state.login);
+    console.log(loginState);
+    const dispatch = useDispatch();
+
+    const submitLoginHandler = () => {
+        //Chiamata HTTP
+        dispatch(submitLogin());
+        props.navigation.navigate('Homepage');
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
             <View style={styles.container}>
@@ -35,7 +46,7 @@ const LoginScreen = props => {
                             <Button
                                 style={styles.login}
                                 title="Login"
-                                onPress={() => props.navigation.navigate('Homepage')}
+                                onPress={submitLoginHandler}
                                 color={Colors.primary}
                             />
                             <Text> {'Registrazione'} </Text>
