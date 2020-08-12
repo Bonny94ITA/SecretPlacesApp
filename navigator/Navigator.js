@@ -16,18 +16,10 @@ import Colors from "../constants/colors";
 
 const DrawerNavigator = createDrawerNavigator(
     {
-        Homepage: createStackNavigator({
-            Homepage: HomepageScreen
-        }),
-        "Ricerca Normale": createStackNavigator({
-            NormalSearch: NormalSearchScreen
-        }),
-        "Ricerca Segreta": createStackNavigator({
-            SecretSearch: SecretSearchScreen
-        }),
-        "Prenotazioni": createStackNavigator({
-            Bookings: BookingsScreen
-        })
+        Homepage: HomepageScreen,
+        NormalSearch: NormalSearchScreen,
+        SecretSearch: SecretSearchScreen,
+        Bookings: BookingsScreen
     },
     {
         resetOnBlur: true
@@ -35,13 +27,13 @@ const DrawerNavigator = createDrawerNavigator(
 );
 
 const AuthNavigator = createStackNavigator({
-    Login: LoginScreen
+        Login: LoginScreen
     },
     {
-    headerMode: 'none',
-    navigationOptions: {
-        headerVisible: false,
-    }});
+        headerMode: 'none',
+        navigationOptions: {
+            headerVisible: false,
+        }});
 
 const MainNavigator = createSwitchNavigator({
     Login: AuthNavigator,
