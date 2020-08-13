@@ -29,6 +29,10 @@ const RegistrationScreen = props => {
                                 style={styles.inputText}
                             />
                             <TextInput
+                                placeholder={"Mail"}
+                                style={styles.inputText}
+                            />
+                            <TextInput
                                 placeholder={"Password"}
                                 secureTextEntry={true}
                                 style={styles.inputText}

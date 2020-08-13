@@ -64,7 +64,7 @@ const LoginScreen = props => {
                     <View style={styles.screen}>
                         <View style={styles.inputContainer}>
                             <TextInput
-                                placeholder={"Username"}
+                                placeholder={"Mail"}
                                 style={styles.inputText}
                             />
                             <TextInput
