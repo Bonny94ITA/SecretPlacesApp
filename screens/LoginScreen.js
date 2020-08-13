@@ -15,34 +15,32 @@ import {useSelector, useDispatch} from "react-redux";
 import {submitLogin} from "../store/actions/login";
 
 const LoginScreen = props => {
-    //TRY AGAIN
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const loginState = useSelector(state => state.login);
     console.log(loginState);
     const dispatch = useDispatch();
 
-    const submitLoginHandler = async () => {
-        //Chiamata HTTP
+    const login = async () => {
+        setError(null);
         setIsLoading(true);
 
         try {
             await dispatch(submitLogin("ciao", "ciao"));
-            setIsLoading(false);
-
             props.navigation.navigate('Homepage');
         } catch(err) {
             setError(err.message);
         }
     }
 
-    const submitRegistrationHandler = () => {
+    const register = async () => {
         props.navigation.navigate('Registrazione');
     }
 
     if (error !== null) {
         return (<View style={styles.loading}>
             <Text>An error occurred!</Text>
+            <Button title={"Try Again"} onPress={login} />
         </View>);
     }
 
@@ -75,12 +73,12 @@ const LoginScreen = props => {
                             <Button
                                 style={styles.login}
                                 title="Login"
-                                onPress={submitLoginHandler}
+                                onPress={login}
                                 color={Colors.primary}
                             />
                             <Text
                                 style={styles.RegistrationStyle}
-                                onPress={submitRegistrationHandler}> {'Registrazione'} </Text>
+                                onPress={register}> {'Registrazione'} </Text>
                         </View>
                     </View>
                 </ImageBackground>
