@@ -28,9 +28,7 @@ const LoginScreen = props => {
 
         try {
             await dispatch(submitLogin("ciao", "ciao"));
-            setTimeout(function () {
-                setIsLoading(false);
-            }, 5000);
+            setIsLoading(false);
 
             props.navigation.navigate('Homepage');
         } catch(err) {
