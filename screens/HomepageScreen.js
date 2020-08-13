@@ -9,14 +9,14 @@ const HomepageScreen = props => {
     console.log(loginState);
     return (
         <View style={styles.header}>
-            <Header title = {"Homepage"}/>
+            <Header title={"Homepage"}/>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     header: {
-      flex: 1
+        flex: 1
     },
     screen: {
         flex: 1,

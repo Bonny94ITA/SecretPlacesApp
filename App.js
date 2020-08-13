@@ -4,9 +4,9 @@ import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 import {Provider as PaperProvider} from 'react-native-paper';
 import RootNavigator from './navigator/Navigator';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
 import loginReducer from './store/reducers/login';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
 const rootReducer = combineReducers({
@@ -33,7 +33,7 @@ export default function App() {
             <PaperProvider>
                 <RootNavigator/>
             </PaperProvider>
-         </Provider>
+        </Provider>
     );
 }
 

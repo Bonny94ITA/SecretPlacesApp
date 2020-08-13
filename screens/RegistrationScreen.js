@@ -1,31 +1,53 @@
 import React from 'react';
-import {View, Text, StyleSheet, TextInput, Button, Alert} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    Button,
+    TouchableWithoutFeedback,
+    Keyboard,
+    ImageBackground
+} from 'react-native';
 
 import Colors from '../constants/colors';
 
 const RegistrationScreen = props => {
     return (
-        <View style={styles.screen}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder={"Username"}
-                    style={styles.inputText}
-                />
-                <TextInput
-                    placeholder={"Password"}
-                    secureTextEntry={true}
-                    style={styles.inputText}
-                />
-                <Button
-                    style={styles.login}
-                    title="LoginScreen"
-                    onPress={() => Alert.alert('Simple Button pressed')}
-                    color={Colors.primary}
-                />
-                <Text> {'Registrazione'} </Text>
-                <Text> {'LoginScreen come ospite'} </Text>
+        <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+        }}>
+            <View style={styles.container}>
+                <ImageBackground source={require('../assets/sunset3.jpg')} style={styles.image}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.textTitle}>Secret Places</Text>
+                    </View>
+                    <View style={styles.screen}>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder={"Username"}
+                                style={styles.inputText}
+                            />
+                            <TextInput
+                                placeholder={"Password"}
+                                secureTextEntry={true}
+                                style={styles.inputText}
+                            />
+                            <TextInput
+                                placeholder={"Conferma Password"}
+                                secureTextEntry={true}
+                                style={styles.inputText}
+                            />
+                            <Button
+                                style={styles.login}
+                                title="Registrazione"
+                                color={Colors.primary}
+                            />
+                        </View>
+                    </View>
+                </ImageBackground>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -49,7 +71,6 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10
     },
-
     inputText: {
         height: 40,
         borderColor: 'orange',
@@ -61,6 +82,30 @@ const styles = StyleSheet.create({
     },
     login: {
         color: Colors.primary
+    },
+    image: {
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "center"
+    },
+    container: {
+        flex: 1,
+        flexDirection: "column"
+    },
+    titleContainer: {
+        flex: 0.5,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    textTitle: {
+        color: Colors.title,
+        fontSize: 70,
+        fontFamily: 'Caveat',
+    },
+    RegistrationStyle: {
+        color: Colors.title,
+        textDecorationLine: 'underline'
     }
 });
 

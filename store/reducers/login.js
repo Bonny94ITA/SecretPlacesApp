@@ -8,7 +8,7 @@ const initialState = {
 
 const loginReducer = (state = initialState, action) => {
     console.log(action);
-    switch(action.type) {
+    switch (action.type) {
         case SUBMIT_LOGIN:
             state.id = 1;
             state.email = action.loginInfo.email;

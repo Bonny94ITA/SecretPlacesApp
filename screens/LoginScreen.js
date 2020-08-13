@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,14 +7,16 @@ import {
     Button,
     Keyboard,
     ImageBackground,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Linking
 } from 'react-native';
-
 import Colors from '../constants/colors';
 import {useSelector, useDispatch} from "react-redux";
 import {submitLogin} from "../store/actions/login";
 
+
 const LoginScreen = props => {
+
     const loginState = useSelector(state => state.login);
     console.log(loginState);
     const dispatch = useDispatch();
@@ -25,8 +27,14 @@ const LoginScreen = props => {
         props.navigation.navigate('Homepage');
     }
 
+    const submitRegistrationHandler = async () => {
+        props.navigation.navigate('Registrazione');
+    }
+
     return (
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+        <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+        }}>
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/sunset3.jpg')} style={styles.image}>
                     <View style={styles.titleContainer}>
@@ -49,8 +57,9 @@ const LoginScreen = props => {
                                 onPress={submitLoginHandler}
                                 color={Colors.primary}
                             />
-                            <Text> {'Registrazione'} </Text>
-                            <Text> {'Login come ospite'} </Text>
+                            <Text
+                                style={styles.RegistrationStyle}
+                                onPress={submitRegistrationHandler}> {'Registrazione'} </Text>
                         </View>
                     </View>
                 </ImageBackground>
@@ -109,6 +118,10 @@ const styles = StyleSheet.create({
         color: Colors.title,
         fontSize: 70,
         fontFamily: 'Caveat',
+    },
+    RegistrationStyle: {
+        color: Colors.title,
+        textDecorationLine: 'underline'
     }
 });
 

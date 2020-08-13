@@ -1,7 +1,6 @@
 import {Button, StyleSheet, Text, View} from "react-native";
 import React from "react";
 import Colors from "../constants/colors";
-import SecretSearchScreen from "./SecretSearchScreen";
 import Header from "../components/Header";
 
 const NormalSearchScreen = () => {

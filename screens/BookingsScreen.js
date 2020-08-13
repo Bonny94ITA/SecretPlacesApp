@@ -7,7 +7,7 @@ import Header from "../components/Header";
 const BookingsScreen = () => {
     return (
         <View style={styles.header}>
-            <Header title = {"Prenotazioni"}/>
+            <Header title={"Prenotazioni"}/>
         </View>
     );
 };

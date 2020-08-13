@@ -6,7 +6,7 @@ import Header from "../components/Header";
 const SecretSearchScreen = () => {
     return (
         <View style={styles.header}>
-            <Header title = {"Ricerca Segreta"}/>
+            <Header title={"Ricerca Segreta"}/>
         </View>
     );
 };

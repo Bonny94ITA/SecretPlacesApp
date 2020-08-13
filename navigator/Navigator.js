@@ -1,22 +1,18 @@
 import React from 'react';
-import { Platform, Text } from 'react-native';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import { Ionicons } from '@expo/vector-icons';
-import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createDrawerNavigator} from 'react-navigation-drawer';
 
 import HomepageScreen from '../screens/HomepageScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NormalSearchScreen from '../screens/NormalSearchScreen';
 import SecretSearchScreen from '../screens/SecretSearchScreen';
 import BookingsScreen from '../screens/BookingsScreen';
-import Colors from "../constants/colors";
+import RegistrationScreen from "../screens/RegistrationScreen";
 
 const DrawerNavigator = createDrawerNavigator(
     {
-        Homepage: HomepageScreen,
+        "Homepage": HomepageScreen,
         "Ricerca Normale": NormalSearchScreen,
         "Ricerca Segreta": SecretSearchScreen,
         "Prenotazioni": BookingsScreen
@@ -27,13 +23,15 @@ const DrawerNavigator = createDrawerNavigator(
 );
 
 const AuthNavigator = createStackNavigator({
-        Login: LoginScreen
+        "Login": LoginScreen,
+        "Registrazione": RegistrationScreen,
     },
     {
         headerMode: 'none',
         navigationOptions: {
             headerVisible: false,
-        }});
+        }
+    });
 
 const MainNavigator = createSwitchNavigator({
     Login: AuthNavigator,
