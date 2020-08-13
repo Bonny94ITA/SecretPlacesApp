@@ -7,9 +7,10 @@ const initialState = {
 }
 
 const loginReducer = (state = initialState, action) => {
+    console.log(action);
     switch(action.type) {
         case SUBMIT_LOGIN:
-            state.id = action.loginInfo.id;
+            state.id = 1;
             state.email = action.loginInfo.email;
             state.password = action.loginInfo.password;
             return state;

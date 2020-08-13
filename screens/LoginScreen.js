@@ -19,9 +19,9 @@ const LoginScreen = props => {
     console.log(loginState);
     const dispatch = useDispatch();
 
-    const submitLoginHandler = () => {
+    const submitLoginHandler = async () => {
         //Chiamata HTTP
-        submitLogin("ciao", "ciao");
+        await dispatch(submitLogin("ciao", "ciao"));
         props.navigation.navigate('Homepage');
     }
 
