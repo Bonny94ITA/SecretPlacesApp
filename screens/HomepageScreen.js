@@ -17,11 +17,6 @@ const HomepageScreen = props => {
 const styles = StyleSheet.create({
     header: {
         flex: 1
-    },
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
     }
 });
 

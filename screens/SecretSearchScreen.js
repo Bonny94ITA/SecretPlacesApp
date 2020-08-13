@@ -22,8 +22,4 @@ const styles = StyleSheet.create({
     }
 });
 
-SecretSearchScreen.navigationOptions = {
-    headerTitle: "Ricerca Segreta"
-}
-
 export default SecretSearchScreen;

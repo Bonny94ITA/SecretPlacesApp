@@ -22,8 +22,4 @@ const styles = StyleSheet.create({
     }
 });
 
-NormalSearchScreen.navigationOptions = {
-    headerTitle: "Ricerca Normale"
-}
-
 export default NormalSearchScreen;

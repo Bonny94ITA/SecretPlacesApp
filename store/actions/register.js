@@ -1,25 +1,26 @@
-export const SUBMIT_LOGIN = 'SUBMIT_LOGIN';
+export const SUBMIT_REGISTER = 'SUBMIT_REGISTER';
 
-export const submitLogin = (email, password) => {
+export const submitRegister = (email, password, username) => {
     return async dispatch => {
         // any async code you want!
-        const response = await fetch('https://secret-places-test.firebaseio.com/testlogin.json', {
+        const response = await fetch('https://secret-places-test.firebaseio.com/testRegister.json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 email,
-                password
+                password,
+                username
             })
         });
 
         const resData = await response.json();
 
         dispatch({
-            type: SUBMIT_LOGIN,
+            type: SUBMIT_REGISTER,
             loginInfo: {
-                id: resData.id, email, password
+                id: resData.id, email, password, username
             }
         });
     };

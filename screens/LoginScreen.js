@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -8,27 +8,50 @@ import {
     Keyboard,
     ImageBackground,
     TouchableWithoutFeedback,
-    Linking
+    ActivityIndicator
 } from 'react-native';
 import Colors from '../constants/colors';
 import {useSelector, useDispatch} from "react-redux";
 import {submitLogin} from "../store/actions/login";
 
-
 const LoginScreen = props => {
-
+    //TRY AGAIN
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     const loginState = useSelector(state => state.login);
     console.log(loginState);
     const dispatch = useDispatch();
 
     const submitLoginHandler = async () => {
         //Chiamata HTTP
-        await dispatch(submitLogin("ciao", "ciao"));
-        props.navigation.navigate('Homepage');
+        setIsLoading(true);
+
+        try {
+            await dispatch(submitLogin("ciao", "ciao"));
+            setTimeout(function () {
+                setIsLoading(false);
+            }, 5000);
+
+            props.navigation.navigate('Homepage');
+        } catch(err) {
+            setError(err.message);
+        }
     }
 
-    const submitRegistrationHandler = async () => {
+    const submitRegistrationHandler = () => {
         props.navigation.navigate('Registrazione');
+    }
+
+    if (error !== null) {
+        return (<View style={styles.loading}>
+            <Text>An error occurred!</Text>
+        </View>);
+    }
+
+    if (isLoading) {
+        return (<View style={styles.loading}>
+            <ActivityIndicator size={"large"} color={Colors.primary} />
+        </View>);
     }
 
     return (
@@ -122,6 +145,11 @@ const styles = StyleSheet.create({
     RegistrationStyle: {
         color: Colors.title,
         textDecorationLine: 'underline'
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

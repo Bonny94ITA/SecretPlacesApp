@@ -23,8 +23,4 @@ const styles = StyleSheet.create({
     }
 });
 
-BookingsScreen.navigationOptions = {
-    headerTitle: 'Prenotazioni'
-}
-
 export default BookingsScreen;
