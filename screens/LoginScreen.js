@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     textTitle: {
         color: Colors.title,
         fontSize: 70,
-        fontFamily: 'Caveat',
+        fontFamily: 'Caveat-B',
     },
     RegistrationStyle: {
         color: Colors.title,

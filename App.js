@@ -17,7 +17,8 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
     return Font.loadAsync({
-        'Caveat': require('./assets/fonts/Caveat-Bold.ttf')
+        'Caveat-R': require('./assets/fonts/Caveat-Regular.ttf'),
+        'Caveat-B': require('./assets/fonts/Caveat-Bold.ttf')
     });
 }
 
