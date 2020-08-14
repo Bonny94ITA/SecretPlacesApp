@@ -1,4 +1,5 @@
 export default {
     title:'#803300',
-    primary: 'orange'
+    header: '#cd853f',
+    primary: 'orange',
 }

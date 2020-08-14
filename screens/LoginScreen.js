@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     View,
     Text,
@@ -28,8 +28,9 @@ const LoginScreen = props => {
         try {
             await dispatch(submitLogin("ciao", "ciao"));
             props.navigation.navigate('Homepage');
-        } catch(err) {
+        } catch (err) {
             setError(err.message);
+            console.log(err.message())
         }
     }
 
@@ -38,15 +39,15 @@ const LoginScreen = props => {
     }
 
     if (error !== null) {
-        return (<View style={styles.loading}>
-            <Text>An error occurred!</Text>
-            <Button title={"Try Again"} onPress={login} />
+        return (<View style={styles.reload}>
+            <Text>C'è stato un errore!</Text>
+            <Button title={"Riprova"} onPress={login} color={Colors.primary}/>
         </View>);
     }
 
     if (isLoading) {
         return (<View style={styles.loading}>
-            <ActivityIndicator size={"large"} color={Colors.primary} />
+            <ActivityIndicator size={"large"} color={Colors.primary}/>
         </View>);
     }
 
@@ -115,9 +116,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         textAlign: 'center'
     },
-    login: {
-        color: Colors.primary
-    },
     image: {
         flex: 1,
         resizeMode: "cover",
@@ -146,6 +144,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    reload: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });
 
