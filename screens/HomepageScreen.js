@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import {useSelector} from "react-redux";
 
 const HomepageScreen = props => {
-    const loginState = useSelector(state => state.login);
+    const loginState = useSelector(state => state.auth);
     console.log(loginState);
     return (
         <View style={styles.header}>

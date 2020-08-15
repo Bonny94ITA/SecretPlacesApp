@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     View,
     Text,
@@ -7,12 +7,46 @@ import {
     Button,
     TouchableWithoutFeedback,
     Keyboard,
-    ImageBackground
+    ImageBackground, ActivityIndicator, Alert
 } from 'react-native';
 
 import Colors from '../constants/colors';
+import {useDispatch, useSelector} from "react-redux";
+import {submitLogin, submitRegister} from "../store/actions/auth";
 
 const RegistrationScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const loginState = useSelector(state => state.login);
+    console.log(loginState);
+    const dispatch = useDispatch();
+
+    const register = async () => {
+        setError(null);
+        setIsLoading(true);
+
+        try {
+            await dispatch(submitRegister("abc@abc.com", "maicol", "Markov"));
+            await dispatch(submitLogin("abc@abc.com", "maicol"));
+            props.navigation.navigate('Homepage');
+        } catch (err) {
+            setError(err.message);
+            console.log(err);
+        }
+    }
+
+    if (error !== null) {
+        Alert.alert('An error occurred!', error, [{text: 'OK'}]);
+        setIsLoading(false);
+        setError(null);
+    }
+
+    if (isLoading) {
+        return (<View style={styles.loading}>
+            <ActivityIndicator size={"large"} color={Colors.primary}/>
+        </View>);
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
@@ -46,6 +80,7 @@ const RegistrationScreen = props => {
                                 style={styles.login}
                                 title="Registrazione"
                                 color={Colors.primary}
+                                onPress={register}
                             />
                         </View>
                     </View>
@@ -110,6 +145,16 @@ const styles = StyleSheet.create({
     RegistrationStyle: {
         color: Colors.title,
         textDecorationLine: 'underline'
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    reload: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });
 

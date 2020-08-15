@@ -8,16 +8,18 @@ import {
     Keyboard,
     ImageBackground,
     TouchableWithoutFeedback,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import Colors from '../constants/colors';
 import {useSelector, useDispatch} from "react-redux";
-import {submitLogin} from "../store/actions/login";
+import {submitLogin} from "../store/actions/auth";
 
 const LoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const loginState = useSelector(state => state.login);
+    const loginState = useSelector(state => state.auth);
+    console.log("1");
     console.log(loginState);
     const dispatch = useDispatch();
 
@@ -26,23 +28,18 @@ const LoginScreen = props => {
         setIsLoading(true);
 
         try {
-            await dispatch(submitLogin("ciao", "ciao"));
+            await dispatch(submitLogin("marcoloide@unito.it", "de239033eaac1ffb65f83ab6e4dd0981"));
             props.navigation.navigate('Homepage');
         } catch (err) {
             setError(err.message);
-            console.log(err.message())
+            console.log(err);
         }
     }
 
-    const register = async () => {
-        props.navigation.navigate('Registrazione');
-    }
-
     if (error !== null) {
-        return (<View style={styles.reload}>
-            <Text>C'è stato un errore!</Text>
-            <Button title={"Riprova"} onPress={login} color={Colors.primary}/>
-        </View>);
+        Alert.alert('An error occurred!', error, [{text: 'OK'}]);
+        setIsLoading(false);
+        setError(null);
     }
 
     if (isLoading) {
@@ -79,7 +76,7 @@ const LoginScreen = props => {
                             />
                             <Text
                                 style={styles.RegistrationStyle}
-                                onPress={register}> {'Registrazione'} </Text>
+                                onPress={() => {props.navigation.navigate('Registrazione')}}> {'Registrazione'} </Text>
                         </View>
                     </View>
                 </ImageBackground>
