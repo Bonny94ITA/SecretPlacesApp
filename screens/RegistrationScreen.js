@@ -102,11 +102,12 @@ const RegistrationScreen = props => {
                                             //value={values.confirmpassword}
                                             style={styles.inputText}
                                         />
-                                        <Button
-                                            title="Registrazione"
-                                            color={Colors.primary}
-                                            onPress={handleSubmit}
-                                        />
+                                        <View style={{marginVertical: 5}}>
+                                            <Button
+                                                title="Registrazione"
+                                                color={Colors.primary}
+                                                onPress={handleSubmit}/>
+                                        </View>
                                     </View>
                                 )}
                             </Formik>

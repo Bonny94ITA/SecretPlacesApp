@@ -85,11 +85,12 @@ const LoginScreen = props => {
                                             //value={values.password}
                                             style={styles.inputText}
                                         />
-                                        <Button
-                                            title="Login"
-                                            onPress={handleSubmit}
-                                            color={Colors.primary}
-                                        />
+                                        <View style={{marginVertical: 5}}>
+                                            <Button
+                                                title="Login"
+                                                onPress={handleSubmit}
+                                                color={Colors.primary}/>
+                                        </View>
                                     </View>
                                 )}
                             </Formik>
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
     },
     RegistrationStyle: {
         color: Colors.title,
-        textDecorationLine: 'underline'
+        marginTop: 10
     },
     loading: {
         flex: 1,
