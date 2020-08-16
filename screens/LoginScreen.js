@@ -1,4 +1,4 @@
-import { JSHash, CONSTANTS } from "react-native-hash";
+import {JSHash, CONSTANTS} from "react-native-hash";
 import React, {useState} from 'react';
 import {
     View,
@@ -10,7 +10,8 @@ import {
     ImageBackground,
     TouchableWithoutFeedback,
     ActivityIndicator,
-    Alert
+    Alert,
+    TouchableOpacity
 } from 'react-native';
 import Colors from '../constants/colors';
 import {useDispatch} from "react-redux";
@@ -94,11 +95,11 @@ const LoginScreen = props => {
                                     </View>
                                 )}
                             </Formik>
-                            <Text
-                                style={styles.RegistrationStyle}
-                                onPress={() => {
-                                    props.navigation.navigate('Registrazione')
-                                }}> {'Registrazione'} </Text>
+                            <TouchableOpacity onPress={() => {
+                                props.navigation.navigate('Registrazione')
+                            }}>
+                                <Text style={styles.RegistrationStyle}>Registrazione</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ImageBackground>

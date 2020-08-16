@@ -58,14 +58,22 @@ const NormalSearchScreen = () => {
                                             //value={values.email}
                                             style={styles.inputText}
                                         />
-                                        <DateTimePicker
-                                            testID="dateTimePicker"
-                                            value={date}
-                                            mode={mode}
-                                            is24Hour={true}
-                                            display="default"
-                                            onChange={onChange}
-                                        />
+                                        <View>
+                                            <Button onPress={showDatepicker} title="Show date picker!"/>
+                                        </View>
+                                        <View>
+                                            <Button onPress={showTimepicker} title="Show time picker!"/>
+                                        </View>
+                                        {show && (
+                                            <DateTimePicker
+                                                testID="dateTimePicker"
+                                                value={date}
+                                                mode={mode}
+                                                is24Hour={true}
+                                                display="default"
+                                                onChange={onChange}
+                                            />
+                                        )}
                                         <Button
                                             title="Ricerca"
                                             onPress={handleSubmit}
