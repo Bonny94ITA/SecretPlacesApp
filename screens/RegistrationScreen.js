@@ -13,7 +13,7 @@ import {
 import Colors from '../constants/colors';
 import {useDispatch, useSelector} from "react-redux";
 import {submitLogin, submitRegister} from "../store/actions/auth";
-import {Formik} from "formik";
+import {Formik} from 'formik';
 
 const RegistrationScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
