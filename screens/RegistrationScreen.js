@@ -106,7 +106,6 @@ const RegistrationScreen = props => {
                                             title="Registrazione"
                                             color={Colors.primary}
                                             onPress={handleSubmit}
-                                            style={styles.login}
                                         />
                                     </View>
                                 )}
@@ -147,9 +146,6 @@ const styles = StyleSheet.create({
         width: 225,
         borderRadius: 10,
         textAlign: 'center'
-    },
-    login: {
-        color: Colors.primary
     },
     image: {
         flex: 1,

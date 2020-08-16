@@ -89,7 +89,6 @@ const LoginScreen = props => {
                                             title="Login"
                                             onPress={handleSubmit}
                                             color={Colors.primary}
-                                            style={styles.login}
                                         />
                                     </View>
                                 )}
