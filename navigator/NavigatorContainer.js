@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
+import React, {useEffect, useRef} from 'react';
+import {useSelector} from 'react-redux';
+import {NavigationActions} from 'react-navigation';
 
 import Navigator from './Navigator';
 
@@ -11,12 +11,12 @@ const NavigationContainer = props => {
     useEffect(() => {
         if (!isAuth) {
             navRef.current.dispatch(
-                NavigationActions.navigate({ routeName: 'Login' })
+                NavigationActions.navigate({routeName: 'Login'})
             );
         }
     }, [isAuth]);
 
-    return <Navigator ref={navRef} />;
+    return <Navigator ref={navRef}/>;
 };
 
 export default NavigationContainer;

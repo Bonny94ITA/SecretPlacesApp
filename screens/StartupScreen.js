@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {
     View,
     ActivityIndicator,
     StyleSheet,
     AsyncStorage
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import Colors from '../constants/colors';
 import * as authActions from '../store/actions/auth';
@@ -21,7 +21,7 @@ const StartupScreen = props => {
                 return;
             }
             const transformedData = JSON.parse(userData);
-            const { token, userId, expiryDate } = transformedData;
+            const {token, userId, expiryDate} = transformedData;
             const expirationDate = new Date(expiryDate);
 
             if (expirationDate <= new Date() || !token || !userId) {
@@ -40,7 +40,7 @@ const StartupScreen = props => {
 
     return (
         <View style={styles.screen}>
-            <ActivityIndicator size="large" color={Colors.primary} />
+            <ActivityIndicator size="large" color={Colors.primary}/>
         </View>
     );
 };

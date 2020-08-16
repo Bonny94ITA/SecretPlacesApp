@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
     Button,
     Keyboard,
@@ -6,7 +7,7 @@ import {
     TouchableWithoutFeedback,
     View
 } from "react-native";
-import React, {useState} from "react";
+
 import Colors from "../constants/colors";
 import Header from "../components/Header";
 import {Formik} from 'formik';

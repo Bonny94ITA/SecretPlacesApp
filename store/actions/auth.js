@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import {AsyncStorage} from 'react-native';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
@@ -8,14 +8,14 @@ let timer;
 export const authenticate = (userId, token, expiryTime) => {
     return dispatch => {
         dispatch(setLogoutTimer(expiryTime));
-        dispatch({ type: AUTHENTICATE, userId: userId, token: token });
+        dispatch({type: AUTHENTICATE, userId: userId, token: token});
     };
 };
 
 export const submitLogout = () => {
     clearLogoutTimer();
     AsyncStorage.removeItem('userData');
-    return { type: LOGOUT };
+    return {type: LOGOUT};
 };
 
 const clearLogoutTimer = () => {

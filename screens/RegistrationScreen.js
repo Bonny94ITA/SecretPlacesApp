@@ -1,4 +1,4 @@
-import { JSHash, CONSTANTS } from "react-native-hash";
+import {JSHash, CONSTANTS} from "react-native-hash";
 import React, {useState} from 'react';
 import {
     View,
@@ -8,7 +8,9 @@ import {
     Button,
     TouchableWithoutFeedback,
     Keyboard,
-    ImageBackground, ActivityIndicator, Alert
+    ImageBackground,
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 
 import Colors from '../constants/colors';
