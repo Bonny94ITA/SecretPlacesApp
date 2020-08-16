@@ -6,13 +6,36 @@ import {
     TouchableWithoutFeedback,
     View
 } from "react-native";
-import React from "react";
+import React, {useState} from "react";
 import Colors from "../constants/colors";
 import Header from "../components/Header";
 import {Formik} from 'formik';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const NormalSearchScreen = () => {
+    const [date, setDate] = useState(new Date(1598051730000));
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
+
     return (
         <View style={styles.header}>
             <Header title={"Ricerca Normale"}/>
@@ -35,11 +58,14 @@ const NormalSearchScreen = () => {
                                             //value={values.email}
                                             style={styles.inputText}
                                         />
-
-
-
-
-
+                                        <DateTimePicker
+                                            testID="dateTimePicker"
+                                            value={date}
+                                            mode={mode}
+                                            is24Hour={true}
+                                            display="default"
+                                            onChange={onChange}
+                                        />
                                         <Button
                                             title="Ricerca"
                                             onPress={handleSubmit}
