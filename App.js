@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 import {Provider as PaperProvider} from 'react-native-paper';
-import RootNavigator from './navigator/Navigator';
+import RootNavigator from './navigator/NavigatorContainer';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import authReducer from './store/reducers/auth';
 import {Provider} from 'react-redux';

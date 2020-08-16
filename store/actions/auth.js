@@ -7,11 +7,14 @@ export const LOGOUT = 'LOGOUT';
 
 let timer;
 
-export const authenticate = (userId, token) => {
-    return { type: AUTHENTICATE, userId: userId, token: token };
+export const authenticate = (userId, token, expiryTime) => {
+    return dispatch => {
+        dispatch(setLogoutTimer(expiryTime));
+        dispatch({ type: AUTHENTICATE, userId: userId, token: token });
+    };
 };
 
-export const logout = () => {
+export const submitLogout = () => {
     clearLogoutTimer();
     AsyncStorage.removeItem('userData');
     return { type: LOGOUT };
@@ -26,8 +29,8 @@ const clearLogoutTimer = () => {
 const setLogoutTimer = expirationTime => {
     return dispatch => {
         timer = setTimeout(() => {
-            dispatch(logout());
-        }, expirationTime);
+            dispatch(submitLogout());
+        }, (60000)); // ogni minuto effettuo il refresh del token
     };
 };
 
@@ -50,10 +53,14 @@ export const submitLogin = (email, password) => {
         const resData = await response.json();
         console.log(resData);
 
-        dispatch(authenticate(resData.guest.id, resData.token.idToken));
+        dispatch(
+            authenticate(
+                resData.guest.id,
+                resData.token.idToken,
+                parseInt(resData.token.ttl)));
 
         const expirationDate = new Date(
-            new Date().getTime() + parseInt(resData.token.ttl) * 1000
+            new Date().getTime() + parseInt(resData.token.ttl)
         );
 
         saveDataToStorage(resData.token.idToken, resData.guest.id, expirationDate);
