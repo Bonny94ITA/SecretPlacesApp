@@ -28,7 +28,7 @@ const setLogoutTimer = expirationTime => {
     return dispatch => {
         timer = setTimeout(() => {
             dispatch(submitLogout());
-        }, (60000)); // ogni minuto effettuo il refresh del token
+        }, (6000000)); // ogni minuto effettuo il refresh del token
     };
 };
 

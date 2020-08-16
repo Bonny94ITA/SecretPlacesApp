@@ -2,7 +2,6 @@ import {
     Button,
     Keyboard,
     StyleSheet,
-    Text,
     TextInput,
     TouchableWithoutFeedback,
     View
@@ -10,7 +9,9 @@ import {
 import React from "react";
 import Colors from "../constants/colors";
 import Header from "../components/Header";
-import {Formik} from "formik";
+import {Formik} from 'formik';
+import DatePicker from 'react-native-datepicker';
+
 
 const NormalSearchScreen = () => {
     return (
@@ -34,6 +35,65 @@ const NormalSearchScreen = () => {
                                             onBlur={handleBlur('città')}
                                             //value={values.email}
                                             style={styles.inputText}
+                                        />
+                                        <DatePicker
+                                            style={styles.dataPicker}
+                                            //date={this.state.date}
+                                            mode="date"
+                                            placeholder="Data di partenza"
+                                            format="YYYY-MM-DD"
+                                            minDate="2016-05-01"
+                                            maxDate="2016-06-01"
+                                            confirmBtnText="Conferma"
+                                            cancelBtnText="Annulla"
+                                            customStyles={{
+                                                dateIcon: {
+                                                    position: 'absolute',
+                                                    left: 0,
+                                                    top: 4,
+                                                    marginLeft: 0,
+                                                },
+                                                dateInput: {
+                                                    height: 40,
+                                                    borderColor: 'orange',
+                                                    borderWidth: 1,
+                                                    marginVertical: 5,
+                                                    borderRadius: 10,
+                                                    textAlign: 'center'
+                                                }
+                                            }}
+                                            onDateChange={(date) => {
+                                                this.setState({date: date})
+                                            }}
+                                        />
+                                        <DatePicker
+                                            style={styles.dataPicker}
+                                            //date={this.state.date}
+                                            mode="date"
+                                            placeholder="Data di arrivo"
+                                            format="YYYY-MM-DD"
+                                            minDate="2016-05-01"
+                                            maxDate="2016-06-01"
+                                            confirmBtnText="Conferma"
+                                            cancelBtnText="Annulla"
+                                            customStyles={{
+                                                dateIcon: {
+                                                    position: 'absolute',
+                                                    left: 0,
+                                                    top: 4,
+                                                    marginLeft: 0
+                                                },
+                                                dateInput: {
+                                                    height: 40,
+                                                    borderColor: 'orange',
+                                                    borderWidth: 1,
+                                                    borderRadius: 10
+                                                }
+                                                // ... You can check the source to find the other keys.
+                                            }}
+                                            onDateChange={(date) => {
+                                                this.setState({date: date})
+                                            }}
                                         />
                                         <Button
                                             title="Ricerca"
@@ -81,6 +141,11 @@ const styles = StyleSheet.create({
         width: 225,
         borderRadius: 10,
         textAlign: 'center'
+    },
+    dataPicker: {
+        height: 40,
+        marginVertical: 5,
+        width: 225,
     },
     container: {
         flex: 1,
