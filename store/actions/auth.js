@@ -5,17 +5,34 @@ import { AsyncStorage } from 'react-native';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 
+let timer;
+
 export const authenticate = (userId, token) => {
     return { type: AUTHENTICATE, userId: userId, token: token };
 };
 
 export const logout = () => {
-    //clearLogoutTimer();
+    clearLogoutTimer();
     AsyncStorage.removeItem('userData');
     return { type: LOGOUT };
 };
 
+const clearLogoutTimer = () => {
+    if (timer) {
+        clearTimeout(timer);
+    }
+};
+
+const setLogoutTimer = expirationTime => {
+    return dispatch => {
+        timer = setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime);
+    };
+};
+
 export const submitLogin = (email, password) => {
+    //Nelle prossime chiamate (in cui serve il token di sessione), si dovrà passare come parametro anche getState
     return async dispatch => {
         // any async code you want!
         //const response = await fetch('https://secret-places-test.firebaseio.com/testlogin.json', {

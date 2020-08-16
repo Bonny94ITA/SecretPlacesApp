@@ -15,6 +15,8 @@ import BookingsScreen from '../screens/BookingsScreen';
 import RegistrationScreen from "../screens/RegistrationScreen";
 import {useDispatch} from "react-redux";
 
+//dsadsadadad
+
 const DrawerNavigator = createDrawerNavigator(
     {
         "Homepage": HomepageScreen,
