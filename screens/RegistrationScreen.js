@@ -1,3 +1,4 @@
+import { JSHash, CONSTANTS } from "react-native-hash";
 import React, {useState} from 'react';
 import {
     View,
@@ -27,8 +28,9 @@ const RegistrationScreen = props => {
         setIsLoading(true);
 
         try {
-            await dispatch(submitRegister(email, password, username));
-            await dispatch(submitLogin(email, password));
+            let hash = await JSHash(password, CONSTANTS.HashAlgorithms.sha256);
+            await dispatch(submitRegister(email, hash, username));
+            await dispatch(submitLogin(email, hash));
             props.navigation.navigate('Homepage');
         } catch (err) {
             setError(err.message);
@@ -72,7 +74,7 @@ const RegistrationScreen = props => {
                                             returnKeyType='next'
                                             onChangeText={handleChange('username')}
                                             onBlur={handleBlur('username')}
-                                            value={values.username}
+                                            //value={values.username}
                                             style={styles.inputText}
                                         />
                                         <TextInput
@@ -81,7 +83,7 @@ const RegistrationScreen = props => {
                                             returnKeyType='next'
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}
-                                            value={values.email}
+                                            //value={values.email}
                                             style={styles.inputText}
                                         />
                                         <TextInput
@@ -90,7 +92,7 @@ const RegistrationScreen = props => {
                                             secureTextEntry={true}
                                             onChangeText={handleChange('password')}
                                             onBlur={handleBlur('password')}
-                                            value={values.password}
+                                            //value={values.password}
                                             style={styles.inputText}
                                         />
                                         <TextInput
@@ -99,7 +101,7 @@ const RegistrationScreen = props => {
                                             secureTextEntry={true}
                                             onChangeText={handleChange('confirmpassword')}
                                             onBlur={handleBlur('confirmpassword')}
-                                            value={values.confirmpassword}
+                                            //value={values.confirmpassword}
                                             style={styles.inputText}
                                         />
                                         <Button

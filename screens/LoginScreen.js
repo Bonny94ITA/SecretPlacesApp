@@ -1,3 +1,4 @@
+import { JSHash, CONSTANTS } from "react-native-hash";
 import React, {useState} from 'react';
 import {
     View,
@@ -29,7 +30,8 @@ const LoginScreen = props => {
         setIsLoading(true);
 
         try {
-            await dispatch(submitLogin(email, password));
+            let hash = await JSHash(password, CONSTANTS.HashAlgorithms.sha256);
+            await dispatch(submitLogin(email, hash));
             props.navigation.navigate('Homepage');
         } catch (err) {
             setError(err.message);
@@ -62,8 +64,8 @@ const LoginScreen = props => {
                         <View style={styles.inputContainer}>
                             <Formik
                                 initialValues={{email: '', password: ''}}
-                                onSubmit={values => {
-                                    login(values.email, values.password)
+                                onSubmit={async values => {
+                                    await login(values.email, values.password)
                                 }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -74,7 +76,7 @@ const LoginScreen = props => {
                                             keyboardType='email-address'
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}
-                                            value={values.email}
+                                            //value={values.email}
                                             style={styles.inputText}
                                         />
                                         <TextInput
@@ -83,7 +85,7 @@ const LoginScreen = props => {
                                             secureTextEntry={true}
                                             onChangeText={handleChange('password')}
                                             onBlur={handleBlur('password')}
-                                            value={values.password}
+                                            //value={values.password}
                                             style={styles.inputText}
                                         />
                                         <Button
