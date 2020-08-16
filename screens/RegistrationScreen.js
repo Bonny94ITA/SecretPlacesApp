@@ -12,15 +12,13 @@ import {
 } from 'react-native';
 
 import Colors from '../constants/colors';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {submitLogin, submitRegister} from "../store/actions/auth";
 import {Formik} from 'formik';
 
 const RegistrationScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const loginState = useSelector(state => state.login);
-    console.log(loginState);
     const dispatch = useDispatch();
 
     const register = async (email, password, username) => {

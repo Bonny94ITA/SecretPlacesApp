@@ -13,16 +13,13 @@ import {
     Alert
 } from 'react-native';
 import Colors from '../constants/colors';
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {submitLogin} from "../store/actions/auth";
 import {Formik} from 'formik';
 
 const LoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const loginState = useSelector(state => state.auth);
-    console.log("1");
-    console.log(loginState);
     const dispatch = useDispatch();
 
     const login = async (email, password) => {
@@ -65,7 +62,6 @@ const LoginScreen = props => {
                             <Formik
                                 initialValues={{email: '', password: ''}}
                                 onSubmit={async values => {
-                                    console.log(values);
                                     await login(values.email, values.password)
                                 }}
                             >
