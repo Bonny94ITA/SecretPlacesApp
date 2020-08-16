@@ -14,6 +14,7 @@ import {
 import Colors from '../constants/colors';
 import {useSelector, useDispatch} from "react-redux";
 import {submitLogin} from "../store/actions/auth";
+import {Formik} from 'formik';
 
 const LoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -23,12 +24,12 @@ const LoginScreen = props => {
     console.log(loginState);
     const dispatch = useDispatch();
 
-    const login = async () => {
+    const login = async (email, password) => {
         setError(null);
         setIsLoading(true);
 
         try {
-            await dispatch(submitLogin("marcoloide@unito.it", "de239033eaac1ffb65f83ab6e4dd0981"));
+            await dispatch(submitLogin(email, password));
             props.navigation.navigate('Homepage');
         } catch (err) {
             setError(err.message);
@@ -37,7 +38,7 @@ const LoginScreen = props => {
     }
 
     if (error !== null) {
-        Alert.alert('An error occurred!', error, [{text: 'OK'}]);
+        Alert.alert('Errore!!', error, [{text: 'OK'}]);
         setIsLoading(false);
         setError(null);
     }
@@ -59,24 +60,46 @@ const LoginScreen = props => {
                     </View>
                     <View style={styles.screen}>
                         <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder={"Mail"}
-                                style={styles.inputText}
-                            />
-                            <TextInput
-                                placeholder={"Password"}
-                                secureTextEntry={true}
-                                style={styles.inputText}
-                            />
-                            <Button
-                                style={styles.login}
-                                title="Login"
-                                onPress={login}
-                                color={Colors.primary}
-                            />
+                            <Formik
+                                initialValues={{email: '', password: ''}}
+                                onSubmit={values => {
+                                    login(values.email, values.password)
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values}) => (
+                                    <View>
+                                        <TextInput
+                                            placeholder={"Mail"}
+                                            returnKeyType='next'
+                                            keyboardType='email-address'
+                                            onChangeText={handleChange('email')}
+                                            onBlur={handleBlur('email')}
+                                            value={values.email}
+                                            style={styles.inputText}
+                                        />
+                                        <TextInput
+                                            placeholder={"Password"}
+                                            returnKeyType='next'
+                                            secureTextEntry={true}
+                                            onChangeText={handleChange('password')}
+                                            onBlur={handleBlur('password')}
+                                            value={values.password}
+                                            style={styles.inputText}
+                                        />
+                                        <Button
+                                            title="Login"
+                                            onPress={handleSubmit}
+                                            color={Colors.primary}
+                                            style={styles.login}
+                                        />
+                                    </View>
+                                )}
+                            </Formik>
                             <Text
                                 style={styles.RegistrationStyle}
-                                onPress={() => {props.navigation.navigate('Registrazione')}}> {'Registrazione'} </Text>
+                                onPress={() => {
+                                    props.navigation.navigate('Registrazione')
+                                }}> {'Registrazione'} </Text>
                         </View>
                     </View>
                 </ImageBackground>

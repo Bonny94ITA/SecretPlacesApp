@@ -13,6 +13,7 @@ import {
 import Colors from '../constants/colors';
 import {useDispatch, useSelector} from "react-redux";
 import {submitLogin, submitRegister} from "../store/actions/auth";
+import {Formik} from "formik";
 
 const RegistrationScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +22,13 @@ const RegistrationScreen = props => {
     console.log(loginState);
     const dispatch = useDispatch();
 
-    const register = async () => {
+    const register = async (email, password, username) => {
         setError(null);
         setIsLoading(true);
 
         try {
-            await dispatch(submitRegister("abc@abc.com", "maicol", "Markov"));
-            await dispatch(submitLogin("abc@abc.com", "maicol"));
+            await dispatch(submitRegister(email, password, username));
+            await dispatch(submitLogin(email, password));
             props.navigation.navigate('Homepage');
         } catch (err) {
             setError(err.message);
@@ -36,7 +37,7 @@ const RegistrationScreen = props => {
     }
 
     if (error !== null) {
-        Alert.alert('An error occurred!', error, [{text: 'OK'}]);
+        Alert.alert('Errore!!', error, [{text: 'OK'}]);
         setIsLoading(false);
         setError(null);
     }
@@ -58,30 +59,58 @@ const RegistrationScreen = props => {
                     </View>
                     <View style={styles.screen}>
                         <View style={styles.inputContainer}>
-                            <TextInput
-                                placeholder={"Username"}
-                                style={styles.inputText}
-                            />
-                            <TextInput
-                                placeholder={"Mail"}
-                                style={styles.inputText}
-                            />
-                            <TextInput
-                                placeholder={"Password"}
-                                secureTextEntry={true}
-                                style={styles.inputText}
-                            />
-                            <TextInput
-                                placeholder={"Conferma Password"}
-                                secureTextEntry={true}
-                                style={styles.inputText}
-                            />
-                            <Button
-                                style={styles.login}
-                                title="Registrazione"
-                                color={Colors.primary}
-                                onPress={register}
-                            />
+                            <Formik
+                                initialValues={{username: '', email: '', password: '', confirmpassword: ''}}
+                                onSubmit={values => {
+                                    register(values.username, values.email, values.password)
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values}) => (
+                                    <View>
+                                        <TextInput
+                                            placeholder={"Username"}
+                                            returnKeyType='next'
+                                            onChangeText={handleChange('username')}
+                                            onBlur={handleBlur('username')}
+                                            value={values.username}
+                                            style={styles.inputText}
+                                        />
+                                        <TextInput
+                                            placeholder={"Mail"}
+                                            keyboardType='email-address'
+                                            returnKeyType='next'
+                                            onChangeText={handleChange('email')}
+                                            onBlur={handleBlur('email')}
+                                            value={values.email}
+                                            style={styles.inputText}
+                                        />
+                                        <TextInput
+                                            placeholder={"Password"}
+                                            returnKeyType='next'
+                                            secureTextEntry={true}
+                                            onChangeText={handleChange('password')}
+                                            onBlur={handleBlur('password')}
+                                            value={values.password}
+                                            style={styles.inputText}
+                                        />
+                                        <TextInput
+                                            placeholder={"Conferma Password"}
+                                            returnKeyType='next'
+                                            secureTextEntry={true}
+                                            onChangeText={handleChange('confirmpassword')}
+                                            onBlur={handleBlur('confirmpassword')}
+                                            value={values.confirmpassword}
+                                            style={styles.inputText}
+                                        />
+                                        <Button
+                                            title="Registrazione"
+                                            color={Colors.primary}
+                                            onPress={handleSubmit}
+                                            style={styles.login}
+                                        />
+                                    </View>
+                                )}
+                            </Formik>
                         </View>
                     </View>
                 </ImageBackground>
