@@ -63,8 +63,8 @@ const RegistrationScreen = props => {
                         <View style={styles.inputContainer}>
                             <Formik
                                 initialValues={{username: '', email: '', password: '', confirmpassword: ''}}
-                                onSubmit={values => {
-                                    register(values.username, values.email, values.password)
+                                onSubmit={async values => {
+                                    await register(values.email, values.password, values.username);
                                 }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
