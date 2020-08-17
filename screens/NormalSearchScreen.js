@@ -70,10 +70,7 @@ const NormalSearchScreen = () => {
                                             style={styles.inputText}
                                         />
                                         <View>
-                                            <Button onPress={showHidePickerArrival} title="Show date-arrival picker!"/>
-                                        </View>
-                                        <View>
-                                            <Button onPress={showHidePickerDeparture} title="Show date-departure picker!"/>
+                                            <Button onPress={showHidePickerArrival} title="Data di partenza"/>
                                         </View>
                                         {showArrival && (
                                             <DateTimePicker
@@ -85,6 +82,9 @@ const NormalSearchScreen = () => {
                                                 onChange={onChangeArrival}
                                             />
                                         )}
+                                        <View>
+                                            <Button onPress={showHidePickerDeparture} title="Data di arrivo"/>
+                                        </View>
                                         {showDeparture && (
                                             <DateTimePicker
                                                 testID="dateTimePicker"
