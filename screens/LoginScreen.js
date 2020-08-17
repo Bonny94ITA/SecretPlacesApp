@@ -39,7 +39,7 @@ const LoginScreen = props => {
     }
 
     if (error !== null) {
-        Alert.alert('Errore!!', error, [{text: 'OK'}]);
+        Alert.alert('Error', "Login Failed.", [{text: 'OK'}]);
         setIsLoading(false);
         setError(null);
     }

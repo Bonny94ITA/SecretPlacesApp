@@ -12,6 +12,15 @@ export const authenticate = (userId, token, expiryTime) => {
     };
 };
 
+function timeout(milliseconds, promise) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject(new Error("Timeout exceeded."))
+        }, milliseconds);
+        promise.then(resolve, reject);
+    });
+}
+
 export const submitLogout = () => {
     clearLogoutTimer();
     AsyncStorage.removeItem('userData');
@@ -35,9 +44,7 @@ const setLogoutTimer = expirationTime => {
 export const submitLogin = (email, password) => {
     //Nelle prossime chiamate (in cui serve il token di sessione), si dovrà passare come parametro anche getState
     return async dispatch => {
-        // any async code you want!
-        //const response = await fetch('https://secret-places-test.firebaseio.com/testlogin.json', {
-        const response = await fetch('http://82.55.6.38:8080/guests/login', {
+        await timeout(5000, fetch('http://82.55.6.38:8080/guests/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,28 +53,29 @@ export const submitLogin = (email, password) => {
                 email: email,
                 pwd: password
             })
+        })).then(async function(response) {
+            const resData = await response.json();
+
+            dispatch(
+                authenticate(
+                    resData.guest.id,
+                    resData.token.idToken,
+                    parseInt(resData.token.ttl)));
+
+            const expirationDate = new Date(
+                new Date().getTime() + parseInt(resData.token.ttl)
+            );
+
+            saveDataToStorage(resData.token.idToken, resData.guest.id, expirationDate);
+        }).catch(function(error) {
+            throw new Error(error);
         });
-
-        const resData = await response.json();
-
-        dispatch(
-            authenticate(
-                resData.guest.id,
-                resData.token.idToken,
-                parseInt(resData.token.ttl)));
-
-        const expirationDate = new Date(
-            new Date().getTime() + parseInt(resData.token.ttl)
-        );
-
-        saveDataToStorage(resData.token.idToken, resData.guest.id, expirationDate);
     };
 };
 
 export const submitRegister = (email, password, username) => {
     return async dispatch => {
-        // any async code you want!
-        await fetch('http://82.55.6.38:8080/guests/register', {
+        await timeout(5000, fetch('http://82.55.6.38:8080/guests/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -77,7 +85,9 @@ export const submitRegister = (email, password, username) => {
                 pwd: password,
                 name: username
             })
-        });
+        })).catch(function(error) {
+            throw new Error(error);
+        })
     };
 };
 

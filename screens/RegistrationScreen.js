@@ -39,7 +39,7 @@ const RegistrationScreen = props => {
     }
 
     if (error !== null) {
-        Alert.alert('Errore!!', error, [{text: 'OK'}]);
+        Alert.alert('Error', "Registration failed.", [{text: 'OK'}]);
         setIsLoading(false);
         setError(null);
     }
