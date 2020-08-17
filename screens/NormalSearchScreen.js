@@ -28,14 +28,11 @@ async function getCities() {
 
     await timeout(5000, fetch('http://79.21.225.39:8080/hotels/cities'))
         .then(async function(response) {
-            console.log("1");
             cities = await response.json();
             //console.log(cities);
         },function(error) {
-            console.log("2");
             console.log(error);
         }).catch(function(error) {
-            console.log("3");
             console.log(error);
             Alert.alert('Error', "An error occurred.", [{text: 'OK'}]);
         });
@@ -57,13 +54,10 @@ async function normalSearch(city, arrival, departure) {
             departure: departure
         })
     })).then(async function(response) {
-        console.log("1");
         freeRooms = await response.json();
     },function(error) {
-        console.log("2");
         console.log(error);
     }).catch(function(error) {
-        console.log("3");
         console.log(error);
         Alert.alert('Error', "An error occurred.", [{text: 'OK'}]);
     });
@@ -82,10 +76,14 @@ const NormalSearchScreen = () => {
     useEffect(() => {
         async function fetchCities() {
             const cities = await getCities();
-            const items = cities.map( (s, i) => {
-                return <Picker.Item key={i} value={s.name} label={s.name} />
-            });
-            setPickerItems(items);
+            console.log(cities);
+
+            if (cities !== undefined) {
+                const items = cities.map((s, i) => {
+                    return <Picker.Item key={i} value={s.name} label={s.name}/>
+                });
+                setPickerItems(items);
+            }
         }
         fetchCities();
     }, []);
