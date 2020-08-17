@@ -15,26 +15,16 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const NormalSearchScreen = () => {
     const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
+        setShow(Platform.OS === 'ios')
         setDate(currentDate);
     };
 
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    };
-
-    const showDatepicker = () => {
-        showMode('date');
-    };
-
-    const showTimepicker = () => {
-        showMode('time');
+    const showHidePicker = () => {
+        setShow(!show);
     };
 
     return (
@@ -47,7 +37,12 @@ const NormalSearchScreen = () => {
                     <View style={styles.screen}>
                         <View style={styles.inputContainer}>
                             <Formik
-                                initialValues={{email: ''}}
+                                initialValues={{city: '', arrival: '', departure: ''}}
+                                onSubmit={() => {
+                                    console.log(date.getDate());
+                                    console.log(date.getUTCMonth() + 1);
+                                    console.log(date.getUTCFullYear());
+                                }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
                                     <View>
@@ -60,16 +55,13 @@ const NormalSearchScreen = () => {
                                             style={styles.inputText}
                                         />
                                         <View>
-                                            <Button onPress={showDatepicker} title="Show date picker!"/>
-                                        </View>
-                                        <View>
-                                            <Button onPress={showTimepicker} title="Show time picker!"/>
+                                            <Button onPress={showHidePicker} title="Show date picker!"/>
                                         </View>
                                         {show && (
                                             <DateTimePicker
                                                 testID="dateTimePicker"
                                                 value={date}
-                                                mode={mode}
+                                                mode={'date'}
                                                 is24Hour={true}
                                                 display="default"
                                                 onChange={onChange}
