@@ -14,17 +14,29 @@ import {Formik} from 'formik';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const NormalSearchScreen = () => {
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [show, setShow] = useState(false);
+    const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
+    const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
+    const [showArrival, setShowArrival] = useState(false);
+    const [showDeparture, setShowDeparture] = useState(false);
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios')
-        setDate(currentDate);
+    const onChangeArrival = (event, selectedDate) => {
+        const currentDate = selectedDate || dateArrival;
+        setShowArrival(Platform.OS === 'ios')
+        setDateArrival(currentDate);
     };
 
-    const showHidePicker = () => {
-        setShow(!show);
+    const onChangeDeparture = (event, selectedDate) => {
+        const currentDate = selectedDate || dateDeparture;
+        setShowDeparture(Platform.OS === 'ios')
+        setDateDeparture(currentDate);
+    };
+
+    const showHidePickerArrival = () => {
+        setShowArrival(!showArrival);
+    };
+
+    const showHidePickerDeparture = () => {
+        setShowDeparture(!showDeparture);
     };
 
     return (
@@ -39,9 +51,12 @@ const NormalSearchScreen = () => {
                             <Formik
                                 initialValues={{city: '', arrival: '', departure: ''}}
                                 onSubmit={() => {
-                                    console.log(date.getDate());
-                                    console.log(date.getUTCMonth() + 1);
-                                    console.log(date.getUTCFullYear());
+                                    console.log(dateArrival.getDate());
+                                    console.log(dateArrival.getUTCMonth() + 1);
+                                    console.log(dateArrival.getUTCFullYear());
+                                    console.log(dateDeparture.getDate());
+                                    console.log(dateDeparture.getUTCMonth() + 1);
+                                    console.log(dateDeparture.getUTCFullYear());
                                 }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -55,16 +70,29 @@ const NormalSearchScreen = () => {
                                             style={styles.inputText}
                                         />
                                         <View>
-                                            <Button onPress={showHidePicker} title="Show date picker!"/>
+                                            <Button onPress={showHidePickerArrival} title="Show date-arrival picker!"/>
                                         </View>
-                                        {show && (
+                                        <View>
+                                            <Button onPress={showHidePickerDeparture} title="Show date-departure picker!"/>
+                                        </View>
+                                        {showArrival && (
                                             <DateTimePicker
                                                 testID="dateTimePicker"
-                                                value={date}
+                                                value={dateArrival}
                                                 mode={'date'}
                                                 is24Hour={true}
                                                 display="default"
-                                                onChange={onChange}
+                                                onChange={onChangeArrival}
+                                            />
+                                        )}
+                                        {showDeparture && (
+                                            <DateTimePicker
+                                                testID="dateTimePicker"
+                                                value={dateDeparture}
+                                                mode={'date'}
+                                                is24Hour={true}
+                                                display="default"
+                                                onChange={onChangeDeparture}
                                             />
                                         )}
                                         <Button
