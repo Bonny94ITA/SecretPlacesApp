@@ -64,7 +64,7 @@ const LoginScreen = props => {
                             <Formik
                                 initialValues={{email: '', password: ''}}
                                 onSubmit={async values => {
-                                    await login(values.email, values.password)
+                                    await login(values.email, values.password);
                                 }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
