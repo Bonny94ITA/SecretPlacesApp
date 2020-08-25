@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-    Alert,
     Button,
     Keyboard,
     StyleSheet,
@@ -14,7 +13,6 @@ import Header from "../components/Header";
 import {Formik} from 'formik';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import serverURL from '../components/ServerInfo';
-import submitLogout from '../store/actions/auth';
 import {useDispatch} from "react-redux";
 import * as authActions from "../store/actions/auth";
 
@@ -71,7 +69,7 @@ async function normalSearch(city, arrival, departure, dispatch) {
     return freeRooms;
 }
 
-const NormalSearchScreen = () => {
+const NormalSearchScreen = props => {
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
     const [showArrival, setShowArrival] = useState(false);
@@ -129,7 +127,7 @@ const NormalSearchScreen = () => {
                                 onSubmit={async values => {
                                     const freeRooms = await normalSearch("Cagliari",
                                         "12/07/2020", "24/08/2020", dispatch);
-                                    console.log(freeRooms);
+                                    props.navigation.navigate('resultsSearch');
                                 }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (

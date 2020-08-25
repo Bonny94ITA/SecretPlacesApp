@@ -1,8 +1,8 @@
 import React from 'react';
-import {createAppContainer, createSwitchNavigator } from 'react-navigation';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createDrawerNavigator, DrawerItems} from 'react-navigation-drawer';
-import { View, Button, SafeAreaView } from 'react-native';
+import {View, Button, SafeAreaView} from 'react-native';
 import Colors from '../constants/colors';
 import * as authActions from '../store/actions/auth';
 
@@ -14,21 +14,43 @@ import SecretSearchScreen from '../screens/SecretSearchScreen';
 import BookingsScreen from '../screens/BookingsScreen';
 import RegistrationScreen from "../screens/RegistrationScreen";
 import {useDispatch} from "react-redux";
+import ResultsScreen from "../screens/ResultsScreen";
+
+const NormalSearchStackNavigator = createStackNavigator({
+        normalSearch: NormalSearchScreen,
+        resultsSearch: ResultsScreen,
+    },
+    {
+        headerMode: 'none',
+        navigationOptions: {
+            headerVisible: false,
+        }
+    });
+
+const SecretSearchStackNavigator = createStackNavigator({
+        secretSearch: SecretSearchScreen,
+        resultsSearch: ResultsScreen,
+    },
+    {
+        headerMode: 'none',
+        navigationOptions: {
+            headerVisible: false,
+        }
+    });
 
 const DrawerNavigator = createDrawerNavigator(
     {
         "Homepage": HomepageScreen,
-        "Ricerca Normale": NormalSearchScreen,
-        "Ricerca Segreta": SecretSearchScreen,
+        "Ricerca Normale": NormalSearchStackNavigator,
+        "Ricerca Segreta": SecretSearchStackNavigator,
         "Prenotazioni": BookingsScreen
     },
     {
-        resetOnBlur: true,
         contentComponent: props => {
             const dispatch = useDispatch();
             return (
-                <View style={{ flex: 1, paddingTop: 20 }}>
-                    <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                <View style={{flex: 1, paddingTop: 20}}>
+                    <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
                         <DrawerItems {...props} />
                         <Button
                             title="Logout"
