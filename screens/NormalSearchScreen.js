@@ -15,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import serverURL from '../components/ServerInfo';
 import {useDispatch} from "react-redux";
 import * as authActions from "../store/actions/auth";
+import {setFreeRooms} from "../store/actions/ns";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -125,8 +126,20 @@ const NormalSearchScreen = props => {
                             <Formik
                                 initialValues={{city: '', arrival: '', departure: ''}}
                                 onSubmit={async values => {
+                                    const formattedFreeRooms = [];
                                     const freeRooms = await normalSearch("Cagliari",
                                         "12/07/2020", "24/08/2020", dispatch);
+                                    freeRooms.forEach(element => {
+                                        formattedFreeRooms.push({
+                                            hotelName: element.hotel.name,
+                                            hotelStars: element.hotel.stars,
+                                            hotelAddress: element.hotel.address,
+                                            idRoom: element.id,
+                                            numPlaces: element.numPlaces,
+                                            ppn: element.pricePerNight
+                                        });
+                                    });
+                                    dispatch(setFreeRooms(formattedFreeRooms));
                                     props.navigation.navigate('resultsSearch');
                                 }}
                             >
