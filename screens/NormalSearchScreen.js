@@ -78,7 +78,7 @@ const NormalSearchScreen = () => {
             const cities = await getCities();
             console.log(cities);
 
-            if (cities !== undefined) {
+            if (cities !== null) {
                 const items = cities.map((s, i) => {
                     return <Picker.Item key={i} value={s.name} label={s.name}/>
                 });
