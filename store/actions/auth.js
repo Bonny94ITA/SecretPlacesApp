@@ -1,4 +1,5 @@
 import {AsyncStorage} from 'react-native';
+import serverURL from '../../components/ServerInfo';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
@@ -44,7 +45,7 @@ const setLogoutTimer = expirationTime => {
 export const submitLogin = (email, password) => {
     //Nelle prossime chiamate (in cui serve il token di sessione), si dovrà passare come parametro anche getState
     return async dispatch => {
-        await timeout(5000, fetch('http://79.26.208.151:8080/guests/login', {
+        await timeout(5000, fetch(serverURL + '/guests/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +76,7 @@ export const submitLogin = (email, password) => {
 
 export const submitRegister = (email, password, username) => {
     return async dispatch => {
-        await timeout(5000, fetch('http://79.26.208.151:8080/guests/register', {
+        await timeout(5000, fetch(serverURL + '/guests/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -13,6 +13,10 @@ import Colors from "../constants/colors";
 import Header from "../components/Header";
 import {Formik} from 'formik';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import serverURL from '../components/ServerInfo';
+import submitLogout from '../store/actions/auth';
+import {useDispatch} from "react-redux";
+import * as authActions from "../store/actions/auth";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -23,27 +27,28 @@ function timeout(milliseconds, promise) {
     });
 }
 
-async function getCities() {
+async function getCities(dispatch) {
     let cities = null;
 
-    await timeout(5000, fetch('http://79.26.208.151:8080/hotels/cities'))
+    await timeout(5000, fetch(serverURL + '/hotels/cities'))
         .then(async function(response) {
             cities = await response.json();
             //console.log(cities);
         },function(error) {
+            dispatch(authActions.submitLogout());
             console.log(error);
         }).catch(function(error) {
+            dispatch(authActions.submitLogout());
             console.log(error);
-            Alert.alert('Error', "An error occurred.", [{text: 'OK'}]);
         });
 
     return cities;
 }
 
-async function normalSearch(city, arrival, departure) {
+async function normalSearch(city, arrival, departure, dispatch) {
     let freeRooms = null;
 
-    await timeout(5000, fetch('http://79.26.208.151:8080/hotels/freeRooms', {
+    await timeout(5000, fetch(serverURL + '/hotels/freeRooms', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -56,10 +61,11 @@ async function normalSearch(city, arrival, departure) {
     })).then(async function(response) {
         freeRooms = await response.json();
     },function(error) {
+        dispatch(authActions.submitLogout());
         console.log(error);
     }).catch(function(error) {
+        dispatch(authActions.submitLogout());
         console.log(error);
-        Alert.alert('Error', "An error occurred.", [{text: 'OK'}]);
     });
 
     return freeRooms;
@@ -72,10 +78,11 @@ const NormalSearchScreen = () => {
     const [showDeparture, setShowDeparture] = useState(false);
     const [selectedValue, setSelectedValue] = useState("Cagliari");
     const [pickerItems, setPickerItems] = useState(null);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        async function fetchCities() {
-            const cities = await getCities();
+        async function fetchCities(dispatch) {
+            const cities = await getCities(dispatch);
             console.log(cities);
 
             if (cities !== null) {
@@ -85,7 +92,7 @@ const NormalSearchScreen = () => {
                 setPickerItems(items);
             }
         }
-        fetchCities();
+        fetchCities(dispatch);
     }, []);
 
     const onChangeArrival = (event, selectedDate) => {
@@ -120,7 +127,8 @@ const NormalSearchScreen = () => {
                             <Formik
                                 initialValues={{city: '', arrival: '', departure: ''}}
                                 onSubmit={async values => {
-                                    const freeRooms = await normalSearch("Cagliari", "12/07/2020", "24/08/2020");
+                                    const freeRooms = await normalSearch("Cagliari",
+                                        "12/07/2020", "24/08/2020", dispatch);
                                     console.log(freeRooms);
                                 }}
                             >
