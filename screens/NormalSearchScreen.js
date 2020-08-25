@@ -26,7 +26,7 @@ function timeout(milliseconds, promise) {
 async function getCities() {
     let cities = null;
 
-    await timeout(5000, fetch('http://79.21.225.39:8080/hotels/cities'))
+    await timeout(5000, fetch('http://79.26.208.151:8080/hotels/cities'))
         .then(async function(response) {
             cities = await response.json();
             //console.log(cities);
@@ -43,7 +43,7 @@ async function getCities() {
 async function normalSearch(city, arrival, departure) {
     let freeRooms = null;
 
-    await timeout(5000, fetch('http://79.21.225.39:8080/hotels/freeRooms', {
+    await timeout(5000, fetch('http://79.26.208.151:8080/hotels/freeRooms', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
