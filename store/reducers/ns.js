@@ -5,7 +5,7 @@ const initialState = {
 }
 
 const ns = (state = initialState, action) => {
-    console.log(action);
+    //console.log(action);
     switch (action.type) {
         case SET_FREE_ROOMS:
             return {freeRooms: action.fr};

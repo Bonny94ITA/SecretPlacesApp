@@ -82,7 +82,6 @@ const NormalSearchScreen = props => {
     useEffect(() => {
         async function fetchCities(dispatch) {
             const cities = await getCities(dispatch);
-            console.log(cities);
 
             if (cities !== null) {
                 const items = cities.map((s, i) => {
