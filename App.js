@@ -8,9 +8,11 @@ import {createStore, combineReducers, applyMiddleware} from 'redux';
 import authReducer from './store/reducers/auth';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
+import normalSearchReducer from "./store/reducers/ns";
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    normalSearch: normalSearchReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-    Alert,
     Button,
     Keyboard,
     StyleSheet,
@@ -14,6 +13,10 @@ import {Ionicons} from '@expo/vector-icons';
 import Header from "../components/Header";
 import {Formik} from 'formik';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import serverURL from '../components/ServerInfo';
+import {useDispatch} from "react-redux";
+import * as authActions from "../store/actions/auth";
+import {setFreeRooms} from "../store/actions/ns";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -24,27 +27,28 @@ function timeout(milliseconds, promise) {
     });
 }
 
-async function getCities() {
+async function getCities(dispatch) {
     let cities = null;
 
-    await timeout(5000, fetch('http://79.21.225.39:8080/hotels/cities'))
+    await timeout(5000, fetch(serverURL + '/hotels/cities'))
         .then(async function(response) {
             cities = await response.json();
             //console.log(cities);
         },function(error) {
+            dispatch(authActions.submitLogout());
             console.log(error);
         }).catch(function(error) {
+            dispatch(authActions.submitLogout());
             console.log(error);
-            Alert.alert('Error', "An error occurred.", [{text: 'OK'}]);
         });
 
     return cities;
 }
 
-async function normalSearch(city, arrival, departure) {
+async function normalSearch(city, arrival, departure, dispatch) {
     let freeRooms = null;
 
-    await timeout(5000, fetch('http://79.21.225.39:8080/hotels/freeRooms', {
+    await timeout(5000, fetch(serverURL + '/hotels/freeRooms', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -57,36 +61,37 @@ async function normalSearch(city, arrival, departure) {
     })).then(async function(response) {
         freeRooms = await response.json();
     },function(error) {
+        dispatch(authActions.submitLogout());
         console.log(error);
     }).catch(function(error) {
+        dispatch(authActions.submitLogout());
         console.log(error);
-        Alert.alert('Error', "An error occurred.", [{text: 'OK'}]);
     });
 
     return freeRooms;
 }
 
-const NormalSearchScreen = () => {
+const NormalSearchScreen = props => {
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
     const [showArrival, setShowArrival] = useState(false);
     const [showDeparture, setShowDeparture] = useState(false);
     const [selectedValue, setSelectedValue] = useState("Cagliari");
     const [pickerItems, setPickerItems] = useState(null);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        async function fetchCities() {
-            const cities = await getCities();
-            console.log(cities);
+        async function fetchCities(dispatch) {
+            const cities = await getCities(dispatch);
 
-            if (cities !== undefined) {
+            if (cities !== null) {
                 const items = cities.map((s, i) => {
                     return <Picker.Item key={i} value={s.name} label={s.name}/>
                 });
                 setPickerItems(items);
             }
         }
-        fetchCities();
+        fetchCities(dispatch);
     }, []);
 
     const onChangeArrival = (event, selectedDate) => {
@@ -121,8 +126,21 @@ const NormalSearchScreen = () => {
                             <Formik
                                 initialValues={{city: '', arrival: '', departure: ''}}
                                 onSubmit={async values => {
-                                    const freeRooms = await normalSearch("Cagliari", "12/07/2020", "24/08/2020");
-                                    console.log(freeRooms);
+                                    const formattedFreeRooms = [];
+                                    const freeRooms = await normalSearch("Cagliari",
+                                        "12/07/2020", "24/08/2020", dispatch);
+                                    freeRooms.forEach(element => {
+                                        formattedFreeRooms.push({
+                                            hotelName: element.hotel.name,
+                                            hotelStars: element.hotel.stars,
+                                            hotelAddress: element.hotel.address,
+                                            idRoom: element.id,
+                                            numPlaces: element.numPlaces,
+                                            ppn: element.pricePerNight
+                                        });
+                                    });
+                                    dispatch(setFreeRooms(formattedFreeRooms));
+                                    props.navigation.navigate('resultsSearch');
                                 }}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
