@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import Colors from "../constants/colors";
+import {Ionicons} from '@expo/vector-icons';
 import Header from "../components/Header";
 import {Formik} from 'formik';
 import DateTimePicker from '@react-native-community/datetimepicker';
