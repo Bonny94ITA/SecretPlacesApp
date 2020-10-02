@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
     View,
+    TextInput,
     Picker
 } from "react-native";
 
@@ -12,106 +13,106 @@ import Colors from "../constants/colors";
 import {Ionicons} from '@expo/vector-icons';
 import Header from "../components/Header";
 import {Formik} from 'formik';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import serverURL from '../components/ServerInfo';
 import {useDispatch} from "react-redux";
 import * as authActions from "../store/actions/auth";
 import {setFreeRooms} from "../store/actions/ns";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-function timeout(milliseconds, promise) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            reject(new Error("Timeout exceeded."))
-        }, milliseconds);
-        promise.then(resolve, reject);
-    });
-}
+// function timeout(milliseconds, promise) {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             reject(new Error("Timeout exceeded."))
+//         }, milliseconds);
+//         promise.then(resolve, reject);
+//     });
+// }
 
-async function getCities(dispatch) {
-    let cities = null;
+// async function getCities(dispatch) {
+//     let cities = null;
+//
+//     await timeout(5000, fetch(serverURL + '/hotels/cities'))
+//         .then(async function(response) {
+//             cities = await response.json();
+//             //console.log(cities);
+//         },function(error) {
+//             dispatch(authActions.submitLogout());
+//             console.log(error);
+//         }).catch(function(error) {
+//             dispatch(authActions.submitLogout());
+//             console.log(error);
+//         });
+//
+//     return cities;
+// }
 
-    await timeout(5000, fetch(serverURL + '/hotels/cities'))
-        .then(async function(response) {
-            cities = await response.json();
-            //console.log(cities);
-        },function(error) {
-            dispatch(authActions.submitLogout());
-            console.log(error);
-        }).catch(function(error) {
-            dispatch(authActions.submitLogout());
-            console.log(error);
-        });
-
-    return cities;
-}
-
-async function normalSearch(city, arrival, departure, dispatch) {
-    let freeRooms = null;
-
-    await timeout(5000, fetch(serverURL + '/hotels/freeRooms', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            city: city,
-            arrival: arrival,
-            departure: departure
-        })
-    })).then(async function(response) {
-        freeRooms = await response.json();
-    },function(error) {
-        dispatch(authActions.submitLogout());
-        console.log(error);
-    }).catch(function(error) {
-        dispatch(authActions.submitLogout());
-        console.log(error);
-    });
-
-    return freeRooms;
-}
+// async function normalSearch(city, arrival, departure, dispatch) {
+//     let freeRooms = null;
+//
+//     await timeout(5000, fetch(serverURL + '/hotels/freeRooms', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             city: city,
+//             arrival: arrival,
+//             departure: departure
+//         })
+//     })).then(async function(response) {
+//         freeRooms = await response.json();
+//     },function(error) {
+//         dispatch(authActions.submitLogout());
+//         console.log(error);
+//     }).catch(function(error) {
+//         dispatch(authActions.submitLogout());
+//         console.log(error);
+//     });
+//
+//     return freeRooms;
+// }
 
 const NormalSearchScreen = props => {
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
-    const [showArrival, setShowArrival] = useState(false);
-    const [showDeparture, setShowDeparture] = useState(false);
-    const [selectedValue, setSelectedValue] = useState("Cagliari");
-    const [pickerItems, setPickerItems] = useState(null);
-    const dispatch = useDispatch();
 
-    useEffect(() => {
-        async function fetchCities(dispatch) {
-            const cities = await getCities(dispatch);
+    // const [selectedValue, setSelectedValue] = useState("Cagliari");
+    // const [pickerItems, setPickerItems] = useState(null);
+    // const dispatch = useDispatch();
 
-            if (cities !== null) {
-                const items = cities.map((s, i) => {
-                    return <Picker.Item key={i} value={s.name} label={s.name}/>
-                });
-                setPickerItems(items);
-            }
-        }
-        fetchCities(dispatch);
-    }, []);
+    // useEffect(() => {
+    //     async function fetchCities(dispatch) {
+    //         const cities = await getCities(dispatch);
+    //
+    //         if (cities !== null) {
+    //             const items = cities.map((s, i) => {
+    //                 //return <Picker.Item key={i} value={s.name} label={s.name}/>
+    //             });
+    //             setPickerItems(items);
+    //         }
+    //     }
+    //     fetchCities(dispatch);
+    // }, []);
 
-    const onChangeArrival = (event, selectedDate) => {
-        const currentDate = selectedDate || dateArrival;
-        setShowArrival(Platform.OS === 'ios')
-        setDateArrival(currentDate);
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
     };
 
-    const onChangeDeparture = (event, selectedDate) => {
-        const currentDate = selectedDate || dateDeparture;
-        setShowDeparture(Platform.OS === 'ios')
-        setDateDeparture(currentDate);
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
     };
 
-    const showHidePickerArrival = () => {
-        setShowArrival(!showArrival);
+    const handleConfirmArrival = (date) => {
+        console.warn("A date has been picked: ", date);
+        setDateArrival(date);
+        hideDatePicker();
     };
 
-    const showHidePickerDeparture = () => {
-        setShowDeparture(!showDeparture);
+    const handleConfirmDeparture = (date) => {
+        console.warn("A date has been picked: ", date);
+        setDateDeparture(date);
+        hideDatePicker();
     };
 
     return (
@@ -125,58 +126,53 @@ const NormalSearchScreen = props => {
                         <View style={styles.inputContainer}>
                             <Formik
                                 initialValues={{city: '', arrival: '', departure: ''}}
-                                onSubmit={async values => {
-                                    const formattedFreeRooms = [];
-                                    const freeRooms = await normalSearch("Cagliari",
-                                        "12/07/2020", "24/08/2020", dispatch);
-                                    freeRooms.forEach(element => {
-                                        formattedFreeRooms.push({
-                                            hotelName: element.hotel.name,
-                                            hotelStars: element.hotel.stars,
-                                            hotelAddress: element.hotel.address,
-                                            idRoom: element.id,
-                                            numPlaces: element.numPlaces,
-                                            ppn: element.pricePerNight
-                                        });
-                                    });
-                                    dispatch(setFreeRooms(formattedFreeRooms));
-                                    props.navigation.navigate('resultsSearch');
-                                }}
+                                //onSubmit={async values => {
+                                // const formattedFreeRooms = [];
+                                // const freeRooms = await normalSearch("Cagliari",
+                                //     "12/07/2020", "24/08/2020", dispatch);
+                                // freeRooms.forEach(element => {
+                                //     formattedFreeRooms.push({
+                                //         hotelName: element.hotel.name,
+                                //         hotelStars: element.hotel.stars,
+                                //         hotelAddress: element.hotel.address,
+                                //         idRoom: element.id,
+                                //         numPlaces: element.numPlaces,
+                                //         ppn: element.pricePerNight
+                                //     });
+                                // });
+                                // dispatch(setFreeRooms(formattedFreeRooms));
+                                // props.navigation.navigate('resultsSearch');
+                                //}}
                             >
                                 {({handleChange, handleBlur, handleSubmit, values}) => (
                                     <View>
-                                        <Picker
-                                            selectedValue={selectedValue}
-                                            style={{ height: 50, width: 150 }}
-                                            onValueChange={(itemValue) => setSelectedValue(itemValue)}>
-                                            {pickerItems}
-                                        </Picker>
-                                        <View>
-                                            <Button onPress={showHidePickerArrival} title="Data di partenza"/>
-                                        </View>
-                                        {showArrival && (
-                                            <DateTimePicker
-                                                testID="dateTimePicker"
-                                                value={dateArrival}
-                                                mode={'date'}
-                                                is24Hour={true}
-                                                display="default"
-                                                onChange={onChangeArrival}
-                                            />
-                                        )}
-                                        <View>
-                                            <Button onPress={showHidePickerDeparture} title="Data di arrivo"/>
-                                        </View>
-                                        {showDeparture && (
-                                            <DateTimePicker
-                                                testID="dateTimePicker"
-                                                value={dateDeparture}
-                                                mode={'date'}
-                                                is24Hour={true}
-                                                display="default"
-                                                onChange={onChangeDeparture}
-                                            />
-                                        )}
+                                        <Button title="Data di Partenza" onPress={showDatePicker}/>
+                                        <DateTimePickerModal
+                                            isVisible={isDatePickerVisible}
+                                            mode="date"
+                                            onConfirm={handleConfirmArrival}
+                                            onCancel={hideDatePicker}
+                                        />
+                                        <Button title="Data di Arrivo" onPress={showDatePicker}/>
+                                        <DateTimePickerModal
+                                            isVisible={isDatePickerVisible}
+                                            mode="date"
+                                            onConfirm={handleConfirmDeparture}
+                                            onCancel={hideDatePicker}
+                                        />
+                                        {/*<Picker*/}
+                                        {/*    selectedValue={selectedValue}*/}
+                                        {/*    style={{ height: 50, width: 150 }}*/}
+                                        {/*    onValueChange={(itemValue) => setSelectedValue(itemValue)}>*/}
+                                        {/*    {pickerItems}*/}
+                                        {/*</Picker>*/}
+                                        <TextInput
+                                            placeholder={"Città"}
+                                            returnKeyType='next'
+                                            onChangeText={handleChange('city')}
+                                            onBlur={handleBlur('city')}
+                                            style={styles.inputText}
+                                        />
                                         <Button
                                             title="Ricerca"
                                             onPress={handleSubmit}

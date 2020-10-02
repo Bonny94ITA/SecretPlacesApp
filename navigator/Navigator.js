@@ -16,8 +16,6 @@ import RegistrationScreen from "../screens/RegistrationScreen";
 import {useDispatch} from "react-redux";
 import ResultsScreen from "../screens/ResultsScreen";
 
-//dsada
-
 const NormalSearchStackNavigator = createStackNavigator({
         normalSearch: NormalSearchScreen,
         resultsSearch: ResultsScreen,
