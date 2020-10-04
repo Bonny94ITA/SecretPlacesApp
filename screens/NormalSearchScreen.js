@@ -18,6 +18,7 @@ import {useDispatch} from "react-redux";
 import * as authActions from "../store/actions/auth";
 import {setFreeRooms} from "../store/actions/ns";
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import RNPickerSelect from 'react-native-picker-select';
 
 // function timeout(milliseconds, promise) {
 //     return new Promise((resolve, reject) => {
@@ -166,6 +167,14 @@ const NormalSearchScreen = props => {
                                         {/*    onValueChange={(itemValue) => setSelectedValue(itemValue)}>*/}
                                         {/*    {pickerItems}*/}
                                         {/*</Picker>*/}
+                                        <RNPickerSelect
+                                            onValueChange={(value) => console.log(value)}
+                                            items={[
+                                                { label: 'Football', value: 'football' },
+                                                { label: 'Baseball', value: 'baseball' },
+                                                { label: 'Hockey', value: 'hockey' },
+                                            ]}
+                                        />
                                         <TextInput
                                             placeholder={"Città"}
                                             returnKeyType='next'
