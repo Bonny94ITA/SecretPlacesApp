@@ -1,4 +1,3 @@
-import {JSHash, CONSTANTS} from "react-native-hash";
 import React, {useState} from 'react';
 import {
     View,
@@ -14,8 +13,9 @@ import {
 } from 'react-native';
 
 import Colors from '../constants/colors';
-import {useDispatch} from "react-redux";
-import {submitLogin, submitRegister} from "../store/actions/auth";
+import {useDispatch} from 'react-redux';
+import {JSHash, CONSTANTS} from 'react-native-hash';
+import {submitLogin, submitRegister} from '../store/actions/auth';
 import {Formik} from 'formik';
 
 const RegistrationScreen = props => {
@@ -39,7 +39,7 @@ const RegistrationScreen = props => {
     }
 
     if (error !== null) {
-        Alert.alert('Error', "Registration failed.", [{text: 'OK'}]);
+        Alert.alert('Errore', "Registrazione fallita!", [{text: 'OK'}]);
         setIsLoading(false);
         setError(null);
     }
@@ -108,7 +108,8 @@ const RegistrationScreen = props => {
                                             <Button
                                                 title="Registrazione"
                                                 color={Colors.primary}
-                                                onPress={handleSubmit}/>
+                                                onPress={handleSubmit}
+                                            />
                                         </View>
                                     </View>
                                 )}

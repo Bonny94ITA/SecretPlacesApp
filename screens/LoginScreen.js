@@ -15,8 +15,8 @@ import {
 } from 'react-native';
 
 import Colors from '../constants/colors';
-import {useDispatch} from "react-redux";
-import {submitLogin} from "../store/actions/auth";
+import {useDispatch} from 'react-redux';
+import {submitLogin} from '../store/actions/auth';
 import {Formik} from 'formik';
 
 const LoginScreen = props => {
@@ -39,7 +39,7 @@ const LoginScreen = props => {
     }
 
     if (error !== null) {
-        Alert.alert('Error', "Login Failed.", [{text: 'OK'}]);
+        Alert.alert('Errore', "Login Fallito!", [{text: 'OK'}]);
         setIsLoading(false);
         setError(null);
     }

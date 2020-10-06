@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import {View, StyleSheet, FlatList, Text, TouchableOpacity, StatusBar } from 'react-native';
-import Header from '../components/Header';
-import {useSelector} from "react-redux";
+import React, {useState} from 'react';
+import {
+    View,
+    StyleSheet,
+    FlatList,
+    Text,
+    TouchableOpacity,
+    StatusBar
+} from 'react-native';
 
-const Item = ({ item, onPress, style }) => (
+import Header from '../components/Header';
+import {useSelector} from 'react-redux';
+
+const Item = ({item, onPress, style}) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
         <Text style={styles.title}>{item.hotelAddress}</Text>
         <Text style={styles.title}>{item.hotelName}</Text>
@@ -18,14 +26,14 @@ const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
     const [selectedId, setSelectedId] = useState(null);
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({item}) => {
         const backgroundColor = item.idRoom === selectedId ? "#6e3b6e" : "#f9c2ff";
 
         return (
             <Item
                 item={item}
                 onPress={() => setSelectedId(item.idRoom)}
-                style={{ backgroundColor }}
+                style={{backgroundColor}}
             />
         );
     };
@@ -33,11 +41,11 @@ const ResultsScreen = props => {
     return (
         <View style={styles.header}>
             <Header title={"Risultati Ricerca"}/>
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
                 <FlatList style={{marginTop: 10, marginBottom: 10}}
-                    data={freeRooms}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.idRoom}
+                          data={freeRooms}
+                          renderItem={renderItem}
+                          keyExtractor={item => item.idRoom}
                 />
             </View>
         </View>

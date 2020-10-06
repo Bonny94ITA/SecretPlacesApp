@@ -1,9 +1,12 @@
 import React from 'react';
-import {View,
+import {
+    View,
     StyleSheet,
     TouchableWithoutFeedback,
     Keyboard,
-    ImageBackground} from 'react-native';
+    ImageBackground
+} from 'react-native';
+
 import Header from '../components/Header';
 
 

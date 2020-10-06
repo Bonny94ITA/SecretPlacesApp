@@ -5,8 +5,10 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
     View,
-    Text, ImageBackground, TouchableOpacity
-} from "react-native";
+    Text,
+    ImageBackground,
+    TouchableOpacity
+} from 'react-native';
 
 import Colors from '../constants/colors';
 import {AntDesign} from '@expo/vector-icons';
@@ -194,11 +196,13 @@ const NormalSearchScreen = props => {
                                                     items={pickerItems}
                                                 />
                                             </View>
-                                            <Button
-                                                title="Ricerca"
-                                                onPress={handleSubmit}
-                                                color={Colors.primary}
-                                            />
+                                            <View style={{marginVertical: 5}}>
+                                                <Button
+                                                    title="Ricerca"
+                                                    onPress={handleSubmit}
+                                                    color={Colors.primary}
+                                                />
+                                            </View>
                                         </View>
                                     )}
                                 </Formik>
