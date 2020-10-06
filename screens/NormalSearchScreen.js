@@ -220,8 +220,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     container: {
-        flex: 1,
-        flexDirection: "column"
+        flex: 1
     },
     image: {
         flex: 1,

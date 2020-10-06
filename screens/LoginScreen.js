@@ -1,4 +1,3 @@
-import {JSHash, CONSTANTS} from "react-native-hash";
 import React, {useState} from 'react';
 import {
     View,
@@ -16,6 +15,7 @@ import {
 
 import Colors from '../constants/colors';
 import {useDispatch} from 'react-redux';
+import {JSHash, CONSTANTS} from 'react-native-hash';
 import {submitLogin} from '../store/actions/auth';
 import {Formik} from 'formik';
 
