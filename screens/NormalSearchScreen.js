@@ -5,11 +5,11 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
     View,
-    Text, ImageBackground
+    Text, ImageBackground, TouchableOpacity
 } from "react-native";
 
 import Colors from '../constants/colors';
-import {Ionicons} from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 import Header from '../components/Header';
 import {Formik} from 'formik';
 import serverURL from '../components/ServerInfo';
@@ -72,7 +72,8 @@ async function normalSearch(city, arrival, departure, dispatch) {
 }
 
 const NormalSearchScreen = props => {
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isDatePickerVisibleA, setDatePickerVisibilityA] = useState(false);
+    const [isDatePickerVisibleD, setDatePickerVisibilityD] = useState(false);
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
 
@@ -97,22 +98,31 @@ const NormalSearchScreen = props => {
         fetchCities(dispatch);
     }, []);
 
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
+    const showDatePickerA = () => {
+        setDatePickerVisibilityA(true);
     };
 
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
+    const hideDatePickerA = () => {
+        setDatePickerVisibilityA(false);
+    };
+
+    const showDatePickerD = () => {
+        setDatePickerVisibilityD(true);
+    };
+
+    const hideDatePickerD = () => {
+        setDatePickerVisibilityD(false);
     };
 
     const handleConfirmArrival = (date) => {
         setDateArrival(date);
-        hideDatePicker();
+        hideDatePickerA();
     };
 
     const handleConfirmDeparture = (date) => {
         setDateDeparture(date);
-        hideDatePicker();
+        console.log("ciao");
+        hideDatePickerD();
     };
 
     return (
@@ -147,22 +157,32 @@ const NormalSearchScreen = props => {
                                 >
                                     {({handleChange, handleBlur, handleSubmit, values}) => (
                                         <View>
-                                            <Button title="Data di Partenza" onPress={showDatePicker}/>
-                                            <DateTimePickerModal
-                                                isVisible={isDatePickerVisible}
-                                                mode="date"
-                                                onConfirm={handleConfirmArrival}
-                                                onCancel={hideDatePicker}
-                                            />
-                                            <Text> data </Text>
-                                            <Button title="Data di Arrivo" onPress={showDatePicker}/>
-                                            <DateTimePickerModal
-                                                isVisible={isDatePickerVisible}
-                                                mode="date"
-                                                onConfirm={handleConfirmDeparture}
-                                                onCancel={hideDatePicker}
-                                            />
-                                            <Text> data </Text>
+                                            <View style={styles.dateContainer}>
+                                                <TouchableOpacity onPress={showDatePickerA} style={styles.item}>
+                                                    <AntDesign name="calendar" size={40} color="black"/>
+                                                </TouchableOpacity>
+                                                <DateTimePickerModal
+                                                    isVisible={isDatePickerVisibleA}
+                                                    mode="date"
+                                                    onConfirm={handleConfirmArrival}
+                                                    onCancel={hideDatePickerA}
+                                                />
+                                                <Text
+                                                    style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
+                                            </View>
+                                            <View style={styles.dateContainer}>
+                                                <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
+                                                    <AntDesign name="calendar" size={40} color="black"/>
+                                                </TouchableOpacity>
+                                                <DateTimePickerModal
+                                                    isVisible={isDatePickerVisibleD}
+                                                    mode="date"
+                                                    onConfirm={handleConfirmDeparture}
+                                                    onCancel={hideDatePickerD}
+                                                />
+                                                <Text
+                                                    style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
+                                            </View>
                                             <View style={styles.picker}>
                                                 <RNPickerSelect
                                                     placeholder={{
@@ -195,9 +215,17 @@ const styles = StyleSheet.create({
     header: {
         flex: 1
     },
-    screen: {
+    container: {
         flex: 1,
-        paddingTop: '50%',
+        flexDirection: "column"
+    },
+    image: {
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "center"
+    },
+    screen: {
+        flex: 0.5,
         padding: 10,
         alignItems: 'center'
     },
@@ -215,34 +243,24 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     picker: {
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        paddingRight: 30,
         height: 40,
         borderColor: 'orange',
         borderWidth: 1,
         marginVertical: 5,
         width: 225,
         borderRadius: 10,
-        textAlign: 'center'
+        textAlign: 'center',
+        padding: 10
     },
-    dataPicker: {
-        height: 40,
-        marginVertical: 5,
-        width: 225,
-    },
-    data: {
+    dateContainer: {
         padding: 10,
-        textAlign: 'center'
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        width: '80%'
     },
-    container: {
-        flex: 1,
-        flexDirection: "column"
-    },
-    image: {
-        flex: 1,
-        resizeMode: "cover",
-        justifyContent: "center"
+    item: {
+        width: '50%',
     }
 });
 

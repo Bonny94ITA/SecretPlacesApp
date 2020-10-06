@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         width: 225,
         borderRadius: 10,
-        textAlign: 'center'
+        textAlign: 'center',
+        padding: 10
     },
     image: {
         flex: 1,
