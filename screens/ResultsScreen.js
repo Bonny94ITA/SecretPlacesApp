@@ -6,37 +6,76 @@ import {
     Text,
     TouchableOpacity,
     Alert,
-    Button
+    Button,
+    Image
 } from 'react-native';
 
 import Colors from '../constants/colors';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import Header from '../components/Header';
 import {useSelector} from 'react-redux';
+import Dialog, {DialogTitle, DialogContent} from 'react-native-popup-dialog';
+
 
 const Item = ({item, onPress, style}) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-        <AntDesign name="enviromento" size={30} color="black"/>
-        <Text style={styles.title}>{item.hotelAddress}</Text>
-        <AntDesign name="home" size={30} color="black"/>
-        <Text style={styles.title}>{item.hotelName}</Text>
-        <AntDesign name="staro" size={30} color="black"/>
-        <Text style={styles.title}>{item.hotelStars}</Text>
-        <AntDesign name="user" size={30} color="black"/>
-        <Text style={styles.title}>{item.numPlaces}</Text>
-        <Entypo name="credit" size={30} color="black"/>
-        <Text style={styles.title}>{item.ppn}</Text>
+        <View style={styles.columnContainer}>
+            <View style={styles.rowContainer}>
+                <AntDesign name="home" size={20} style={styles.icon}/>
+                <Text style={styles.text}>{item.hotelName}</Text>
+                <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                <Text style={styles.text}>{item.hotelAddress}</Text>
+            </View>
+            <View style={styles.rowContainer}>
+                <View style={styles.columnContainer}>
+                    <View style={styles.rowContainer}>
+                        <AntDesign name="staro" size={20} style={styles.icon}/>
+                        <Text style={styles.text}>{item.hotelStars}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <AntDesign name="user" size={20} style={styles.icon}/>
+                        <Text style={styles.text}>{item.numPlaces}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <Entypo name="credit" size={20} style={styles.icon}/>
+                        <Text style={styles.text}>{item.ppn}</Text>
+                    </View>
+                </View>
+                <View style={styles.columnContainer}>
+                    <Image
+                        style={styles.image}
+                        source={require('../assets/hotel.jpg')}
+                    />
+                </View>
+            </View>
+        </View>
         <Button
             title="Prenota"
-            onPress= {() => Alert.alert('Prenotato!')}
+            onPress={() => Alert.alert('Prenotato!')}
             color={Colors.primary}
         />
+        {/*<View>*/}
+        {/*    <Dialog*/}
+        {/*        visible={false}*/}
+        {/*        dialogTitle={<DialogTitle title="Dialog Title" />}*/}
+        {/*    >*/}
+        {/*        <DialogContent>*/}
+
+        {/*            <Text>ciao</Text>*/}
+        {/*        </DialogContent>*/}
+        {/*    </Dialog>*/}
+        {/*</View>*/}
     </TouchableOpacity>
 );
 
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
     const [selectedId, setSelectedId] = useState(null);
+    let flag = false;
+
+    const showDialog = () => {
+        flag = !flag
+    };
 
     const renderItem = ({item}) => {
         const backgroundColor = item.idRoom === selectedId ? "#ffd699" : "#ffe0b3";
@@ -44,7 +83,7 @@ const ResultsScreen = props => {
         return (
             <Item
                 item={item}
-                onPress={() => setSelectedId(item.idRoom)}
+                onPress={() => setSelectedId(item.idRoom) & showDialog}
                 style={{backgroundColor}}
             />
         );
@@ -80,15 +119,32 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         shadowOpacity: 0.26,
         elevation: 8,
-        padding: 20,
-        borderRadius: 10
+        padding: 20
     },
     item: {
-        padding: 20,
-        margin: 10
+        padding: 10,
+        margin: 10,
+        borderRadius: 10
     },
-    title: {
-        fontSize: 20,
+    rowContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    columnContainer: {
+        flexDirection: 'column',
+        paddingRight: '20%'
+    },
+    icon: {
+        padding: 10,
+        color: 'black'
+    },
+    text: {
+        fontSize: 20
+    },
+    image: {
+        width: 175,
+        height: 150,
+        borderRadius: 25
     }
 });
 
