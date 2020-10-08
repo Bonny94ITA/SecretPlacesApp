@@ -84,7 +84,6 @@ const NormalSearchScreen = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-
         async function fetchCities(dispatch) {
             const cities = await getCities(dispatch);
 
@@ -153,7 +152,7 @@ const NormalSearchScreen = props => {
                                                 ppn: element.pricePerNight
                                             });
                                         });
-                                        dispatch(setFreeRooms(formattedFreeRooms));
+                                        //dispatch(setFreeRooms(formattedFreeRooms));
                                         props.navigation.navigate('resultsSearch');
                                     }}
                                 >
