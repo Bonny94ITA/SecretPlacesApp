@@ -73,11 +73,6 @@ const Item = ({item}) => {
 
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
-    let flag = false;
-
-    const showDialog = () => {
-        flag = !flag
-    };
 
     const renderItem = ({item}) => {
         //const backgroundColor = item.idRoom === selectedId ? "#ffd699" : "#ffe0b3";
@@ -123,6 +118,7 @@ const styles = StyleSheet.create({
         padding: 20
     },
     item: {
+        backgroundColor: '#ffd699',
         padding: 10,
         margin: 10,
         borderRadius: 10
