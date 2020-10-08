@@ -49,7 +49,7 @@ async function getCities(dispatch) {
 
 async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotRegion,
                             maxStars, minStars, tourismTypes, arrival, departure, dispatch) {
-    let freeRooms = null;
+    let alternatives = null;
 
     await timeout(5000, fetch(serverURL + '/hotels/secretSearch', {
         method: 'POST',
@@ -69,16 +69,16 @@ async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotReg
             departure: departure
         })
     })).then(async function (response) {
-        freeRooms = await response.json();
+        alternatives = await response.json();
     }, function (error) {
-        dispatch(authActions.submitLogout());
+        //dispatch(authActions.submitLogout());
         console.log(error);
     }).catch(function (error) {
-        dispatch(authActions.submitLogout());
+        //dispatch(authActions.submitLogout());
         console.log(error);
     });
 
-    return freeRooms;
+    return alternatives;
 }
 
 const SecretSearchScreen = props => {
@@ -163,7 +163,7 @@ const SecretSearchScreen = props => {
                                         //     });
                                         // });
                                         console.log(alternatives);
-                                        dispatch(setFreeRooms(formattedAlteratives));
+                                        //dispatch(setFreeRooms(formattedAlteratives));
                                         props.navigation.navigate('resultsSearch');
                                     }}
                                 >

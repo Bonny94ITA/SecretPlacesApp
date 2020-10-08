@@ -73,6 +73,13 @@ const Item = ({item}) => {
 
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
+    const alternatives = useSelector(state => state.secretSearch.alternatives);
+    let data = null;
+
+    if (alternatives != null)
+        data = alternatives
+    else
+        data = freeRooms
 
     const renderItem = ({item}) => {
         //const backgroundColor = item.idRoom === selectedId ? "#ffd699" : "#ffe0b3";
@@ -91,7 +98,7 @@ const ResultsScreen = props => {
             <View style={styles.container}>
                 <View style={styles.outputContainer}>
                     <FlatList
-                        data={freeRooms}
+                        data={data}
                         renderItem={renderItem}
                         keyExtractor={item => item.idRoom.toString()}
                     />

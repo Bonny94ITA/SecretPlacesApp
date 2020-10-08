@@ -9,10 +9,12 @@ import authReducer from './store/reducers/auth';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import normalSearchReducer from "./store/reducers/ns";
+import secretSearchReducer from "./store/reducers/ss";
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    normalSearch: normalSearchReducer
+    normalSearch: normalSearchReducer,
+    secretSearch: secretSearchReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
