@@ -16,61 +16,63 @@ import Header from '../components/Header';
 import {useSelector} from 'react-redux';
 import Dialog, {DialogTitle, DialogContent} from 'react-native-popup-dialog';
 
+const Item = ({item}) => {
+    const [isVisible, setVisible] = useState(false);
 
-const Item = ({item, onPress, style}) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-        <View style={styles.columnContainer}>
-            <View style={styles.rowContainer}>
-                <AntDesign name="home" size={20} style={styles.icon}/>
-                <Text style={styles.text}>{item.hotelName}</Text>
-                <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                <Text style={styles.text}>{item.hotelAddress}</Text>
-            </View>
-            <View style={styles.rowContainer}>
-                <View style={styles.columnContainer}>
-                    <View style={styles.rowContainer}>
-                        <AntDesign name="staro" size={20} style={styles.icon}/>
-                        <Text style={styles.text}>{item.hotelStars}</Text>
+    return (
+        <View style={styles.item}>
+            <View style={styles.columnContainer}>
+                <View style={styles.rowContainer}>
+                    <AntDesign name="home" size={20} style={styles.icon}/>
+                    <Text style={styles.text}>{item.hotelName}</Text>
+                    <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                    <Text style={styles.text}>{item.hotelAddress}</Text>
+                </View>
+                <View style={styles.rowContainer}>
+                    <View style={styles.columnContainer}>
+                        <View style={styles.rowContainer}>
+                            <AntDesign name="staro" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.hotelStars}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <AntDesign name="user" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.numPlaces}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <Entypo name="credit" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.ppn}</Text>
+                        </View>
                     </View>
-                    <View style={styles.rowContainer}>
-                        <AntDesign name="user" size={20} style={styles.icon}/>
-                        <Text style={styles.text}>{item.numPlaces}</Text>
-                    </View>
-                    <View style={styles.rowContainer}>
-                        <Entypo name="credit" size={20} style={styles.icon}/>
-                        <Text style={styles.text}>{item.ppn}</Text>
+                    <View style={styles.columnContainer}>
+                        <Image
+                            style={styles.image}
+                            source={require('../assets/hotel.jpg')}
+                        />
                     </View>
                 </View>
-                <View style={styles.columnContainer}>
-                    <Image
-                        style={styles.image}
-                        source={require('../assets/hotel.jpg')}
-                    />
-                </View>
             </View>
+            <Button
+                title="Prenota"
+                onPress={() => setVisible(true)}
+                color={Colors.primary}
+            />
+            <Dialog
+                visible={isVisible}
+                onTouchOutside={() => {
+                    setVisible(false);
+                }}
+                dialogTitle={<DialogTitle title="Dialog Title" />}
+            >
+                <DialogContent>
+                    <Text>ciao</Text>
+                </DialogContent>
+            </Dialog>
         </View>
-        <Button
-            title="Prenota"
-            onPress={() => Alert.alert('Prenotato!')}
-            color={Colors.primary}
-        />
-        {/*<View>*/}
-        {/*    <Dialog*/}
-        {/*        visible={false}*/}
-        {/*        dialogTitle={<DialogTitle title="Dialog Title" />}*/}
-        {/*    >*/}
-        {/*        <DialogContent>*/}
-
-        {/*            <Text>ciao</Text>*/}
-        {/*        </DialogContent>*/}
-        {/*    </Dialog>*/}
-        {/*</View>*/}
-    </TouchableOpacity>
-);
+    );
+}
 
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
-    const [selectedId, setSelectedId] = useState(null);
     let flag = false;
 
     const showDialog = () => {
@@ -78,13 +80,12 @@ const ResultsScreen = props => {
     };
 
     const renderItem = ({item}) => {
-        const backgroundColor = item.idRoom === selectedId ? "#ffd699" : "#ffe0b3";
+        //const backgroundColor = item.idRoom === selectedId ? "#ffd699" : "#ffe0b3";
 
         return (
             <Item
                 item={item}
-                onPress={() => setSelectedId(item.idRoom) & showDialog}
-                style={{backgroundColor}}
+                //style={{backgroundColor}}
             />
         );
     };
@@ -128,7 +129,8 @@ const styles = StyleSheet.create({
     },
     rowContainer: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingBottom: 10
     },
     columnContainer: {
         flexDirection: 'column',
