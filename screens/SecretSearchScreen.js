@@ -7,7 +7,7 @@ import {
     View,
     Text,
     ImageBackground,
-    TouchableOpacity
+    TouchableOpacity, TextInput
 } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -20,6 +20,7 @@ import * as authActions from '../store/actions/auth';
 import {setFreeRooms} from '../store/actions/ns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import { Rating, AirbnbRating } from 'react-native-ratings';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -86,6 +87,8 @@ const SecretSearchScreen = props => {
     const [isDatePickerVisibleD, setDatePickerVisibilityD] = useState(false);
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
+    const [minStar, setMinStar] = useState(0);
+    const [maxStar, setMaxStar] = useState(5);
 
     const [selectedValue, setSelectedValue] = useState("Cagliari");
     const [pickerItems, setPickerItems] = useState([]);
@@ -130,8 +133,17 @@ const SecretSearchScreen = props => {
 
     const handleConfirmDeparture = (date) => {
         setDateDeparture(date);
-        console.log("ciao");
         hideDatePickerD();
+    };
+
+    const ratingMinCompleted = (star) => {
+        setMinStar(star);
+        console.log("Rating is min: " + star)
+    };
+
+    const ratingMaxCompleted = (star) => {
+        setMaxStar(star);
+        console.log("Rating is max: " + star)
     };
 
     return (
@@ -149,7 +161,10 @@ const SecretSearchScreen = props => {
                                     initialValues={{city: '', arrival: '', departure: ''}}
                                     onSubmit={async values => {
                                         const formattedAlteratives = [];
-                                        const alternatives = await secretSearch([{region: "Sardegna", city: "Nuoro"}, {region: "Sardegna", city: "Cagliari"}],
+                                        const alternatives = await secretSearch([{
+                                                region: "Sardegna",
+                                                city: "Nuoro"
+                                            }, {region: "Sardegna", city: "Cagliari"}],
                                             500, 3, "Sardegna", "Sicilia", 4, 2,
                                             ["balenare", "lacustre", "naturalistico"], "12/07/2020", "24/08/2020", dispatch);
                                         // alternatives.forEach(element => {
@@ -206,6 +221,55 @@ const SecretSearchScreen = props => {
                                                     items={pickerItems}
                                                 />
                                             </View>
+                                            <Text>Seleziona il tuo budget:</Text>
+                                            <View style={styles.rowContainer}>
+                                                <TextInput
+                                                    placeholder={"Min Budget"}
+                                                    returnKeyType='next'
+                                                    keyboardType='numeric'
+                                                    onChangeText={handleChange('Min Budget')}
+                                                    onBlur={handleBlur('Min Budget')}
+                                                    //value={values.minBudget}
+                                                    style={styles.inputBudget}
+                                                />
+                                                <TextInput
+                                                    placeholder={"Max Budget"}
+                                                    returnKeyType='next'
+                                                    keyboardType='numeric'
+                                                    onChangeText={handleChange('Max Budget')}
+                                                    onBlur={handleBlur('Max Budget')}
+                                                    //value={values.maxBudget}
+                                                    style={styles.inputBudget}
+                                                />
+                                            </View>
+                                            <Text>Stelle minime dell'hotel:</Text>
+                                            <Rating
+                                                type='star'
+                                                ratingCount={5}
+                                                imageSize={30}
+                                                style = {{padding: 10}}
+                                                onFinishRating={ratingMinCompleted}
+                                            />
+                                            <Text>Stelle massime dell'hotel:</Text>
+                                            <Rating
+                                                type='star'
+                                                ratingCount={5}
+                                                imageSize={30}
+                                                style = {{padding: 10}}
+                                                onFinishRating={ratingMaxCompleted}
+                                            />
+                                            <Text>Tipo di turismo:</Text>
+                                            <View style={styles.picker}>
+                                                <RNPickerSelect
+                                                    placeholder={{
+                                                        label: 'Seleziona una città...',
+                                                        value: null,
+                                                    }}
+                                                    selectedValue={selectedValue}
+                                                    onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                                                    items={pickerItems}
+                                                />
+                                            </View>
                                             <View style={{marginVertical: 5}}>
                                                 <Button
                                                     title="Ricerca"
@@ -238,7 +302,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     screen: {
-        flex: 0.5,
+        flex: 0.9,
         padding: 10,
         alignItems: 'center'
     },
@@ -261,6 +325,20 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginVertical: 5,
         width: 225,
+        borderRadius: 10,
+        textAlign: 'center',
+        padding: 10
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    inputBudget: {
+        height: 40,
+        borderColor: 'orange',
+        borderWidth: 1,
+        marginVertical: 5,
+        width: 100,
         borderRadius: 10,
         textAlign: 'center',
         padding: 10

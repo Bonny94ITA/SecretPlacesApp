@@ -16,13 +16,13 @@ import Dialog, {DialogTitle, SlideAnimation, DialogFooter, DialogButton} from 'r
 import {YellowBox} from 'react-native';
 import _ from 'lodash';
 
-// YellowBox.ignoreWarnings(['componentWillReceiveProps']);
-// const _console = _.clone(console);
-// console.warn = message => {
-//     if (message.indexOf('componentWillReceiveProps') <= -1) {
-//         _console.warn(message);
-//     }
-// };
+YellowBox.ignoreWarnings(['componentWillReceiveProps']);
+const _console = _.clone(console);
+console.warn = message => {
+    if (message.indexOf('componentWillReceiveProps') <= -1) {
+        _console.warn(message);
+    }
+};
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
@@ -150,12 +150,13 @@ const styles = StyleSheet.create({
     },
     rowContainer: {
         flexDirection: 'row',
+        justifyContent: 'space-around',
         alignItems: 'center',
         paddingBottom: 10
     },
     columnContainer: {
         flexDirection: 'column',
-        paddingRight: '15%'
+        paddingRight: 10
     },
     icon: {
         padding: 10,

@@ -122,7 +122,6 @@ const NormalSearchScreen = props => {
 
     const handleConfirmDeparture = (date) => {
         setDateDeparture(date);
-        console.log("ciao");
         hideDatePickerD();
     };
 
