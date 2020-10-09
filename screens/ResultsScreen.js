@@ -4,8 +4,6 @@ import {
     StyleSheet,
     FlatList,
     Text,
-    TouchableOpacity,
-    Alert,
     Button,
     Image
 } from 'react-native';
@@ -14,7 +12,17 @@ import Colors from '../constants/colors';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import Header from '../components/Header';
 import {useSelector} from 'react-redux';
-import Dialog, {DialogTitle, DialogContent} from 'react-native-popup-dialog';
+import Dialog, {DialogTitle, SlideAnimation, DialogFooter, DialogButton} from 'react-native-popup-dialog';
+import {YellowBox} from 'react-native';
+import _ from 'lodash';
+
+// YellowBox.ignoreWarnings(['componentWillReceiveProps']);
+// const _console = _.clone(console);
+// console.warn = message => {
+//     if (message.indexOf('componentWillReceiveProps') <= -1) {
+//         _console.warn(message);
+//     }
+// };
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
@@ -24,7 +32,7 @@ const Item = ({item}) => {
             <View style={styles.columnContainer}>
                 <View style={styles.rowContainer}>
                     <AntDesign name="home" size={20} style={styles.icon}/>
-                    <Text style={styles.text}>{item.hotelName}</Text>
+                    <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
                     <AntDesign name="enviromento" size={20} style={styles.icon}/>
                     <Text style={styles.text}>{item.hotelAddress}</Text>
                 </View>
@@ -58,14 +66,29 @@ const Item = ({item}) => {
             />
             <Dialog
                 visible={isVisible}
+                dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                })}
                 onTouchOutside={() => {
                     setVisible(false);
                 }}
-                dialogTitle={<DialogTitle title="Dialog Title" />}
+                dialogTitle={<DialogTitle title="Sei sicuro di voler prenotare?"/>}
+                footer={
+                    <DialogFooter>
+                        <DialogButton
+                            text="Annulla"
+                            onPress={() => {
+                                setVisible(false);
+                            }}
+                        />
+                        <DialogButton
+                            text="Conferma"
+                            onPress={() => {
+                            }}
+                        />
+                    </DialogFooter>
+                }
             >
-                <DialogContent>
-                    <Text>ciao</Text>
-                </DialogContent>
             </Dialog>
         </View>
     );
@@ -74,7 +97,7 @@ const Item = ({item}) => {
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
     const alternatives = useSelector(state => state.secretSearch.alternatives);
-    let data = null;
+    let data;
 
     if (alternatives != null)
         data = alternatives
@@ -82,13 +105,8 @@ const ResultsScreen = props => {
         data = freeRooms
 
     const renderItem = ({item}) => {
-        //const backgroundColor = item.idRoom === selectedId ? "#ffd699" : "#ffe0b3";
-
         return (
-            <Item
-                item={item}
-                //style={{backgroundColor}}
-            />
+            <Item item={item}/>
         );
     };
 
@@ -125,7 +143,7 @@ const styles = StyleSheet.create({
         padding: 20
     },
     item: {
-        backgroundColor: '#ffd699',
+        backgroundColor: Colors.containerBackground,
         padding: 10,
         margin: 10,
         borderRadius: 10
@@ -137,7 +155,7 @@ const styles = StyleSheet.create({
     },
     columnContainer: {
         flexDirection: 'column',
-        paddingRight: '20%'
+        paddingRight: '15%'
     },
     icon: {
         padding: 10,

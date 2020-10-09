@@ -41,18 +41,18 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        flexDirection: "column"
+        flexDirection: 'column'
     },
     // titleContainer: {
     //     flex: 0.5,
     //     flexDirection: 'row',
     //     justifyContent: 'center',
-    //     alignItems: 'center',
+    //     alignItems: 'center'
     // },
     image: {
         flex: 1,
-        resizeMode: "cover",
-        justifyContent: "center"
+        resizeMode: 'cover',
+        justifyContent: 'center'
     }
 });
 

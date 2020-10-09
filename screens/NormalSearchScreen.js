@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        resizeMode: "cover",
-        justifyContent: "center"
+        resizeMode: 'cover',
+        justifyContent: 'center'
     },
     screen: {
         flex: 0.5,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
         width: '80%'
     },
     item: {
-        width: '50%',
+        width: '50%'
     }
 });
 

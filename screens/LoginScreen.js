@@ -140,18 +140,18 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        resizeMode: "cover",
-        justifyContent: "center"
+        resizeMode: 'cover',
+        justifyContent: 'center'
     },
     container: {
         flex: 1,
-        flexDirection: "column"
+        flexDirection: 'column'
     },
     titleContainer: {
         flex: 0.5,
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     textTitle: {
         color: Colors.title,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     reload: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     }
 });
 
