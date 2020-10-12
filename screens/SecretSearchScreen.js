@@ -7,7 +7,9 @@ import {
     View,
     Text,
     ImageBackground,
-    TouchableOpacity, TextInput
+    TouchableOpacity,
+    TextInput,
+    ScrollView
 } from 'react-native';
 
 import Colors from '../constants/colors';
@@ -20,7 +22,7 @@ import * as authActions from '../store/actions/auth';
 import {setFreeRooms} from '../store/actions/ns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import {Rating, AirbnbRating} from 'react-native-ratings';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -154,134 +156,136 @@ const SecretSearchScreen = props => {
             }}>
                 <View style={styles.container}>
                     <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
-                        <View style={styles.screen}>
-                            <View style={styles.inputContainer}>
-                                <Formik
-                                    // modificare la formica (quando si andrà a leggere da input)
-                                    initialValues={{city: '', arrival: '', departure: ''}}
-                                    onSubmit={async values => {
-                                        const formattedAlteratives = [];
-                                        const alternatives = await secretSearch([{
-                                                region: "Sardegna",
-                                                city: "Nuoro"
-                                            }, {region: "Sardegna", city: "Cagliari"}],
-                                            500, 3, "Sardegna", "Sicilia", 4, 2,
-                                            ["balenare", "lacustre", "naturalistico"], "12/07/2020", "24/08/2020", dispatch);
-                                        // alternatives.forEach(element => {
-                                        //     formattedAlteratives.push({
-                                        //         hotelName: element.hotel.name,
-                                        //         hotelStars: element.hotel.stars,
-                                        //         hotelAddress: element.hotel.address,
-                                        //         idRoom: element.id,
-                                        //         numPlaces: element.numPlaces,
-                                        //         ppn: element.pricePerNight
-                                        //     });
-                                        // });
-                                        console.log(alternatives);
-                                        //dispatch(setFreeRooms(formattedAlteratives));
-                                        props.navigation.navigate('resultsSearch');
-                                    }}
-                                >
-                                    {({handleChange, handleBlur, handleSubmit, values}) => (
-                                        <View>
-                                            <View style={styles.dateContainer}>
-                                                <TouchableOpacity onPress={showDatePickerA} style={styles.item}>
-                                                    <AntDesign name="calendar" size={40} color="black"/>
-                                                </TouchableOpacity>
-                                                <DateTimePickerModal
-                                                    isVisible={isDatePickerVisibleA}
-                                                    mode="date"
-                                                    onConfirm={handleConfirmArrival}
-                                                    onCancel={hideDatePickerA}
+                        <ScrollView>
+                            <View style={styles.screen}>
+                                <View style={styles.inputContainer}>
+                                    <Formik
+                                        // modificare la formica (quando si andrà a leggere da input)
+                                        initialValues={{city: '', arrival: '', departure: ''}}
+                                        onSubmit={async values => {
+                                            const formattedAlteratives = [];
+                                            const alternatives = await secretSearch([{
+                                                    region: "Sardegna",
+                                                    city: "Nuoro"
+                                                }, {region: "Sardegna", city: "Cagliari"}],
+                                                500, 3, "Sardegna", "Sicilia", 4, 2,
+                                                ["balenare", "lacustre", "naturalistico"], "12/07/2020", "24/08/2020", dispatch);
+                                            // alternatives.forEach(element => {
+                                            //     formattedAlteratives.push({
+                                            //         hotelName: element.hotel.name,
+                                            //         hotelStars: element.hotel.stars,
+                                            //         hotelAddress: element.hotel.address,
+                                            //         idRoom: element.id,
+                                            //         numPlaces: element.numPlaces,
+                                            //         ppn: element.pricePerNight
+                                            //     });
+                                            // });
+                                            console.log(alternatives);
+                                            //dispatch(setFreeRooms(formattedAlteratives));
+                                            props.navigation.navigate('resultsSearch');
+                                        }}
+                                    >
+                                        {({handleChange, handleBlur, handleSubmit, values}) => (
+                                            <View>
+                                                <View style={styles.dateContainer}>
+                                                    <TouchableOpacity onPress={showDatePickerA} style={styles.item}>
+                                                        <AntDesign name="calendar" size={40} color="black"/>
+                                                    </TouchableOpacity>
+                                                    <DateTimePickerModal
+                                                        isVisible={isDatePickerVisibleA}
+                                                        mode="date"
+                                                        onConfirm={handleConfirmArrival}
+                                                        onCancel={hideDatePickerA}
+                                                    />
+                                                    <Text
+                                                        style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
+                                                </View>
+                                                <View style={styles.dateContainer}>
+                                                    <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
+                                                        <AntDesign name="calendar" size={40} color="black"/>
+                                                    </TouchableOpacity>
+                                                    <DateTimePickerModal
+                                                        isVisible={isDatePickerVisibleD}
+                                                        mode="date"
+                                                        onConfirm={handleConfirmDeparture}
+                                                        onCancel={hideDatePickerD}
+                                                    />
+                                                    <Text
+                                                        style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
+                                                </View>
+                                                <View style={styles.picker}>
+                                                    <RNPickerSelect
+                                                        placeholder={{
+                                                            label: 'Seleziona una città...',
+                                                            value: null,
+                                                        }}
+                                                        selectedValue={selectedValue}
+                                                        onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                                                        items={pickerItems}
+                                                    />
+                                                </View>
+                                                <Text>Seleziona il tuo budget:</Text>
+                                                <View style={styles.rowContainer}>
+                                                    <TextInput
+                                                        placeholder={"Min Budget"}
+                                                        returnKeyType='next'
+                                                        keyboardType='numeric'
+                                                        onChangeText={handleChange('Min Budget')}
+                                                        onBlur={handleBlur('Min Budget')}
+                                                        //value={values.minBudget}
+                                                        style={styles.inputBudget}
+                                                    />
+                                                    <TextInput
+                                                        placeholder={"Max Budget"}
+                                                        returnKeyType='next'
+                                                        keyboardType='numeric'
+                                                        onChangeText={handleChange('Max Budget')}
+                                                        onBlur={handleBlur('Max Budget')}
+                                                        //value={values.maxBudget}
+                                                        style={styles.inputBudget}
+                                                    />
+                                                </View>
+                                                <Text>Stelle minime dell'hotel:</Text>
+                                                <Rating
+                                                    type='star'
+                                                    ratingCount={5}
+                                                    imageSize={30}
+                                                    style={{padding: 10}}
+                                                    onFinishRating={ratingMinCompleted}
                                                 />
-                                                <Text
-                                                    style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
+                                                <Text>Stelle massime dell'hotel:</Text>
+                                                <Rating
+                                                    type='star'
+                                                    ratingCount={5}
+                                                    imageSize={30}
+                                                    style={{padding: 10}}
+                                                    onFinishRating={ratingMaxCompleted}
+                                                />
+                                                <Text>Tipo di turismo:</Text>
+                                                <View style={styles.picker}>
+                                                    <RNPickerSelect
+                                                        placeholder={{
+                                                            label: 'Seleziona una città...',
+                                                            value: null,
+                                                        }}
+                                                        selectedValue={selectedValue}
+                                                        onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                                                        items={pickerItems}
+                                                    />
+                                                </View>
+                                                <View style={{marginVertical: 5}}>
+                                                    <Button
+                                                        title="Ricerca"
+                                                        onPress={handleSubmit}
+                                                        color={Colors.primary}
+                                                    />
+                                                </View>
                                             </View>
-                                            <View style={styles.dateContainer}>
-                                                <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
-                                                    <AntDesign name="calendar" size={40} color="black"/>
-                                                </TouchableOpacity>
-                                                <DateTimePickerModal
-                                                    isVisible={isDatePickerVisibleD}
-                                                    mode="date"
-                                                    onConfirm={handleConfirmDeparture}
-                                                    onCancel={hideDatePickerD}
-                                                />
-                                                <Text
-                                                    style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
-                                            </View>
-                                            <View style={styles.picker}>
-                                                <RNPickerSelect
-                                                    placeholder={{
-                                                        label: 'Seleziona una città...',
-                                                        value: null,
-                                                    }}
-                                                    selectedValue={selectedValue}
-                                                    onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                                                    items={pickerItems}
-                                                />
-                                            </View>
-                                            <Text>Seleziona il tuo budget:</Text>
-                                            <View style={styles.rowContainer}>
-                                                <TextInput
-                                                    placeholder={"Min Budget"}
-                                                    returnKeyType='next'
-                                                    keyboardType='numeric'
-                                                    onChangeText={handleChange('Min Budget')}
-                                                    onBlur={handleBlur('Min Budget')}
-                                                    //value={values.minBudget}
-                                                    style={styles.inputBudget}
-                                                />
-                                                <TextInput
-                                                    placeholder={"Max Budget"}
-                                                    returnKeyType='next'
-                                                    keyboardType='numeric'
-                                                    onChangeText={handleChange('Max Budget')}
-                                                    onBlur={handleBlur('Max Budget')}
-                                                    //value={values.maxBudget}
-                                                    style={styles.inputBudget}
-                                                />
-                                            </View>
-                                            <Text>Stelle minime dell'hotel:</Text>
-                                            <Rating
-                                                type='star'
-                                                ratingCount={5}
-                                                imageSize={30}
-                                                style = {{padding: 10}}
-                                                onFinishRating={ratingMinCompleted}
-                                            />
-                                            <Text>Stelle massime dell'hotel:</Text>
-                                            <Rating
-                                                type='star'
-                                                ratingCount={5}
-                                                imageSize={30}
-                                                style = {{padding: 10}}
-                                                onFinishRating={ratingMaxCompleted}
-                                            />
-                                            <Text>Tipo di turismo:</Text>
-                                            <View style={styles.picker}>
-                                                <RNPickerSelect
-                                                    placeholder={{
-                                                        label: 'Seleziona una città...',
-                                                        value: null,
-                                                    }}
-                                                    selectedValue={selectedValue}
-                                                    onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                                                    items={pickerItems}
-                                                />
-                                            </View>
-                                            <View style={{marginVertical: 5}}>
-                                                <Button
-                                                    title="Ricerca"
-                                                    onPress={handleSubmit}
-                                                    color={Colors.primary}
-                                                />
-                                            </View>
-                                        </View>
-                                    )}
-                                </Formik>
+                                        )}
+                                    </Formik>
+                                </View>
                             </View>
-                        </View>
+                        </ScrollView>
                     </ImageBackground>
                 </View>
             </TouchableWithoutFeedback>
@@ -302,7 +306,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     screen: {
-        flex: 0.9,
+        marginTop: 20,
         padding: 10,
         alignItems: 'center'
     },

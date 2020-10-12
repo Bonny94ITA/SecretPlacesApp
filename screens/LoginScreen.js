@@ -110,6 +110,26 @@ const LoginScreen = props => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    image: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center'
+    },
+    titleContainer: {
+        flex: 0.5,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    textTitle: {
+        color: Colors.title,
+        fontSize: 70,
+        fontFamily: 'Caveat-B',
+    },
     screen: {
         flex: 1,
         padding: 10,
@@ -137,26 +157,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         textAlign: 'center',
         padding: 10
-    },
-    image: {
-        flex: 1,
-        resizeMode: 'cover',
-        justifyContent: 'center'
-    },
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    titleContainer: {
-        flex: 0.5,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    textTitle: {
-        color: Colors.title,
-        fontSize: 70,
-        fontFamily: 'Caveat-B',
     },
     RegistrationStyle: {
         color: Colors.title,
