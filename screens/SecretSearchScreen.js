@@ -93,6 +93,7 @@ const SecretSearchScreen = props => {
     const [maxStar, setMaxStar] = useState(5);
 
     const [selectedValue, setSelectedValue] = useState("Cagliari");
+    const [selectedTurism, setSelectedTurism] = useState(null);
     const [pickerItems, setPickerItems] = useState([]);
     const dispatch = useDispatch();
 
@@ -265,12 +266,19 @@ const SecretSearchScreen = props => {
                                                 <View style={styles.picker}>
                                                     <RNPickerSelect
                                                         placeholder={{
-                                                            label: 'Seleziona una città...',
+                                                            label: 'Seleziona tipologia di turismo...',
                                                             value: null,
                                                         }}
                                                         selectedValue={selectedValue}
-                                                        onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                                                        items={pickerItems}
+                                                        onValueChange={(value) => setSelectedTurism(value)}
+                                                        items={[
+                                                            {label: 'Balneare', value: 'balneare'},
+                                                            {label: 'Naturalistico', value: 'naturalistico'},
+                                                            {label: 'Montano', value: 'montano'},
+                                                            {label: 'Lacustre', value: 'lacustre'},
+                                                            {label: 'Termale', value: 'termale'},
+                                                            {label: 'Sportivo', value: 'sportivo'}
+                                                        ]}
                                                     />
                                                 </View>
                                                 <View style={{marginVertical: 5}}>

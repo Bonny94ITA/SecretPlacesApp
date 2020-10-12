@@ -16,12 +16,35 @@ const HomepageScreen = props => {
             <Header title={"Homepage"}/>
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/sunset.jpg')} style={styles.image}>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.textTitle}>Secret Places</Text>
-                    </View>
-                    <View style={styles.screen}>
+                    <ScrollView>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.textTitle}>Secret Places </Text>
+                        </View>
+                        <View style={styles.screen}>
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.faq}>FAQ </Text>
+                                <Text style={styles.question}>How does free trial work?</Text>
+                                <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec
+                                    augue tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
+                                </Text>
+                                <Text style={styles.question}>Can I cancel any time?</Text>
+                                <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec
+                                    augue tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
+                                </Text>
+                                <Text style={styles.question}>What happens after my trial ended?</Text>
+                                <Text>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec augue
+                                    tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
+                                </Text>
+                                <Text style={styles.question}>Can I have a discount?</Text>
+                                <Text>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec augue
+                                    tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
+                                </Text>
 
-                    </View>
+                            </View>
+                        </View>
+                    </ScrollView>
                 </ImageBackground>
             </View>
         </View>
@@ -42,10 +65,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     titleContainer: {
-        flex: 0.5,
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 20
     },
     textTitle: {
         color: Colors.title,
@@ -57,6 +80,30 @@ const styles = StyleSheet.create({
         paddingTop: '50%',
         padding: 10,
         alignItems: 'center'
+    },
+    inputContainer: {
+        width: '100%',
+        alignItems: 'center',
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 2},
+        shadowRadius: 6,
+        shadowOpacity: 0.26,
+        elevation: 8,
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10
+    },
+    faq:{
+        color: Colors.title,
+        fontSize: 30,
+        fontFamily: 'Caveat-B',
+    },
+    question:{
+        color: Colors.title,
+        fontSize: 20,
+        alignSelf:'flex-start',
+        paddingTop: 10,
+        paddingBottom: 10
     }
 });
 

@@ -57,7 +57,7 @@ const LoginScreen = props => {
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/sunset3.jpg')} style={styles.image}>
                     <View style={styles.titleContainer}>
-                        <Text style={styles.textTitle}>Secret Places</Text>
+                        <Text style={styles.textTitle}>Secret Places </Text>
                     </View>
                     <View style={styles.screen}>
                         <View style={styles.inputContainer}>
