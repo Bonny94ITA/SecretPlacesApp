@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, YellowBox} from 'react-native';
 import * as Font from 'expo-font';
 import {AppLoading} from "expo";
 import {Provider as PaperProvider} from 'react-native-paper';
@@ -10,6 +10,15 @@ import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import normalSearchReducer from "./store/reducers/ns";
 import secretSearchReducer from "./store/reducers/ss";
+import _ from 'lodash';
+
+YellowBox.ignoreWarnings(['componentWillReceiveProps']);
+const _console = _.clone(console);
+console.warn = message => {
+    if (message.indexOf('componentWillReceiveProps') <= -1) {
+        _console.warn(message);
+    }
+};
 
 const rootReducer = combineReducers({
     auth: authReducer,

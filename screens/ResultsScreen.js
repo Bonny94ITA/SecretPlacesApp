@@ -13,16 +13,6 @@ import {AntDesign, Entypo} from '@expo/vector-icons';
 import Header from '../components/Header';
 import {useSelector} from 'react-redux';
 import Dialog, {DialogTitle, SlideAnimation, DialogFooter, DialogButton} from 'react-native-popup-dialog';
-import {YellowBox} from 'react-native';
-import _ from 'lodash';
-
-YellowBox.ignoreWarnings(['componentWillReceiveProps']);
-const _console = _.clone(console);
-console.warn = message => {
-    if (message.indexOf('componentWillReceiveProps') <= -1) {
-        _console.warn(message);
-    }
-};
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);

@@ -49,7 +49,33 @@ const BookingsScreen = () => {
             const userData = await AsyncStorage.getItem('userData');
             const jsonObj = JSON.parse(userData);
             const bookings = await getBookings(dispatch, jsonObj.token, 1);
-            console.log(bookings);
+            const formattedBookings = [];
+            const formattedSojourns = [];
+
+            bookings.forEach(booking => {
+                booking.sojourns.forEach(element => {
+                    formattedSojourns.push({
+                        arrival: element.arrival,
+                        departure: element.departure,
+                        hotelName: element.room.hotel.name,
+                        address: element.room.hotel.address,
+                        hotelCity: element.room.hotel.city.name,
+                        stars: element.room.hotel.stars,
+                        numPlaces: element.room.numPlaces,
+                        totalPrice: element.totalPrice
+                    })
+                })
+            });
+
+            bookings.forEach(element => {
+                formattedBookings.push({
+                    id: element.id,
+                    sojourns: formattedSojourns,
+                    totalPrice: element.totalPrice
+                });
+            });
+
+            //console.log(formattedBookings);
         }
 
         fetchBookings(dispatch);
