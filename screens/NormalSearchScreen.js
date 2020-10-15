@@ -10,9 +10,9 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+import Header from '../components/Header';
 import Colors from '../constants/colors';
 import {AntDesign} from '@expo/vector-icons';
-import Header from '../components/Header';
 import {Formik} from 'formik';
 import serverURL from '../components/ServerInfo';
 import {useDispatch} from 'react-redux';

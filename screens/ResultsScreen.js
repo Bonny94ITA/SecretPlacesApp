@@ -8,9 +8,9 @@ import {
     Image
 } from 'react-native';
 
+import Header from '../components/Header';
 import Colors from '../constants/colors';
 import {AntDesign, Entypo} from '@expo/vector-icons';
-import Header from '../components/Header';
 import {useSelector} from 'react-redux';
 import Dialog, {DialogTitle, SlideAnimation, DialogFooter, DialogButton} from 'react-native-popup-dialog';
 

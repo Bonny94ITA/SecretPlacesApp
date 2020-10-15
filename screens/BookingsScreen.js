@@ -1,11 +1,98 @@
-import {AsyncStorage, Button, StyleSheet, Text, View} from "react-native";
-import Colors from "../constants/colors";
-import HomepageScreen from "./HomepageScreen";
-import Header from "../components/Header";
-import serverURL from "../components/ServerInfo";
-import * as authActions from "../store/actions/auth";
-import {useDispatch} from "react-redux";
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import {
+    AsyncStorage,
+    Button,
+    FlatList,
+    Image,
+    StyleSheet,
+    Text,
+    View
+} from 'react-native';
+
+import Header from '../components/Header';
+import Colors from '../constants/colors';
+import {AntDesign, Entypo} from '@expo/vector-icons';
+import serverURL from '../components/ServerInfo';
+import * as authActions from '../store/actions/auth';
+import {useDispatch} from 'react-redux';
+import Dialog, {DialogButton, DialogFooter, DialogTitle, SlideAnimation} from "react-native-popup-dialog";
+
+const Item = ({item}) => {
+    const [isVisible, setVisible] = useState(false);
+    console.log(item)
+    const items = []
+    item.sojourns.forEach(element => {
+        items.push(<Text style={[styles.text, {fontWeight: 'bold'}]}>{element.hotelName}</Text>);
+    });
+
+    return (
+        <View style={styles.item}>
+            <View style={styles.columnContainer}>
+                <View style={styles.rowContainer}>
+                    <AntDesign name="home" size={20} style={styles.icon}/>
+
+                    {items}
+                    <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                    <Text style={styles.text}>{item.hotelAddress}</Text>
+                </View>
+                <View style={styles.rowContainer}>
+                    <View style={styles.columnContainer}>
+                        <View style={styles.rowContainer}>
+                            <AntDesign name="staro" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.hotelStars}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <AntDesign name="user" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.numPlaces}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <Entypo name="credit" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.ppn}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.columnContainer}>
+                        <Image
+                            style={styles.image}
+                            source={require('../assets/hotel.jpg')}
+                        />
+                    </View>
+                </View>
+            </View>
+            <Button
+                title="Paga Ora!"
+                onPress={() => setVisible(true)}
+                color={Colors.primary}
+            />
+            <Dialog
+                visible={isVisible}
+                dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                })}
+                onTouchOutside={() => {
+                    setVisible(false);
+                }}
+                dialogTitle={<DialogTitle title="Sei sicuro di voler prenotare?"/>}
+                footer={
+                    <DialogFooter>
+                        <DialogButton
+                            text="Annulla"
+                            onPress={() => {
+                                setVisible(false);
+                            }}
+                        />
+                        <DialogButton
+                            text="Conferma"
+                            onPress={() => {
+                            }}
+                        />
+                    </DialogFooter>
+                }
+            >
+            </Dialog>
+        </View>
+    );
+}
+
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -42,6 +129,7 @@ async function getBookings(dispatch, token, userId) {
 }
 
 const BookingsScreen = () => {
+    const [bookings, setBookings] = useState([]);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -74,16 +162,31 @@ const BookingsScreen = () => {
                     totalPrice: element.totalPrice
                 });
             });
-
+            setBookings(formattedBookings);
             //console.log(formattedBookings);
         }
 
         fetchBookings(dispatch);
     }, []);
 
+    const renderItem = ({item}) => {
+        return (
+            <Item item={item}/>
+        );
+    };
+
     return (
         <View style={styles.header}>
             <Header title={"Prenotazioni"}/>
+            <View style={styles.container}>
+                <View style={styles.outputContainer}>
+                    <FlatList
+                        data={bookings}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id.toString()}
+                    />
+                </View>
+            </View>
         </View>
     );
 };
@@ -92,10 +195,45 @@ const styles = StyleSheet.create({
     header: {
         flex: 1
     },
-    screen: {
+    container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: Colors.background
+    },
+    outputContainer: {
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 2},
+        shadowRadius: 6,
+        shadowOpacity: 0.26,
+        elevation: 8,
+        padding: 20
+    },
+    item: {
+        backgroundColor: Colors.containerBackground,
+        padding: 10,
+        margin: 10,
+        borderRadius: 10
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingBottom: 10
+    },
+    columnContainer: {
+        flexDirection: 'column',
+        paddingRight: 10
+    },
+    icon: {
+        padding: 10,
+        color: 'black'
+    },
+    text: {
+        fontSize: 20
+    },
+    image: {
+        width: 175,
+        height: 150,
+        borderRadius: 25
     }
 });
 
