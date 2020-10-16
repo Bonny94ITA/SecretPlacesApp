@@ -27,13 +27,13 @@ const Item = ({item}) => {
                     <AntDesign name="home" size={20} style={styles.icon}/>
                     <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
                     <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                    <Text style={styles.text}>{item.hotelAddress}</Text>
+                    <Text style={styles.text}>{item.address}</Text>
                 </View>
                 <View style={styles.rowContainer}>
                     <View style={styles.columnContainer}>
                         <View style={styles.rowContainer}>
                             <AntDesign name="staro" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.hotelStars}</Text>
+                            <Text style={styles.text}>{item.stars}</Text>
                         </View>
                         <View style={styles.rowContainer}>
                             <AntDesign name="user" size={20} style={styles.icon}/>
@@ -41,7 +41,7 @@ const Item = ({item}) => {
                         </View>
                         <View style={styles.rowContainer}>
                             <Entypo name="credit" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.ppn}</Text>
+                            <Text style={styles.text}>{item.pricePerNight}</Text>
                         </View>
                     </View>
                     <View style={styles.columnContainer}>
@@ -119,6 +119,7 @@ const BookingsScreen = () => {
                         hotelCity: element.room.hotel.city.name,
                         stars: element.room.hotel.stars,
                         numPlaces: element.room.numPlaces,
+                        pricePerNight: element.room.pricePerNight,
                         totalPrice: element.totalPrice
                     })
                 })
