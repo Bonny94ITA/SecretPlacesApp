@@ -19,19 +19,14 @@ import Dialog, {DialogButton, DialogFooter, DialogTitle, SlideAnimation} from "r
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
-    console.log(item)
+    //console.log(item)
     const items = []
-    item.sojourns.forEach(element => {
-        items.push(<Text style={[styles.text, {fontWeight: 'bold'}]}>{element.hotelName}</Text>);
-    });
-
-    return (
-        <View style={styles.item}>
+    item.sojourns.forEach(item => {
+        items.push(<View style={styles.item}>
             <View style={styles.columnContainer}>
                 <View style={styles.rowContainer}>
                     <AntDesign name="home" size={20} style={styles.icon}/>
-
-                    {items}
+                    <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
                     <AntDesign name="enviromento" size={20} style={styles.icon}/>
                     <Text style={styles.text}>{item.hotelAddress}</Text>
                 </View>
@@ -59,7 +54,7 @@ const Item = ({item}) => {
                 </View>
             </View>
             <Button
-                title="Paga Ora!"
+                title="Prenota"
                 onPress={() => setVisible(true)}
                 color={Colors.primary}
             />
@@ -89,6 +84,12 @@ const Item = ({item}) => {
                 }
             >
             </Dialog>
+        </View>);
+    });
+
+    return (
+        <View>
+            {items}
         </View>
     );
 }
@@ -117,6 +118,7 @@ async function getBookings(dispatch, token, userId) {
     }))
         .then(async function (response) {
             bookings = await response.json();
+            console.log(bookings);
         }, function (error) {
             dispatch(authActions.submitLogout());
             console.log(error);
@@ -138,9 +140,9 @@ const BookingsScreen = () => {
             const jsonObj = JSON.parse(userData);
             const bookings = await getBookings(dispatch, jsonObj.token, 1);
             const formattedBookings = [];
-            const formattedSojourns = [];
 
             bookings.forEach(booking => {
+                const formattedSojourns = [];
                 booking.sojourns.forEach(element => {
                     formattedSojourns.push({
                         arrival: element.arrival,
@@ -153,16 +155,16 @@ const BookingsScreen = () => {
                         totalPrice: element.totalPrice
                     })
                 })
-            });
 
-            bookings.forEach(element => {
                 formattedBookings.push({
-                    id: element.id,
+                    id: booking.id,
                     sojourns: formattedSojourns,
-                    totalPrice: element.totalPrice
+                    totalPrice: booking.totalPrice
                 });
             });
+
             setBookings(formattedBookings);
+            console.log(formattedBookings);
             //console.log(formattedBookings);
         }
 
@@ -170,9 +172,11 @@ const BookingsScreen = () => {
     }, []);
 
     const renderItem = ({item}) => {
-        return (
-            <Item item={item}/>
-        );
+        if (item.sojourns.length > 0) {
+            return (
+                <Item item={item}/>
+            );
+        }
     };
 
     return (
