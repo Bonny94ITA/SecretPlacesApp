@@ -10,9 +10,15 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
+import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import {useSelector} from 'react-redux';
-import Dialog, {DialogTitle, SlideAnimation, DialogFooter, DialogButton} from 'react-native-popup-dialog';
+import Dialog, {
+    SlideAnimation,
+    DialogFooter,
+    DialogButton,
+    DialogContent
+} from 'react-native-popup-dialog';
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
@@ -62,7 +68,6 @@ const Item = ({item}) => {
                 onTouchOutside={() => {
                     setVisible(false);
                 }}
-                dialogTitle={<DialogTitle title="Sei sicuro di voler prenotare?"/>}
                 footer={
                     <DialogFooter>
                         <DialogButton
@@ -79,6 +84,11 @@ const Item = ({item}) => {
                     </DialogFooter>
                 }
             >
+                <DialogContent style={styles.popupContainer}>
+                    <Text style={styles.popup}>
+                        Sei sicuro di voler prenotare?
+                    </Text>
+                </DialogContent>
             </Dialog>
         </View>
     );
@@ -159,6 +169,12 @@ const styles = StyleSheet.create({
         width: 175,
         height: 150,
         borderRadius: 25
+    },
+    popup: {
+        fontWeight: 'bold',
+        fontSize: 15,
+        paddingTop: 25,
+        textAlign: 'center'
     }
 });
 

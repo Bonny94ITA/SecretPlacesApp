@@ -41,7 +41,6 @@ const HomepageScreen = props => {
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec augue
                                     tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
                                 </Text>
-
                             </View>
                         </View>
                     </ScrollView>

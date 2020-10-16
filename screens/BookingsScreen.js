@@ -15,14 +15,20 @@ import {AntDesign, Entypo} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
-import Dialog, {DialogButton, DialogFooter, DialogTitle, SlideAnimation} from "react-native-popup-dialog";
+import Dialog, {
+    DialogButton,
+    DialogFooter,
+    SlideAnimation,
+    DialogContent
+} from 'react-native-popup-dialog';
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
-    //console.log(item)
-    const items = []
+    const items = [];
+
     item.sojourns.forEach(item => {
-        items.push(<View style={styles.columnContainer}>
+        items.push(
+            <View style={styles.columnContainer}>
                 <View style={styles.rowContainer}>
                     <AntDesign name="home" size={20} style={styles.icon}/>
                     <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
@@ -51,16 +57,57 @@ const Item = ({item}) => {
                         />
                     </View>
                 </View>
-            </View>);
+            </View>
+        );
     });
 
     return (
-        <View style={styles.item}>
-            {items}
+        <View>
+            <View style={styles.item}>
+                {items}
+                <Button
+                    title="Paga"
+                    color={Colors.primary}
+                />
+                <Button
+                    title="Cancella"
+                    onPress={() => setVisible(true)}
+                    color={Colors.primary}
+                />
+            </View>
+            <Dialog
+                visible={isVisible}
+                dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                })}
+                onTouchOutside={() => {
+                    setVisible(false);
+                }}
+                footer={
+                    <DialogFooter>
+                        <DialogButton
+                            text="Annulla"
+                            onPress={() => {
+                                setVisible(false);
+                            }}
+                        />
+                        <DialogButton
+                            text="Conferma"
+                            onPress={() => {
+                            }}
+                        />
+                    </DialogFooter>
+                }
+            >
+                <DialogContent style={styles.popupContainer}>
+                    <Text style={styles.popup}>
+                        Vuoi cancellare la prenotazione?
+                    </Text>
+                </DialogContent>
+            </Dialog>
         </View>
     );
 }
-
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -74,8 +121,6 @@ function timeout(milliseconds, promise) {
 async function getBookings(dispatch, token, userId) {
     let bookings = null;
 
-    console.log(userId);
-    console.log(token)
     await timeout(5000, fetch(serverURL + '/bookings/id/' + +userId, {
         method: 'GET',
         headers: {
@@ -85,7 +130,6 @@ async function getBookings(dispatch, token, userId) {
     }))
         .then(async function (response) {
             bookings = await response.json();
-            console.log(bookings);
         }, function (error) {
             dispatch(authActions.submitLogout());
             console.log(error);
@@ -130,10 +174,7 @@ const BookingsScreen = () => {
                     totalPrice: booking.totalPrice
                 });
             });
-
             setBookings(formattedBookings);
-            console.log(formattedBookings);
-            //console.log(formattedBookings);
         }
 
         fetchBookings(dispatch);
@@ -206,6 +247,12 @@ const styles = StyleSheet.create({
         width: 175,
         height: 150,
         borderRadius: 25
+    },
+    popup: {
+        fontWeight: 'bold',
+        fontSize: 15,
+        paddingTop: 25,
+        textAlign: 'center'
     }
 });
 
