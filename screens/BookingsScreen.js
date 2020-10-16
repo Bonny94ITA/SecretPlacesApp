@@ -22,8 +22,7 @@ const Item = ({item}) => {
     //console.log(item)
     const items = []
     item.sojourns.forEach(item => {
-        items.push(<View style={styles.item}>
-            <View style={styles.columnContainer}>
+        items.push(<View style={styles.columnContainer}>
                 <View style={styles.rowContainer}>
                     <AntDesign name="home" size={20} style={styles.icon}/>
                     <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
@@ -52,43 +51,11 @@ const Item = ({item}) => {
                         />
                     </View>
                 </View>
-            </View>
-            <Button
-                title="Prenota"
-                onPress={() => setVisible(true)}
-                color={Colors.primary}
-            />
-            <Dialog
-                visible={isVisible}
-                dialogAnimation={new SlideAnimation({
-                    slideFrom: 'bottom',
-                })}
-                onTouchOutside={() => {
-                    setVisible(false);
-                }}
-                dialogTitle={<DialogTitle title="Sei sicuro di voler prenotare?"/>}
-                footer={
-                    <DialogFooter>
-                        <DialogButton
-                            text="Annulla"
-                            onPress={() => {
-                                setVisible(false);
-                            }}
-                        />
-                        <DialogButton
-                            text="Conferma"
-                            onPress={() => {
-                            }}
-                        />
-                    </DialogFooter>
-                }
-            >
-            </Dialog>
-        </View>);
+            </View>);
     });
 
     return (
-        <View>
+        <View style={styles.item}>
             {items}
         </View>
     );
