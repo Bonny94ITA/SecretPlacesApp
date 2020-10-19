@@ -22,49 +22,56 @@ import Dialog, {
     DialogContent
 } from 'react-native-popup-dialog';
 
+const Sojourn = (props) => {
+    return props.sojourn;
+}
+
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
-    const items = [];
 
-    item.sojourns.forEach(item => {
-        items.push(
-            <View style={styles.columnContainer}>
-                <View style={styles.rowContainer}>
-                    <AntDesign name="home" size={20} style={styles.icon}/>
-                    <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
-                    <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                    <Text style={styles.text}>{item.address}</Text>
-                </View>
-                <View style={styles.rowContainer}>
-                    <View style={styles.columnContainer}>
-                        <View style={styles.rowContainer}>
-                            <AntDesign name="staro" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.stars}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <AntDesign name="user" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.numPlaces}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <Entypo name="credit" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.pricePerNight}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.columnContainer}>
-                        <Image
-                            style={styles.image}
-                            source={require('../assets/hotel.jpg')}
-                        />
-                    </View>
-                </View>
-            </View>
-        );
-    });
+    const sojourns = item.sojourns.map((sojourn) =>
+        <Sojourn key={sojourn.id.toString()}
+                 sojourn={
+                     <View style={styles.columnContainer}>
+                         <View style={styles.rowContainer}>
+                             <AntDesign name="home" size={20} style={styles.icon}/>
+                             <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
+                             <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                             <Text style={styles.text}>{sojourn.address}</Text>
+                         </View>
+                         <View style={styles.rowContainer}>
+                             <View style={styles.columnContainer}>
+                                 <View style={styles.rowContainer}>
+                                     <AntDesign name="staro" size={20} style={styles.icon}/>
+                                     <Text style={styles.text}>{sojourn.stars}</Text>
+                                 </View>
+                                 <View style={styles.rowContainer}>
+                                     <AntDesign name="user" size={20} style={styles.icon}/>
+                                     <Text style={styles.text}>{sojourn.numPlaces}</Text>
+                                 </View>
+                                 <View style={styles.rowContainer}>
+                                     <Entypo name="credit" size={20} style={styles.icon}/>
+                                     <Text style={styles.text}>{sojourn.pricePerNight}</Text>
+                                 </View>
+                             </View>
+                             <View style={styles.columnContainer}>
+                                 <Image
+                                     style={styles.image}
+                                     source={require('../assets/hotel.jpg')}
+                                 />
+                             </View>
+                         </View>
+                     </View>
+                 }
+        />
+    );
 
     return (
         <View>
             <View style={styles.item}>
-                {items}
+
+                {sojourns}
+
                 <Button
                     title="Paga"
                     color={Colors.primary}
@@ -156,6 +163,7 @@ const BookingsScreen = () => {
                 const formattedSojourns = [];
                 booking.sojourns.forEach(element => {
                     formattedSojourns.push({
+                        id: element.id,
                         arrival: element.arrival,
                         departure: element.departure,
                         hotelName: element.room.hotel.name,
@@ -183,14 +191,15 @@ const BookingsScreen = () => {
     const renderItem = ({item}) => {
         if (item.sojourns.length > 0) {
             return (
-                <Item item={item}/>
+                <Item
+                    item={item}/>
             );
         }
     };
 
     return (
         <View style={styles.header}>
-            <Header title={"Prenotazioni"}/>
+            <Header title={"Prenotazioni "}/>
             <View style={styles.container}>
                 <View style={styles.outputContainer}>
                     <FlatList
