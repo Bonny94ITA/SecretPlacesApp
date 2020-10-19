@@ -27,6 +27,7 @@ const Sojourn = (props) => {
 }
 
 const Item = ({item}) => {
+    const dispatch = useDispatch();
     const [isVisible, setVisible] = useState(false);
 
     const sojourns = item.sojourns.map((sojourn) =>
@@ -100,7 +101,10 @@ const Item = ({item}) => {
                         />
                         <DialogButton
                             text="Conferma"
-                            onPress={() => {
+                            onPress={async () => {
+                                const userData = await AsyncStorage.getItem('userData');
+                                const jsonObj = JSON.parse(userData);
+                                const res = await deleteBooking(dispatch, jsonObj.token, 210);
                             }}
                         />
                     </DialogFooter>
@@ -146,6 +150,30 @@ async function getBookings(dispatch, token, userId) {
         });
 
     return bookings;
+}
+
+async function deleteBooking(dispatch, token, bookingId) {
+    let res = null;
+
+    await timeout(5000, fetch(serverURL + '/bookings/delete/' + +bookingId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            token_info: JSON.stringify({token: token, type: 0})
+        }
+    }))
+        .then(async function (response) {
+            res = await response.json();
+            console.log(res);
+        }, function (error) {
+            dispatch(authActions.submitLogout());
+            console.log(error);
+        }).catch(function (error) {
+            dispatch(authActions.submitLogout());
+            console.log(error);
+        });
+
+    return res;
 }
 
 const BookingsScreen = () => {
