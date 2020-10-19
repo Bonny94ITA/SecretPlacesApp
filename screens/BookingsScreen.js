@@ -70,9 +70,7 @@ const Item = ({item}) => {
     return (
         <View>
             <View style={styles.item}>
-
                 {sojourns}
-
                 <Button
                     title="Paga"
                     color={Colors.primary}
