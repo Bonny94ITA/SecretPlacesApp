@@ -26,7 +26,7 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const Item = ({item}) => {
+const Item = ({item, bookings, setBookings}) => {
     const dispatch = useDispatch();
     const [isVisible, setVisible] = useState(false);
 
@@ -102,7 +102,14 @@ const Item = ({item}) => {
                             onPress={async () => {
                                 const userData = await AsyncStorage.getItem('userData');
                                 const jsonObj = JSON.parse(userData);
-                                const res = await deleteBooking(dispatch, jsonObj.token, 210);
+                                const res = await deleteBooking(dispatch, jsonObj.token, item.id);
+
+                                let tmp = bookings.filter(function(booking) {
+                                    return booking.id !== item.id;
+                                });
+
+                                setBookings(tmp);
+                                setVisible(false);
                             }}
                         />
                     </DialogFooter>
@@ -230,7 +237,18 @@ const BookingsScreen = () => {
                 <View style={styles.outputContainer}>
                     <FlatList
                         data={bookings}
-                        renderItem={renderItem}
+                        //renderItem={renderItem}
+                        renderItem={({item}) => {
+                            if (item.sojourns.length > 0) {
+                                return (
+                                    <Item
+                                        item={item}
+                                        bookings={bookings}
+                                        setBookings={setBookings}
+                                    />
+                                );
+                            }
+                        }}
                         keyExtractor={item => item.id.toString()}
                     />
                 </View>
