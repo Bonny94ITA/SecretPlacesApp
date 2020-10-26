@@ -5,23 +5,61 @@ import {
     FlatList,
     Text,
     Button,
-    Image
+    Image, AsyncStorage
 } from 'react-native';
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
 import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import Dialog, {
     SlideAnimation,
     DialogFooter,
     DialogButton,
     DialogContent
 } from 'react-native-popup-dialog';
+import serverURL from "../components/ServerInfo";
+import * as authActions from "../store/actions/auth";
+
+function timeout(milliseconds, promise) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject(new Error("Timeout exceeded."))
+        }, milliseconds);
+        promise.then(resolve, reject);
+    });
+}
+
+async function addBooking(dispatch, booking, guestId, token) {
+    let res = null;
+
+    await timeout(5000, fetch(serverURL + '/bookings/insert', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            token_info: JSON.stringify({token: token, type: 0})
+        },
+        body: JSON.stringify({
+            guest: guestId,
+            booking: booking
+        })
+    })).then(async function (response) {
+        res = await response.json();
+    }, function (error) {
+        dispatch(authActions.submitLogout());
+        console.log(error);
+    }).catch(function (error) {
+        dispatch(authActions.submitLogout());
+        console.log(error);
+    });
+
+    return res;
+}
 
 const Item = ({item}) => {
     const [isVisible, setVisible] = useState(false);
+    const dispatch = useDispatch();
 
     return (
         <View style={styles.item}>
@@ -79,6 +117,26 @@ const Item = ({item}) => {
                         <DialogButton
                             text="Conferma"
                             onPress={() => {
+                                setVisible(false);
+
+                                async function foo() {
+                                    const userData = await AsyncStorage.getItem('userData');
+                                    const jsonObj = JSON.parse(userData);
+
+                                    const booking = {
+                                        sojourns: [
+                                            {
+                                                arrival: "12/07/2020",
+                                                departure: "24/08/2020",
+                                                room: {id: item.idRoom}
+                                            }
+                                        ]
+                                    }
+
+                                    addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                }
+
+                                foo();
                             }}
                         />
                     </DialogFooter>

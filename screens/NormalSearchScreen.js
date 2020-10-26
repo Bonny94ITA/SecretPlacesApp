@@ -145,10 +145,12 @@ const NormalSearchScreen = props => {
                                             formattedFreeRooms.push({
                                                 hotelName: element.hotel.name,
                                                 hotelStars: element.hotel.stars,
-                                                hotelAddress: element.hotel.address,
+                                                cityName: element.hotel.city.name,
                                                 idRoom: element.id,
                                                 numPlaces: element.numPlaces,
-                                                ppn: element.pricePerNight
+                                                ppn: element.pricePerNight,
+                                                arrival: dateArrival,
+                                                departure: dateDeparture
                                             });
                                         });
                                         dispatch(setFreeRooms(formattedFreeRooms));

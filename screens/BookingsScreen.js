@@ -100,6 +100,7 @@ const Item = ({item, bookings, setBookings}) => {
                         <DialogButton
                             text="Conferma"
                             onPress={async () => {
+                                setVisible(false);
                                 const userData = await AsyncStorage.getItem('userData');
                                 const jsonObj = JSON.parse(userData);
                                 const res = await deleteBooking(dispatch, jsonObj.token, item.id);
@@ -109,7 +110,6 @@ const Item = ({item, bookings, setBookings}) => {
                                 });
 
                                 setBookings(tmp);
-                                setVisible(false);
                             }}
                         />
                     </DialogFooter>
@@ -185,41 +185,39 @@ const BookingsScreen = () => {
     const [bookings, setBookings] = useState([]);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        async function fetchBookings(dispatch) {
-            const userData = await AsyncStorage.getItem('userData');
-            const jsonObj = JSON.parse(userData);
-            const bookings = await getBookings(dispatch, jsonObj.token, 1);
-            const formattedBookings = [];
+    async function fetchBookings(dispatch) {
+        const userData = await AsyncStorage.getItem('userData');
+        const jsonObj = JSON.parse(userData);
+        const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
+        const formattedBookings = [];
 
-            bookings.forEach(booking => {
-                const formattedSojourns = [];
-                booking.sojourns.forEach(element => {
-                    formattedSojourns.push({
-                        id: element.id,
-                        arrival: element.arrival,
-                        departure: element.departure,
-                        hotelName: element.room.hotel.name,
-                        address: element.room.hotel.address,
-                        hotelCity: element.room.hotel.city.name,
-                        stars: element.room.hotel.stars,
-                        numPlaces: element.room.numPlaces,
-                        pricePerNight: element.room.pricePerNight,
-                        totalPrice: element.totalPrice
-                    })
+        bookings.forEach(booking => {
+            const formattedSojourns = [];
+            booking.sojourns.forEach(element => {
+                formattedSojourns.push({
+                    id: element.id,
+                    arrival: element.arrival,
+                    departure: element.departure,
+                    hotelName: element.room.hotel.name,
+                    address: element.room.hotel.address,
+                    hotelCity: element.room.hotel.city.name,
+                    stars: element.room.hotel.stars,
+                    numPlaces: element.room.numPlaces,
+                    pricePerNight: element.room.pricePerNight,
+                    totalPrice: element.totalPrice
                 })
+            })
 
-                formattedBookings.push({
-                    id: booking.id,
-                    sojourns: formattedSojourns,
-                    totalPrice: booking.totalPrice
-                });
+            formattedBookings.push({
+                id: booking.id,
+                sojourns: formattedSojourns,
+                totalPrice: booking.totalPrice
             });
-            setBookings(formattedBookings);
-        }
+        });
+        setBookings(formattedBookings);
+    }
 
-        fetchBookings(dispatch);
-    }, []);
+    fetchBookings(dispatch);
 
     const renderItem = ({item}) => {
         if (item.sojourns.length > 0) {
