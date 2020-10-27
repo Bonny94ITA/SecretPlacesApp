@@ -105,7 +105,7 @@ const Item = ({item, bookings, setBookings}) => {
                                 const jsonObj = JSON.parse(userData);
                                 const res = await deleteBooking(dispatch, jsonObj.token, item.id);
 
-                                let tmp = bookings.filter(function(booking) {
+                                let tmp = bookings.filter(function (booking) {
                                     return booking.id !== item.id;
                                 });
 
@@ -219,15 +219,6 @@ const BookingsScreen = () => {
 
     fetchBookings(dispatch);
 
-    const renderItem = ({item}) => {
-        if (item.sojourns.length > 0) {
-            return (
-                <Item
-                    item={item}/>
-            );
-        }
-    };
-
     return (
         <View style={styles.header}>
             <Header title={"Prenotazioni "}/>
@@ -235,7 +226,6 @@ const BookingsScreen = () => {
                 <View style={styles.outputContainer}>
                     <FlatList
                         data={bookings}
-                        //renderItem={renderItem}
                         renderItem={({item}) => {
                             if (item.sojourns.length > 0) {
                                 return (
