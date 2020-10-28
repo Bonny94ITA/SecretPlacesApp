@@ -23,6 +23,7 @@ import {setFreeRooms} from '../store/actions/ns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import {Rating, AirbnbRating} from 'react-native-ratings';
+import {setAlternatives} from "../store/actions/ss";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -171,18 +172,30 @@ const SecretSearchScreen = props => {
                                                 }, {region: "Sardegna", city: "Cagliari"}],
                                                 500, 3, "Sardegna", "Sicilia", 4, 2,
                                                 ["balenare", "lacustre", "naturalistico"], "12/07/2020", "24/08/2020", dispatch);
-                                            // alternatives.forEach(element => {
-                                            //     formattedAlteratives.push({
-                                            //         hotelName: element.hotel.name,
-                                            //         hotelStars: element.hotel.stars,
-                                            //         hotelAddress: element.hotel.address,
-                                            //         idRoom: element.id,
-                                            //         numPlaces: element.numPlaces,
-                                            //         ppn: element.pricePerNight
-                                            //     });
-                                            // });
-                                            console.log(alternatives);
-                                            //dispatch(setFreeRooms(formattedAlteratives));
+
+                                            alternatives.forEach(element => {
+                                                const formattedSojourns = [];
+                                                element.sojourns.forEach(sojourn => {
+                                                    formattedSojourns.push({
+                                                        id: sojourn.id,
+                                                        arrival: sojourn.arrival,
+                                                        departure: sojourn.departure,
+                                                        hotelName: sojourn.room.hotel.name,
+                                                        address: sojourn.room.hotel.address,
+                                                        hotelCity: sojourn.room.hotel.city.name,
+                                                        stars: sojourn.room.hotel.stars,
+                                                        numPlaces: sojourn.room.numPlaces,
+                                                        pricePerNight: sojourn.room.pricePerNight,
+                                                        totalPrice: sojourn.totalPrice
+                                                    });
+                                                });
+                                                formattedAlteratives.push({
+                                                    days: element.days,
+                                                    sojourns: formattedSojourns,
+                                                    totalPrice: element.totalPrice
+                                                });
+                                            });
+                                            dispatch(setAlternatives(formattedAlteratives));
                                             props.navigation.navigate('resultsSearch');
                                         }}
                                     >

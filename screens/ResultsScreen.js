@@ -57,7 +57,11 @@ async function addBooking(dispatch, booking, guestId, token) {
     return res;
 }
 
-const Item = ({item}) => {
+const Alternative = ({item}) => {
+
+}
+
+const FreeRoom = ({item}) => {
     const [isVisible, setVisible] = useState(false);
     const dispatch = useDispatch();
 
@@ -163,9 +167,15 @@ const ResultsScreen = props => {
         data = freeRooms
 
     const renderItem = ({item}) => {
-        return (
-            <Item item={item}/>
-        );
+        if (freeRooms != null) {
+            return (
+                <FreeRoom item={item}/>
+            );
+        } else {
+            return (
+                <Alternative item={item}/>
+            );
+        }
     };
 
     return (
