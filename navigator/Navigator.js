@@ -14,7 +14,7 @@ import SecretSearchScreen from '../screens/SecretSearchScreen';
 import BookingsScreen from '../screens/BookingsScreen';
 import RegistrationScreen from "../screens/RegistrationScreen";
 import {useDispatch} from "react-redux";
-import ResultsScreen from "../screens/ResultsScreen";
+import ResultsScreen from '../screens/ResultsScreen';
 
 const NormalSearchStackNavigator = createStackNavigator({
         normalSearch: NormalSearchScreen,
