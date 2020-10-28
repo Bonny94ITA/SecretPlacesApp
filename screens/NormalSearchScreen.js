@@ -146,6 +146,7 @@ const NormalSearchScreen = props => {
                                                 hotelName: element.hotel.name,
                                                 hotelStars: element.hotel.stars,
                                                 cityName: element.hotel.city.name,
+                                                address: element.hotel.address,
                                                 idRoom: element.id,
                                                 numPlaces: element.numPlaces,
                                                 ppn: element.pricePerNight,

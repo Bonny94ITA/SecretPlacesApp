@@ -58,7 +58,98 @@ async function addBooking(dispatch, booking, guestId, token) {
 }
 
 const Alternative = ({item}) => {
+    const [isVisible, setVisible] = useState(false);
+    const dispatch = useDispatch();
 
+    return (
+        <View style={styles.item}>
+            <View style={styles.columnContainer}>
+                <View style={styles.rowContainer}>
+                    <AntDesign name="home" size={20} style={styles.icon}/>
+                    <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.sojourns.hotelName}</Text>
+                    <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                    {/*<Text style={styles.text}>{item.sojourns.address}</Text>*/}
+                </View>
+                <View style={styles.rowContainer}>
+                    <View style={styles.columnContainer}>
+                        <View style={styles.rowContainer}>
+                            <AntDesign name="staro" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.sojourns.hotelStars}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <AntDesign name="user" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.sojourns.numPlaces}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <Entypo name="credit" size={20} style={styles.icon}/>
+                            <Text style={styles.text}>{item.sojourns.ppn}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.columnContainer}>
+                        <Image
+                            style={styles.image}
+                            source={require('../assets/hotel.jpg')}
+                        />
+                    </View>
+                </View>
+            </View>
+            <Button
+                title="Prenota"
+                onPress={() => setVisible(true)}
+                color={Colors.primary}
+            />
+            <Dialog
+                visible={isVisible}
+                dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                })}
+                onTouchOutside={() => {
+                    setVisible(false);
+                }}
+                footer={
+                    <DialogFooter>
+                        <DialogButton
+                            text="Annulla"
+                            onPress={() => {
+                                setVisible(false);
+                            }}
+                        />
+                        <DialogButton
+                            text="Conferma"
+                            onPress={() => {
+                                setVisible(false);
+
+                                async function foo() {
+                                    const userData = await AsyncStorage.getItem('userData');
+                                    const jsonObj = JSON.parse(userData);
+
+                                    const booking = {
+                                        sojourns: [
+                                            {
+                                                arrival: "12/07/2020",
+                                                departure: "24/08/2020",
+                                                room: {id: item.idRoom}
+                                            }
+                                        ]
+                                    }
+
+                                    addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                }
+
+                                foo();
+                            }}
+                        />
+                    </DialogFooter>
+                }
+            >
+                <DialogContent style={styles.popupContainer}>
+                    <Text style={styles.popup}>
+                        Sei sicuro di voler prenotare?
+                    </Text>
+                </DialogContent>
+            </Dialog>
+        </View>
+    );
 }
 
 const FreeRoom = ({item}) => {
@@ -72,7 +163,7 @@ const FreeRoom = ({item}) => {
                     <AntDesign name="home" size={20} style={styles.icon}/>
                     <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
                     <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                    <Text style={styles.text}>{item.hotelAddress}</Text>
+                    <Text style={styles.text}>{item.address}</Text>
                 </View>
                 <View style={styles.rowContainer}>
                     <View style={styles.columnContainer}>
