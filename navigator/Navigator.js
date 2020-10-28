@@ -1,5 +1,5 @@
 import React from 'react';
-import {createAppContainer, createSwitchNavigator, StackActions, NavigationActions} from 'react-navigation';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createDrawerNavigator, DrawerItems} from 'react-navigation-drawer';
 import {View, Button, SafeAreaView} from 'react-native';
@@ -12,8 +12,8 @@ import StartupScreen from '../screens/StartupScreen';
 import NormalSearchScreen from '../screens/NormalSearchScreen';
 import SecretSearchScreen from '../screens/SecretSearchScreen';
 import BookingsScreen from '../screens/BookingsScreen';
-import RegistrationScreen from "../screens/RegistrationScreen";
-import {useDispatch} from "react-redux";
+import RegistrationScreen from '../screens/RegistrationScreen';
+import {useDispatch} from 'react-redux';
 import ResultsScreen from '../screens/ResultsScreen';
 
 const NormalSearchStackNavigator = createStackNavigator({
@@ -52,23 +52,22 @@ const DrawerNavigator = createDrawerNavigator(
                 <View style={{flex: 1, paddingTop: 20}}>
                     <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
                         <DrawerItems {...props}
-                         onItemPress = {
-                             ( route ) =>
-                             {
-                                 if (route.route.routeName !== "Logout") {
-                                     if (route.route.routeName === "Ricerca Normale") {
-                                         console.log("resetto Stacknav");
-                                     }
+                                     onItemPress={
+                                         (route) => {
+                                             if (route.route.routeName !== "Logout") {
+                                                 if (route.route.routeName === "Ricerca Normale") {
+                                                     console.log("resetto Stacknav");
+                                                 }
 
-                                     if (route.route.routeName === "Ricerca Segreta") {
-                                         console.log("resetto Stacknav");
-                                     }
+                                                 if (route.route.routeName === "Ricerca Segreta") {
+                                                     console.log("resetto Stacknav");
+                                                 }
 
-                                     props.onItemPress(route);
-                                     return;
-                                 }
-                             }
-                         }/>
+                                                 props.onItemPress(route);
+                                                 return;
+                                             }
+                                         }
+                                     }/>
                         <Button
                             title="Logout"
                             color={Colors.primary}
