@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useReducer} from 'react';
 import {
     View,
     StyleSheet,
@@ -57,103 +57,128 @@ async function addBooking(dispatch, booking, guestId, token) {
     return res;
 }
 
-const Alternative = ({item}) => {
-    const [isVisible, setVisible] = useState(false);
+const Sojourn = (props) => {
+    return props.sojourn;
+}
+
+const initialState = {visible: false};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'showDialog':
+            return {visible: true};
+        case 'hideDialog':
+            return {visible: false};
+        default:
+            throw new Error();
+    }
+}
+
+const Alternative = ({item, alternatives}) => {
+    const [state, dispatch_] = useReducer(reducer, initialState);
     const dispatch = useDispatch();
 
-    return (
-        <View style={styles.item}>
-            <View style={styles.columnContainer}>
-                <View style={styles.rowContainer}>
-                    <AntDesign name="home" size={20} style={styles.icon}/>
-                    <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.sojourns.hotelName}</Text>
-                    <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                    {/*<Text style={styles.text}>{item.sojourns.address}</Text>*/}
-                </View>
-                <View style={styles.rowContainer}>
-                    <View style={styles.columnContainer}>
-                        <View style={styles.rowContainer}>
-                            <AntDesign name="staro" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.sojourns.hotelStars}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <AntDesign name="user" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.sojourns.numPlaces}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <Entypo name="credit" size={20} style={styles.icon}/>
-                            <Text style={styles.text}>{item.sojourns.ppn}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.columnContainer}>
-                        <Image
-                            style={styles.image}
-                            source={require('../assets/hotel.jpg')}
-                        />
-                    </View>
-                </View>
-            </View>
-            <Button
-                title="Prenota"
-                onPress={() => setVisible(true)}
-                color={Colors.primary}
-            />
-            <Dialog
-                visible={isVisible}
-                dialogAnimation={new SlideAnimation({
-                    slideFrom: 'bottom',
-                })}
-                onTouchOutside={() => {
-                    setVisible(false);
-                }}
-                footer={
-                    <DialogFooter>
-                        <DialogButton
-                            text="Annulla"
-                            onPress={() => {
-                                setVisible(false);
-                            }}
-                        />
-                        <DialogButton
-                            text="Conferma"
-                            onPress={() => {
-                                setVisible(false);
+    const sojourns = item.sojourns.map(sojourn =>
+        <Sojourn key={sojourn.id.toString()}
+                 sojourn={
+                     <View style={styles.columnContainer}>
+                         <View style={styles.rowContainer}>
+                             <AntDesign name="home" size={20} style={styles.icon}/>
+                             <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
+                             <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                             <Text style={styles.text}>{sojourn.address}</Text>
+                         </View>
+                         <View style={styles.rowContainer}>
+                             <View style={styles.columnContainer}>
+                                 <View style={styles.rowContainer}>
+                                     <AntDesign name="staro" size={20} style={styles.icon}/>
+                                     <Text style={styles.text}>{sojourn.stars}</Text>
+                                 </View>
+                                 <View style={styles.rowContainer}>
+                                     <AntDesign name="user" size={20} style={styles.icon}/>
+                                     <Text style={styles.text}>{sojourn.numPlaces}</Text>
+                                 </View>
+                                 <View style={styles.rowContainer}>
+                                     <Entypo name="credit" size={20} style={styles.icon}/>
+                                     <Text style={styles.text}>{sojourn.pricePerNight}</Text>
+                                 </View>
+                             </View>
+                             <View style={styles.columnContainer}>
+                                 <Image
+                                     style={styles.image}
+                                     source={require('../assets/hotel.jpg')}
+                                 />
+                             </View>
+                         </View>
+                     </View>
+                 }
+        />
+    );
 
-                                async function foo() {
+    return (
+        <View>
+            <View style={styles.item}>
+                {sojourns}
+                <Button
+                    title="Prenota"
+                    onPress={() => dispatch_({type: 'showDialog'})}
+                    color={Colors.primary}
+                />
+                <Dialog
+                    visible={state.visible}
+                    dialogAnimation={new SlideAnimation({
+                        slideFrom: 'bottom',
+                    })}
+                    onTouchOutside={() => {
+                        dispatch_({type: 'hideDialog'});
+                    }}
+                    footer={
+                        <DialogFooter>
+                            <DialogButton
+                                text="Annulla"
+                                onPress={() => {
+                                    dispatch_({type: 'hideDialog'});
+                                }}
+                            />
+                            <DialogButton
+                                text="Conferma"
+                                onPress={async () => {
+                                    dispatch_({type: 'hideDialog'});
                                     const userData = await AsyncStorage.getItem('userData');
                                     const jsonObj = JSON.parse(userData);
+                                    const sojs = []
+
+                                    item.sojourns.forEach(sojourn => {
+                                        sojs.push({
+                                            arrival: sojourn.arrival,
+                                            departure: sojourn.departure,
+                                            room: {id: sojourn.idRoom}
+                                        });
+                                    });
 
                                     const booking = {
-                                        sojourns: [
-                                            {
-                                                arrival: "12/07/2020",
-                                                departure: "24/08/2020",
-                                                room: {id: item.idRoom}
-                                            }
-                                        ]
+                                        sojourns: sojs
                                     }
 
                                     addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
-                                }
-
-                                foo();
-                            }}
-                        />
-                    </DialogFooter>
-                }
-            >
-                <DialogContent style={styles.popupContainer}>
-                    <Text style={styles.popup}>
-                        Sei sicuro di voler prenotare?
-                    </Text>
-                </DialogContent>
-            </Dialog>
+                                }}
+                            />
+                        </DialogFooter>
+                    }
+                >
+                    <DialogContent style={styles.popupContainer}>
+                        <Text style={styles.popup}>
+                            Sei sicuro di voler prenotare?
+                        </Text>
+                    </DialogContent>
+                </Dialog>
+            </View>
         </View>
     );
 }
 
 const FreeRoom = ({item}) => {
-    const [isVisible, setVisible] = useState(false);
+    const [state, dispatch_] = useReducer(reducer, initialState);
     const dispatch = useDispatch();
 
     return (
@@ -190,48 +215,43 @@ const FreeRoom = ({item}) => {
             </View>
             <Button
                 title="Prenota"
-                onPress={() => setVisible(true)}
+                onPress={() => dispatch_({type: 'showDialog'})}
                 color={Colors.primary}
             />
             <Dialog
-                visible={isVisible}
+                visible={state.visible}
                 dialogAnimation={new SlideAnimation({
                     slideFrom: 'bottom',
                 })}
                 onTouchOutside={() => {
-                    setVisible(false);
+                    dispatch_({type: 'hideDialog'});
                 }}
                 footer={
                     <DialogFooter>
                         <DialogButton
                             text="Annulla"
                             onPress={() => {
-                                setVisible(false);
+                                dispatch_({type: 'hideDialog'});
                             }}
                         />
                         <DialogButton
                             text="Conferma"
-                            onPress={() => {
-                                setVisible(false);
+                            onPress={async () => {
+                                dispatch_({type: 'hideDialog'});
+                                const userData = await AsyncStorage.getItem('userData');
+                                const jsonObj = JSON.parse(userData);
 
-                                async function foo() {
-                                    const userData = await AsyncStorage.getItem('userData');
-                                    const jsonObj = JSON.parse(userData);
-
-                                    const booking = {
-                                        sojourns: [
-                                            {
-                                                arrival: "12/07/2020",
-                                                departure: "24/08/2020",
-                                                room: {id: item.idRoom}
-                                            }
-                                        ]
-                                    }
-
-                                    addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                const booking = {
+                                    sojourns: [
+                                        {
+                                            arrival: "12/07/2020",
+                                            departure: "24/08/2020",
+                                            room: {id: item.idRoom}
+                                        }
+                                    ]
                                 }
 
-                                foo();
+                                addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
                             }}
                         />
                     </DialogFooter>
@@ -250,39 +270,52 @@ const FreeRoom = ({item}) => {
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
     const alternatives = useSelector(state => state.secretSearch.alternatives);
-    let data;
 
-    if (alternatives != null)
-        data = alternatives
-    else
-        data = freeRooms
-
-    const renderItem = ({item}) => {
-        if (freeRooms != null) {
-            return (
-                <FreeRoom item={item}/>
-            );
-        } else {
-            return (
-                <Alternative item={item}/>
-            );
-        }
-    };
-
-    return (
-        <View style={styles.header}>
-            <Header title={"Risultati Ricerca"}/>
-            <View style={styles.container}>
-                <View style={styles.outputContainer}>
-                    <FlatList
-                        data={data}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.idRoom.toString()}
-                    />
+    if (freeRooms != null) {
+        return (
+            <View style={styles.header}>
+                <Header title={"Risultati Ricerca"}/>
+                <View style={styles.container}>
+                    <View style={styles.outputContainer}>
+                        <FlatList
+                            data={freeRooms}
+                            renderItem={({item}) => {
+                                return (
+                                    <FreeRoom item={item}/>
+                                );
+                            }}
+                            keyExtractor={item => item.idRoom.toString()}
+                        />
+                    </View>
                 </View>
             </View>
-        </View>
-    );
+        );
+    } else {
+        return (
+            <View style={styles.header}>
+                <Header title={"Risultati Ricerca"}/>
+                <View style={styles.container}>
+                    <View style={styles.outputContainer}>
+                        <FlatList
+                            data={alternatives}
+                            renderItem={({item}) => {
+                                if (item.sojourns.length > 0) {
+                                    return (
+                                        <Alternative
+                                            item={item}
+                                            alternatives={alternatives}
+                                            //setAternatives={setBookings}
+                                        />
+                                    );
+                                }
+                            }}
+                            keyExtractor={item => item.id.toString()}
+                        />
+                    </View>
+                </View>
+            </View>
+        );
+    }
 };
 
 const styles = StyleSheet.create({

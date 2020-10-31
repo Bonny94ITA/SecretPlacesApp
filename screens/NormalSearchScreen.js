@@ -17,9 +17,10 @@ import {Formik} from 'formik';
 import serverURL from '../components/ServerInfo';
 import {useDispatch} from 'react-redux';
 import * as authActions from '../store/actions/auth';
-import {setFreeRooms} from '../store/actions/ns';
+import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import {clearAternatives} from "../store/actions/ss";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -154,6 +155,8 @@ const NormalSearchScreen = props => {
                                                 departure: dateDeparture
                                             });
                                         });
+
+                                        dispatch(clearAternatives());
                                         dispatch(setFreeRooms(formattedFreeRooms));
                                         props.navigation.navigate('resultsSearch');
                                     }}

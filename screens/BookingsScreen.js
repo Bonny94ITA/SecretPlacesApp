@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useReducer} from 'react';
 import {
     AsyncStorage,
     Button,
@@ -27,8 +27,21 @@ const Sojourn = (props) => {
 }
 
 const Item = ({item, bookings, setBookings}) => {
+    const initialState = {visible: false};
+
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'showDialog':
+                return {visible: true};
+            case 'hideDialog':
+                return {visible: false};
+            default:
+                throw new Error();
+        }
+    }
+
     const dispatch = useDispatch();
-    const [isVisible, setVisible] = useState(false);
+    const [state, dispatch_] = useReducer(reducer, initialState);
 
     const sojourns = item.sojourns.map((sojourn) =>
         <Sojourn key={sojourn.id.toString()}
@@ -77,33 +90,33 @@ const Item = ({item, bookings, setBookings}) => {
                 />
                 <Button
                     title="Cancella"
-                    onPress={() => setVisible(true)}
+                    onPress={() => dispatch_({type: 'showDialog'})}
                     color={Colors.primary}
                 />
             </View>
             <Dialog
-                visible={isVisible}
+                visible={state.visible}
                 dialogAnimation={new SlideAnimation({
                     slideFrom: 'bottom',
                 })}
                 onTouchOutside={() => {
-                    setVisible(false);
+                    dispatch_({type: 'hideDialog'});
                 }}
                 footer={
                     <DialogFooter>
                         <DialogButton
                             text="Annulla"
                             onPress={() => {
-                                setVisible(false);
+                                dispatch_({type: 'hideDialog'});
                             }}
                         />
                         <DialogButton
                             text="Conferma"
                             onPress={async () => {
-                                setVisible(false);
+                                dispatch_({type: 'hideDialog'});
                                 const userData = await AsyncStorage.getItem('userData');
                                 const jsonObj = JSON.parse(userData);
-                                const res = await deleteBooking(dispatch, jsonObj.token, item.id);
+                                await deleteBooking(dispatch, jsonObj.token, item.id);
 
                                 let tmp = bookings.filter(function (booking) {
                                     return booking.id !== item.id;
@@ -181,43 +194,50 @@ async function deleteBooking(dispatch, token, bookingId) {
     return res;
 }
 
-const BookingsScreen = () => {
+const BookingsScreen = props => {
     const [bookings, setBookings] = useState([]);
     const dispatch = useDispatch();
 
-    async function fetchBookings(dispatch) {
-        const userData = await AsyncStorage.getItem('userData');
-        const jsonObj = JSON.parse(userData);
-        const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
-        const formattedBookings = [];
+    useEffect(() => {
+        async function fetchBookings(dispatch) {
+            const userData = await AsyncStorage.getItem('userData');
+            const jsonObj = JSON.parse(userData);
+            const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
+            const formattedBookings = [];
 
-        bookings.forEach(booking => {
-            const formattedSojourns = [];
-            booking.sojourns.forEach(element => {
-                formattedSojourns.push({
-                    id: element.id,
-                    arrival: element.arrival,
-                    departure: element.departure,
-                    hotelName: element.room.hotel.name,
-                    address: element.room.hotel.address,
-                    hotelCity: element.room.hotel.city.name,
-                    stars: element.room.hotel.stars,
-                    numPlaces: element.room.numPlaces,
-                    pricePerNight: element.room.pricePerNight,
-                    totalPrice: element.totalPrice
+            bookings.forEach(booking => {
+                const formattedSojourns = [];
+                booking.sojourns.forEach(element => {
+                    formattedSojourns.push({
+                        id: element.id,
+                        arrival: element.arrival,
+                        departure: element.departure,
+                        hotelName: element.room.hotel.name,
+                        address: element.room.hotel.address,
+                        hotelCity: element.room.hotel.city.name,
+                        stars: element.room.hotel.stars,
+                        numPlaces: element.room.numPlaces,
+                        pricePerNight: element.room.pricePerNight,
+                        totalPrice: element.totalPrice
+                    })
                 })
-            })
 
-            formattedBookings.push({
-                id: booking.id,
-                sojourns: formattedSojourns,
-                totalPrice: booking.totalPrice
+                formattedBookings.push({
+                    id: booking.id,
+                    sojourns: formattedSojourns,
+                    totalPrice: booking.totalPrice
+                });
             });
-        });
-        setBookings(formattedBookings);
-    }
 
-    fetchBookings(dispatch);
+            setBookings(formattedBookings);
+        }
+
+        const focusListener = props.navigation.addListener('didFocus', () => {
+            fetchBookings(dispatch);
+        });
+
+        fetchBookings(dispatch);
+    }, [])
 
     return (
         <View style={styles.header}>

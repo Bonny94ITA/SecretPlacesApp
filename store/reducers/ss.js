@@ -1,7 +1,7 @@
-import {SET_ALTERNATIVES, CLEAR} from "../actions/ns";
+import {SET_ALTERNATIVES, CLEAR} from "../actions/ss";
 
 const initialState = {
-    freeRooms: null
+    alternatives: null
 }
 
 const ss = (state = initialState, action) => {

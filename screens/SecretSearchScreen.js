@@ -19,7 +19,7 @@ import {Formik} from 'formik';
 import serverURL from '../components/ServerInfo';
 import {useDispatch} from 'react-redux';
 import * as authActions from '../store/actions/auth';
-import {setFreeRooms} from '../store/actions/ns';
+import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import {Rating, AirbnbRating} from 'react-native-ratings';
@@ -173,16 +173,17 @@ const SecretSearchScreen = props => {
                                                 500, 3, "Sardegna", "Sicilia", 4, 2,
                                                 ["balenare", "lacustre", "naturalistico"], "12/07/2020", "24/08/2020", dispatch);
 
-                                            alternatives.forEach(element => {
+                                            alternatives.forEach((element, index) => {
                                                 const formattedSojourns = [];
-                                                element.sojourns.forEach(sojourn => {
+                                                element.sojourns.forEach((sojourn, sojIndex) => {
                                                     formattedSojourns.push({
-                                                        id: sojourn.id,
+                                                        id: sojIndex,
                                                         arrival: sojourn.arrival,
                                                         departure: sojourn.departure,
                                                         hotelName: sojourn.room.hotel.name,
                                                         address: sojourn.room.hotel.address,
                                                         hotelCity: sojourn.room.hotel.city.name,
+                                                        idRoom: sojourn.room.id,
                                                         stars: sojourn.room.hotel.stars,
                                                         numPlaces: sojourn.room.numPlaces,
                                                         pricePerNight: sojourn.room.pricePerNight,
@@ -190,11 +191,14 @@ const SecretSearchScreen = props => {
                                                     });
                                                 });
                                                 formattedAlteratives.push({
+                                                    id: index,
                                                     days: element.days,
                                                     sojourns: formattedSojourns,
                                                     totalPrice: element.totalPrice
                                                 });
                                             });
+
+                                            dispatch(clearFreeRooms());
                                             dispatch(setAlternatives(formattedAlteratives));
                                             props.navigation.navigate('resultsSearch');
                                         }}
