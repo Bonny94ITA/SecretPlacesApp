@@ -75,7 +75,7 @@ function reducer(state, action) {
 }
 
 const Alternative = ({item, alternatives}) => {
-    const [state, dispatch_] = useReducer(reducer, initialState);
+    const [isVisible, setIsVisible] = useState(false);
     const dispatch = useDispatch();
 
     const sojourns = item.sojourns.map(sojourn =>
@@ -121,29 +121,28 @@ const Alternative = ({item, alternatives}) => {
                 {sojourns}
                 <Button
                     title="Prenota"
-                    onPress={() => dispatch_({type: 'showDialog'})}
+                    onPress={() => setIsVisible(true)}
                     color={Colors.primary}
                 />
                 <Dialog
-                    visible={state.visible}
+                    visible={isVisible}
                     dialogAnimation={new SlideAnimation({
                         slideFrom: 'bottom',
                     })}
                     onTouchOutside={() => {
-                        dispatch_({type: 'hideDialog'});
+                        setIsVisible(false);
                     }}
                     footer={
                         <DialogFooter>
                             <DialogButton
                                 text="Annulla"
                                 onPress={() => {
-                                    dispatch_({type: 'hideDialog'});
+                                    setIsVisible(false);
                                 }}
                             />
                             <DialogButton
                                 text="Conferma"
                                 onPress={async () => {
-                                    dispatch_({type: 'hideDialog'});
                                     const userData = await AsyncStorage.getItem('userData');
                                     const jsonObj = JSON.parse(userData);
                                     const sojs = []
@@ -160,7 +159,8 @@ const Alternative = ({item, alternatives}) => {
                                         sojourns: sojs
                                     }
 
-                                    addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                    await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                    setIsVisible(false);
                                 }}
                             />
                         </DialogFooter>
@@ -178,7 +178,8 @@ const Alternative = ({item, alternatives}) => {
 }
 
 const FreeRoom = ({item}) => {
-    const [state, dispatch_] = useReducer(reducer, initialState);
+    //const [state, dispatch_] = useReducer(reducer, initialState);
+    const [isVisible, setIsVisible] = useState(false);
     const dispatch = useDispatch();
 
     return (
@@ -215,29 +216,28 @@ const FreeRoom = ({item}) => {
             </View>
             <Button
                 title="Prenota"
-                onPress={() => dispatch_({type: 'showDialog'})}
+                onPress={() => setIsVisible(true)}
                 color={Colors.primary}
             />
             <Dialog
-                visible={state.visible}
+                visible={isVisible}
                 dialogAnimation={new SlideAnimation({
                     slideFrom: 'bottom',
                 })}
                 onTouchOutside={() => {
-                    dispatch_({type: 'hideDialog'});
+                    setIsVisible(false);
                 }}
                 footer={
                     <DialogFooter>
                         <DialogButton
                             text="Annulla"
                             onPress={() => {
-                                dispatch_({type: 'hideDialog'});
+                                setIsVisible(false);
                             }}
                         />
                         <DialogButton
                             text="Conferma"
                             onPress={async () => {
-                                dispatch_({type: 'hideDialog'});
                                 const userData = await AsyncStorage.getItem('userData');
                                 const jsonObj = JSON.parse(userData);
 
@@ -251,7 +251,8 @@ const FreeRoom = ({item}) => {
                                     ]
                                 }
 
-                                addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                                setIsVisible(false);
                             }}
                         />
                     </DialogFooter>

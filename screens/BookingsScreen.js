@@ -27,6 +27,7 @@ const Sojourn = (props) => {
 }
 
 const Item = ({item, bookings, setBookings}) => {
+    console.log("OK")
     const initialState = {visible: false};
 
     function reducer(state, action) {
@@ -41,7 +42,8 @@ const Item = ({item, bookings, setBookings}) => {
     }
 
     const dispatch = useDispatch();
-    const [state, dispatch_] = useReducer(reducer, initialState);
+    //const [state, dispatch_] = useReducer(reducer, initialState);
+    const [isVisible, setIsVisible] = useState(false);
 
     const sojourns = item.sojourns.map((sojourn) =>
         <Sojourn key={sojourn.id.toString()}
@@ -90,30 +92,32 @@ const Item = ({item, bookings, setBookings}) => {
                 />
                 <Button
                     title="Cancella"
-                    onPress={() => dispatch_({type: 'showDialog'})}
+                    onPress={() => setIsVisible(true)}
                     color={Colors.primary}
                 />
             </View>
             <Dialog
-                visible={state.visible}
+                visible={isVisible}
                 dialogAnimation={new SlideAnimation({
                     slideFrom: 'bottom',
                 })}
                 onTouchOutside={() => {
-                    dispatch_({type: 'hideDialog'});
+                    setIsVisible(false);
+                    //dispatch_({type: 'hideDialog'});
                 }}
                 footer={
                     <DialogFooter>
                         <DialogButton
                             text="Annulla"
                             onPress={() => {
-                                dispatch_({type: 'hideDialog'});
+                                setIsVisible(false);
+                                //dispatch_({type: 'hideDialog'});
                             }}
                         />
                         <DialogButton
                             text="Conferma"
                             onPress={async () => {
-                                dispatch_({type: 'hideDialog'});
+                                //dispatch_({type: 'hideDialog'});
                                 const userData = await AsyncStorage.getItem('userData');
                                 const jsonObj = JSON.parse(userData);
                                 await deleteBooking(dispatch, jsonObj.token, item.id);
@@ -123,6 +127,7 @@ const Item = ({item, bookings, setBookings}) => {
                                 });
 
                                 setBookings(tmp);
+                                setIsVisible(false);
                             }}
                         />
                     </DialogFooter>
@@ -195,6 +200,7 @@ async function deleteBooking(dispatch, token, bookingId) {
 }
 
 const BookingsScreen = props => {
+    console.log("AUGURI")
     const [bookings, setBookings] = useState([]);
     const dispatch = useDispatch();
 
