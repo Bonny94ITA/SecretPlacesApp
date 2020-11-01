@@ -6,7 +6,8 @@ import {
     Image,
     StyleSheet,
     Text,
-    View
+    View,
+    Alert
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -70,6 +71,33 @@ const Item = ({item, bookings, setBookings}) => {
         />
     );
 
+    const deleteBooking = () =>
+        Alert.alert(
+            "Vuoi cancellare la prenotazione?",
+            "",
+            [
+                {
+                    text: "Annulla",
+                    style: "cancel"
+                },
+                {
+                    text: "Conferma", onPress: async () => {
+                        const userData = await AsyncStorage.getItem('userData');
+                        const jsonObj = JSON.parse(userData);
+                        await deleteBooking(dispatch, jsonObj.token, item.id);
+
+                        let tmp = bookings.filter(function (booking) {
+                            return booking.id !== item.id;
+                        });
+
+                        setBookings(tmp);
+                        setIsVisible(false);
+                    }
+                }
+            ],
+            {cancelable: false}
+        );
+
     return (
         <View>
             <View style={styles.item}>
@@ -80,7 +108,7 @@ const Item = ({item, bookings, setBookings}) => {
                 />
                 <Button
                     title="Cancella"
-                    onPress={() => setIsVisible(true)}
+                    onPress={deleteBooking}
                     color={Colors.primary}
                 />
             </View>

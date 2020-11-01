@@ -5,7 +5,7 @@ import {
     FlatList,
     Text,
     Button,
-    Image, AsyncStorage
+    Image, AsyncStorage, Alert
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -115,13 +115,48 @@ const Alternative = ({item, alternatives}) => {
         />
     );
 
+    const addBooking = () =>
+        Alert.alert(
+            "Sei sicuro di voler prenotare?",
+            "",
+            [
+                {
+                    text: "Annulla",
+                    style: "cancel"
+                },
+                {
+                    text: "Conferma", onPress: async () => {
+                        const userData = await AsyncStorage.getItem('userData');
+                        const jsonObj = JSON.parse(userData);
+                        const sojs = []
+
+                        item.sojourns.forEach(sojourn => {
+                            sojs.push({
+                                arrival: sojourn.arrival,
+                                departure: sojourn.departure,
+                                room: {id: sojourn.idRoom}
+                            });
+                        });
+
+                        const booking = {
+                            sojourns: sojs
+                        }
+
+                        await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                        setIsVisible(false);
+                    }
+                }
+            ],
+            {cancelable: false}
+        );
+
     return (
         <View>
             <View style={styles.item}>
                 {sojourns}
                 <Button
                     title="Prenota"
-                    onPress={() => setIsVisible(true)}
+                    onPress={addBooking}
                     color={Colors.primary}
                 />
                 <Dialog
@@ -182,6 +217,38 @@ const FreeRoom = ({item}) => {
     const [isVisible, setIsVisible] = useState(false);
     const dispatch = useDispatch();
 
+    const addBooking = () =>
+        Alert.alert(
+            "Sei sicuro di voler prenotare?",
+            "",
+            [
+                {
+                    text: "Annulla",
+                    style: "cancel"
+                },
+                {
+                    text: "Conferma", onPress: async () => {
+                        const userData = await AsyncStorage.getItem('userData');
+                        const jsonObj = JSON.parse(userData);
+
+                        const booking = {
+                            sojourns: [
+                                {
+                                    arrival: "12/07/2020",
+                                    departure: "24/08/2020",
+                                    room: {id: item.idRoom}
+                                }
+                            ]
+                        }
+
+                        await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                        setIsVisible(false);
+                    }
+                }
+            ],
+            {cancelable: false}
+        );
+
     return (
         <View style={styles.item}>
             <View style={styles.columnContainer}>
@@ -216,7 +283,7 @@ const FreeRoom = ({item}) => {
             </View>
             <Button
                 title="Prenota"
-                onPress={() => setIsVisible(true)}
+                onPress={addBooking}
                 color={Colors.primary}
             />
             <Dialog
