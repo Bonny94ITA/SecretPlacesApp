@@ -61,21 +61,7 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const initialState = {visible: false};
-
-function reducer(state, action) {
-    switch (action.type) {
-        case 'showDialog':
-            return {visible: true};
-        case 'hideDialog':
-            return {visible: false};
-        default:
-            throw new Error();
-    }
-}
-
-const Alternative = ({item, alternatives}) => {
-    const [isVisible, setIsVisible] = useState(false);
+const Alternative = ({item, alternatives, setAlternatives}) => {
     const dispatch = useDispatch();
 
     const sojourns = item.sojourns.map(sojourn =>
@@ -115,7 +101,7 @@ const Alternative = ({item, alternatives}) => {
         />
     );
 
-    const addBooking = () =>
+    const addBooking_ = () =>
         Alert.alert(
             "Sei sicuro di voler prenotare?",
             "",
@@ -125,25 +111,32 @@ const Alternative = ({item, alternatives}) => {
                     style: "cancel"
                 },
                 {
-                    text: "Conferma", onPress: async () => {
-                        const userData = await AsyncStorage.getItem('userData');
-                        const jsonObj = JSON.parse(userData);
-                        const sojs = []
+                    text: "Conferma", onPress: () => {
+                        async function httpRequest() {
+                            const userData = await AsyncStorage.getItem('userData');
+                            const jsonObj = JSON.parse(userData);
+                            const sojs = []
 
-                        item.sojourns.forEach(sojourn => {
-                            sojs.push({
-                                arrival: sojourn.arrival,
-                                departure: sojourn.departure,
-                                room: {id: sojourn.idRoom}
+                            item.sojourns.forEach(sojourn => {
+                                sojs.push({
+                                    arrival: sojourn.arrival,
+                                    departure: sojourn.departure,
+                                    room: {id: sojourn.idRoom}
+                                });
                             });
-                        });
 
-                        const booking = {
-                            sojourns: sojs
+                            const booking = {
+                                sojourns: sojs
+                            }
+
+                            await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+
+                            return alternatives.filter(function (alt) {
+                                return alt.id !== item.id;
+                            });
                         }
 
-                        await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
-                        setIsVisible(false);
+                        httpRequest().then(r => setAlternatives(r));
                     }
                 }
             ],
@@ -156,68 +149,18 @@ const Alternative = ({item, alternatives}) => {
                 {sojourns}
                 <Button
                     title="Prenota"
-                    onPress={addBooking}
+                    onPress={addBooking_}
                     color={Colors.primary}
                 />
-                <Dialog
-                    visible={isVisible}
-                    dialogAnimation={new SlideAnimation({
-                        slideFrom: 'bottom',
-                    })}
-                    onTouchOutside={() => {
-                        setIsVisible(false);
-                    }}
-                    footer={
-                        <DialogFooter>
-                            <DialogButton
-                                text="Annulla"
-                                onPress={() => {
-                                    setIsVisible(false);
-                                }}
-                            />
-                            <DialogButton
-                                text="Conferma"
-                                onPress={async () => {
-                                    const userData = await AsyncStorage.getItem('userData');
-                                    const jsonObj = JSON.parse(userData);
-                                    const sojs = []
-
-                                    item.sojourns.forEach(sojourn => {
-                                        sojs.push({
-                                            arrival: sojourn.arrival,
-                                            departure: sojourn.departure,
-                                            room: {id: sojourn.idRoom}
-                                        });
-                                    });
-
-                                    const booking = {
-                                        sojourns: sojs
-                                    }
-
-                                    await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
-                                    setIsVisible(false);
-                                }}
-                            />
-                        </DialogFooter>
-                    }
-                >
-                    <DialogContent style={styles.popupContainer}>
-                        <Text style={styles.popup}>
-                            Sei sicuro di voler prenotare?
-                        </Text>
-                    </DialogContent>
-                </Dialog>
             </View>
         </View>
     );
 }
 
-const FreeRoom = ({item}) => {
-    //const [state, dispatch_] = useReducer(reducer, initialState);
-    const [isVisible, setIsVisible] = useState(false);
+const FreeRoom = ({item, freeRooms, setFreeRooms}) => {
     const dispatch = useDispatch();
 
-    const addBooking = () =>
+    const addBooking_ = () =>
         Alert.alert(
             "Sei sicuro di voler prenotare?",
             "",
@@ -227,22 +170,31 @@ const FreeRoom = ({item}) => {
                     style: "cancel"
                 },
                 {
-                    text: "Conferma", onPress: async () => {
-                        const userData = await AsyncStorage.getItem('userData');
-                        const jsonObj = JSON.parse(userData);
+                    text: "Conferma", onPress: () => {
+                        async function httpRequest() {
+                            const userData = await AsyncStorage.getItem('userData');
+                            const jsonObj = JSON.parse(userData);
 
-                        const booking = {
-                            sojourns: [
-                                {
-                                    arrival: "12/07/2020",
-                                    departure: "24/08/2020",
-                                    room: {id: item.idRoom}
-                                }
-                            ]
+                            const booking = {
+                                sojourns: [
+                                    {
+                                        arrival: "12/07/2020",
+                                        departure: "24/08/2020",
+                                        room: {id: item.idRoom}
+                                    }
+                                ]
+                            }
+
+                            await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+
+                            console.log(freeRooms)
+
+                            return freeRooms.filter(function (fr) {
+                                return fr.idRoom !== item.idRoom;
+                            });
                         }
 
-                        await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
-                        setIsVisible(false);
+                        httpRequest().then(r => setFreeRooms(r));
                     }
                 }
             ],
@@ -283,54 +235,9 @@ const FreeRoom = ({item}) => {
             </View>
             <Button
                 title="Prenota"
-                onPress={addBooking}
+                onPress={addBooking_}
                 color={Colors.primary}
             />
-            <Dialog
-                visible={isVisible}
-                dialogAnimation={new SlideAnimation({
-                    slideFrom: 'bottom',
-                })}
-                onTouchOutside={() => {
-                    setIsVisible(false);
-                }}
-                footer={
-                    <DialogFooter>
-                        <DialogButton
-                            text="Annulla"
-                            onPress={() => {
-                                setIsVisible(false);
-                            }}
-                        />
-                        <DialogButton
-                            text="Conferma"
-                            onPress={async () => {
-                                const userData = await AsyncStorage.getItem('userData');
-                                const jsonObj = JSON.parse(userData);
-
-                                const booking = {
-                                    sojourns: [
-                                        {
-                                            arrival: "12/07/2020",
-                                            departure: "24/08/2020",
-                                            room: {id: item.idRoom}
-                                        }
-                                    ]
-                                }
-
-                                await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
-                                setIsVisible(false);
-                            }}
-                        />
-                    </DialogFooter>
-                }
-            >
-                <DialogContent style={styles.popupContainer}>
-                    <Text style={styles.popup}>
-                        Sei sicuro di voler prenotare?
-                    </Text>
-                </DialogContent>
-            </Dialog>
         </View>
     );
 }
@@ -338,6 +245,8 @@ const FreeRoom = ({item}) => {
 const ResultsScreen = props => {
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
     const alternatives = useSelector(state => state.secretSearch.alternatives);
+    const [freeRooms_, setFreeRooms_] = useState(freeRooms);
+    const [alternatives_, setAlternative_] = useState(alternatives);
 
     if (freeRooms != null) {
         return (
@@ -346,10 +255,14 @@ const ResultsScreen = props => {
                 <View style={styles.container}>
                     <View style={styles.outputContainer}>
                         <FlatList
-                            data={freeRooms}
+                            data={freeRooms_}
                             renderItem={({item}) => {
                                 return (
-                                    <FreeRoom item={item}/>
+                                    <FreeRoom
+                                        item={item}
+                                        freeRooms={freeRooms_}
+                                        setFreeRooms={setFreeRooms_}
+                                    />
                                 );
                             }}
                             keyExtractor={item => item.idRoom.toString()}
@@ -365,14 +278,14 @@ const ResultsScreen = props => {
                 <View style={styles.container}>
                     <View style={styles.outputContainer}>
                         <FlatList
-                            data={alternatives}
+                            data={alternatives_}
                             renderItem={({item}) => {
                                 if (item.sojourns.length > 0) {
                                     return (
                                         <Alternative
                                             item={item}
-                                            alternatives={alternatives}
-                                            //setAternatives={setBookings}
+                                            alternatives={alternatives_}
+                                            setAlternatives={setAlternative_}
                                         />
                                     );
                                 }

@@ -28,11 +28,7 @@ const Sojourn = (props) => {
 }
 
 const Item = ({item, bookings, setBookings}) => {
-    console.log("OK")
-
     const dispatch = useDispatch();
-    //const [state, dispatch_] = useReducer(reducer, initialState);
-    const [isVisible, setIsVisible] = useState(false);
 
     const sojourns = item.sojourns.map((sojourn) =>
         <Sojourn key={sojourn.id.toString()}
@@ -71,7 +67,7 @@ const Item = ({item, bookings, setBookings}) => {
         />
     );
 
-    const deleteBooking = () =>
+    const deleteBooking_ = () =>
         Alert.alert(
             "Vuoi cancellare la prenotazione?",
             "",
@@ -81,17 +77,18 @@ const Item = ({item, bookings, setBookings}) => {
                     style: "cancel"
                 },
                 {
-                    text: "Conferma", onPress: async () => {
-                        const userData = await AsyncStorage.getItem('userData');
-                        const jsonObj = JSON.parse(userData);
-                        await deleteBooking(dispatch, jsonObj.token, item.id);
+                    text: "Conferma", onPress: () => {
+                        async function httpRequest() {
+                            const userData = await AsyncStorage.getItem('userData');
+                            const jsonObj = JSON.parse(userData);
+                            await deleteBooking(dispatch, jsonObj.token, item.id);
 
-                        let tmp = bookings.filter(function (booking) {
-                            return booking.id !== item.id;
-                        });
+                            return bookings.filter(function (booking) {
+                                return booking.id !== item.id;
+                            });
+                        }
 
-                        setBookings(tmp);
-                        setIsVisible(false);
+                        httpRequest().then(r => setBookings(r));
                     }
                 }
             ],
@@ -108,53 +105,10 @@ const Item = ({item, bookings, setBookings}) => {
                 />
                 <Button
                     title="Cancella"
-                    onPress={deleteBooking}
+                    onPress={deleteBooking_}
                     color={Colors.primary}
                 />
             </View>
-            <Dialog
-                visible={isVisible}
-                dialogAnimation={new SlideAnimation({
-                    slideFrom: 'bottom',
-                })}
-                onTouchOutside={() => {
-                    setIsVisible(false);
-                    //dispatch_({type: 'hideDialog'});
-                }}
-                footer={
-                    <DialogFooter>
-                        <DialogButton
-                            text="Annulla"
-                            onPress={() => {
-                                setIsVisible(false);
-                                //dispatch_({type: 'hideDialog'});
-                            }}
-                        />
-                        <DialogButton
-                            text="Conferma"
-                            onPress={async () => {
-                                //dispatch_({type: 'hideDialog'});
-                                const userData = await AsyncStorage.getItem('userData');
-                                const jsonObj = JSON.parse(userData);
-                                await deleteBooking(dispatch, jsonObj.token, item.id);
-
-                                let tmp = bookings.filter(function (booking) {
-                                    return booking.id !== item.id;
-                                });
-
-                                setBookings(tmp);
-                                setIsVisible(false);
-                            }}
-                        />
-                    </DialogFooter>
-                }
-            >
-                <DialogContent style={styles.popupContainer}>
-                    <Text style={styles.popup}>
-                        Vuoi cancellare la prenotazione?
-                    </Text>
-                </DialogContent>
-            </Dialog>
         </View>
     );
 }
@@ -216,7 +170,6 @@ async function deleteBooking(dispatch, token, bookingId) {
 }
 
 const BookingsScreen = props => {
-    console.log("AUGURI")
     const [bookings, setBookings] = useState([]);
     const dispatch = useDispatch();
 
