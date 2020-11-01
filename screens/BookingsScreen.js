@@ -28,18 +28,6 @@ const Sojourn = (props) => {
 
 const Item = ({item, bookings, setBookings}) => {
     console.log("OK")
-    const initialState = {visible: false};
-
-    function reducer(state, action) {
-        switch (action.type) {
-            case 'showDialog':
-                return {visible: true};
-            case 'hideDialog':
-                return {visible: false};
-            default:
-                throw new Error();
-        }
-    }
 
     const dispatch = useDispatch();
     //const [state, dispatch_] = useReducer(reducer, initialState);
@@ -235,14 +223,17 @@ const BookingsScreen = props => {
                 });
             });
 
-            setBookings(formattedBookings);
+            return formattedBookings;
         }
 
-        const focusListener = props.navigation.addListener('didFocus', () => {
-            fetchBookings(dispatch);
+        props.navigation.addListener('didFocus', async () => {
+            console.log("dsa");
+            const fb = await fetchBookings(dispatch);
+            console.log(fb)
+            setBookings(fb);
         });
 
-        fetchBookings(dispatch);
+        fetchBookings(dispatch).then(r => setBookings(r));
     }, [])
 
     return (
