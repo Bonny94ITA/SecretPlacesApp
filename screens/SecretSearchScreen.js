@@ -9,7 +9,10 @@ import {
     ImageBackground,
     TouchableOpacity,
     TextInput,
-    ScrollView
+    ScrollView,
+    CheckBox,
+    Modal,
+    TouchableHighlight
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -31,6 +34,7 @@ import Dialog, {
     DialogButton,
     DialogContent
 } from 'react-native-popup-dialog';
+
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -103,7 +107,9 @@ const SecretSearchScreen = props => {
     const [selectedValue, setSelectedValue] = useState("Cagliari");
     const [selectedTurism, setSelectedTurism] = useState(null);
     const [pickerItems, setPickerItems] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
     const dispatch = useDispatch();
+    console.log(modalVisible);
 
     useEffect(() => {
         async function fetchCities(dispatch) {
@@ -238,18 +244,47 @@ const SecretSearchScreen = props => {
                                                     <Text
                                                         style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
                                                 </View>
-                                                <View style={styles.picker}>
-                                                    <RNPickerSelect
-                                                        placeholder={{
-                                                            label: 'Seleziona una città...',
-                                                            value: null,
-                                                        }}
-                                                        selectedValue={selectedValue}
-                                                        onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                                                        items={pickerItems}
-                                                    />
-                                                </View>
+                                                <Button
+                                                    title="Seleziona le città"
+                                                    onPress={() => {setModalVisible(true)}}
+                                                    color={Colors.primary}
+                                                />
+                                                <Modal
+                                                    animationType="slide"
+                                                    transparent={true}
+                                                    visible={modalVisible}
+                                                    onRequestClose={() => {
+                                                        Alert.alert("Modal has been closed.");
+                                                    }}
+                                                >
+                                                    <View style={styles.centeredView}>
+                                                        <View style={styles.modalView}>
+                                                            <Text style={styles.modalText}>Hello World!</Text>
+
+                                                            <TouchableHighlight
+                                                                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                                                onPress={() => {
+                                                                    setModalVisible(false);
+                                                                }}
+                                                            >
+                                                                <Text style={styles.textStyle}>Hide Modal</Text>
+                                                            </TouchableHighlight>
+                                                        </View>
+                                                    </View>
+                                                </Modal>
+                                                {/*<View style={styles.picker}>*/}
+                                                {/*    <RNPickerSelect*/}
+                                                {/*        placeholder={{*/}
+                                                {/*            label: 'Seleziona una città...',*/}
+                                                {/*            value: null,*/}
+                                                {/*        }}*/}
+                                                {/*        selectedValue={selectedValue}*/}
+                                                {/*        onValueChange={(itemValue) => setSelectedValue(itemValue)}*/}
+                                                {/*        items={pickerItems}*/}
+                                                {/*    />*/}
+                                                {/*</View>*/}
                                                 <Text>Seleziona il tuo budget:</Text>
+
                                                 <View style={styles.rowContainer}>
                                                     <TextInput
                                                         placeholder={"Min Budget"}
@@ -388,6 +423,42 @@ const styles = StyleSheet.create({
     },
     item: {
         width: '50%'
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
     }
 });
 
