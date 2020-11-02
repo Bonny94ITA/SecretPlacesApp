@@ -157,7 +157,7 @@ const Alternative = ({item, alternatives, setAlternatives}) => {
     );
 }
 
-const FreeRoom = ({item, freeRooms, setFreeRooms}) => {
+const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
     const dispatch = useDispatch();
 
     const addBooking_ = () =>
@@ -228,7 +228,9 @@ const FreeRoom = ({item, freeRooms, setFreeRooms}) => {
                     <View style={styles.columnContainer}>
                         <Image
                             style={styles.image}
-                            source={require('../assets/hotel.jpg')}
+                            source={{
+                                uri: image
+                            }}
                         />
                     </View>
                 </View>
@@ -249,6 +251,11 @@ const ResultsScreen = props => {
     const [alternatives_, setAlternative_] = useState(alternatives);
 
     if (freeRooms != null) {
+        const dict = {};
+
+        for (let i = 0; i < freeRooms.length; ++i)
+            dict[freeRooms[i].idRoom] = Pic();
+
         return (
             <View style={styles.header}>
                 <Header title={"Risultati Ricerca"}/>
@@ -262,6 +269,7 @@ const ResultsScreen = props => {
                                         item={item}
                                         freeRooms={freeRooms_}
                                         setFreeRooms={setFreeRooms_}
+                                        image={dict[item.idRoom]}
                                     />
                                 );
                             }}
