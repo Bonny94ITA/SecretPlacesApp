@@ -128,7 +128,7 @@ const NormalSearchScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Ricerca Normale"}/>
+            <Header title={"Ricerca Normale "}/>
             <TouchableWithoutFeedback onPress={() => {
                 Keyboard.dismiss();
             }}>

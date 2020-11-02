@@ -12,22 +12,17 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
+import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
-import Dialog, {
-    DialogButton,
-    DialogFooter,
-    SlideAnimation,
-    DialogContent
-} from 'react-native-popup-dialog';
 
 const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const Item = ({item, bookings, setBookings}) => {
+const Item = ({item, bookings, setBookings, image}) => {
     const dispatch = useDispatch();
 
     const sojourns = item.sojourns.map((sojourn) =>
@@ -58,7 +53,9 @@ const Item = ({item, bookings, setBookings}) => {
                              <View style={styles.columnContainer}>
                                  <Image
                                      style={styles.image}
-                                     source={require('../assets/hotel.jpg')}
+                                     source={{
+                                         uri: image
+                                     }}
                                  />
                              </View>
                          </View>
@@ -172,6 +169,7 @@ async function deleteBooking(dispatch, token, bookingId) {
 const BookingsScreen = props => {
     const [bookings, setBookings] = useState([]);
     const dispatch = useDispatch();
+    const dict = {};
 
     useEffect(() => {
         async function fetchBookings(dispatch) {
@@ -179,6 +177,9 @@ const BookingsScreen = props => {
             const jsonObj = JSON.parse(userData);
             const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
             const formattedBookings = [];
+
+            for (let i = 0; i < bookings.length; ++i)
+                dict[bookings[i].id] = Pic();
 
             bookings.forEach(booking => {
                 const formattedSojourns = [];
@@ -208,9 +209,7 @@ const BookingsScreen = props => {
         }
 
         props.navigation.addListener('didFocus', async () => {
-            console.log("dsa");
             const fb = await fetchBookings(dispatch);
-            console.log(fb)
             setBookings(fb);
         });
 
@@ -231,6 +230,7 @@ const BookingsScreen = props => {
                                         item={item}
                                         bookings={bookings}
                                         setBookings={setBookings}
+                                        image={dict[item.id]}
                                     />
                                 );
                             }

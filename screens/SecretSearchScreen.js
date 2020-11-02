@@ -20,10 +20,17 @@ import serverURL from '../components/ServerInfo';
 import {useDispatch} from 'react-redux';
 import * as authActions from '../store/actions/auth';
 import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
+import {setAlternatives} from '../store/actions/ss';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import {Rating, AirbnbRating} from 'react-native-ratings';
-import {setAlternatives} from "../store/actions/ss";
+
+import Dialog, {
+    SlideAnimation,
+    DialogFooter,
+    DialogButton,
+    DialogContent
+} from 'react-native-popup-dialog';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -152,7 +159,7 @@ const SecretSearchScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Ricerca Segreta"}/>
+            <Header title={"Ricerca Segreta "}/>
             <TouchableWithoutFeedback onPress={() => {
                 Keyboard.dismiss();
             }}>

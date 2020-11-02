@@ -5,7 +5,9 @@ import {
     FlatList,
     Text,
     Button,
-    Image, AsyncStorage, Alert
+    Image,
+    AsyncStorage,
+    Alert
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -13,12 +15,6 @@ import Colors from '../constants/colors';
 import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
-import Dialog, {
-    SlideAnimation,
-    DialogFooter,
-    DialogButton,
-    DialogContent
-} from 'react-native-popup-dialog';
 import serverURL from "../components/ServerInfo";
 import * as authActions from "../store/actions/auth";
 
@@ -61,7 +57,7 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const Alternative = ({item, alternatives, setAlternatives}) => {
+const Alternative = ({item, alternatives, setAlternatives, image}) => {
     const dispatch = useDispatch();
 
     const sojourns = item.sojourns.map(sojourn =>
@@ -92,7 +88,9 @@ const Alternative = ({item, alternatives, setAlternatives}) => {
                              <View style={styles.columnContainer}>
                                  <Image
                                      style={styles.image}
-                                     source={require('../assets/hotel.jpg')}
+                                     source={{
+                                         uri: image
+                                     }}
                                  />
                              </View>
                          </View>
@@ -249,16 +247,16 @@ const ResultsScreen = props => {
     const alternatives = useSelector(state => state.secretSearch.alternatives);
     const [freeRooms_, setFreeRooms_] = useState(freeRooms);
     const [alternatives_, setAlternative_] = useState(alternatives);
+    const dict = {};
 
     if (freeRooms != null) {
-        const dict = {};
 
         for (let i = 0; i < freeRooms.length; ++i)
             dict[freeRooms[i].idRoom] = Pic();
 
         return (
             <View style={styles.header}>
-                <Header title={"Risultati Ricerca"}/>
+                <Header title={"Risultati Ricerca "}/>
                 <View style={styles.container}>
                     <View style={styles.outputContainer}>
                         <FlatList
@@ -280,6 +278,10 @@ const ResultsScreen = props => {
             </View>
         );
     } else {
+
+        for (let i = 0; i < alternatives.length; ++i)
+            dict[alternatives[i].id] = Pic();
+
         return (
             <View style={styles.header}>
                 <Header title={"Risultati Ricerca"}/>
@@ -294,6 +296,7 @@ const ResultsScreen = props => {
                                             item={item}
                                             alternatives={alternatives_}
                                             setAlternatives={setAlternative_}
+                                            image={dict[item.id]}
                                         />
                                     );
                                 }
