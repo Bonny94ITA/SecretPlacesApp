@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import {
     Button,
     Keyboard,
@@ -10,10 +10,11 @@ import {
     TouchableOpacity,
     TextInput,
     ScrollView,
-    CheckBox,
     Modal,
     TouchableHighlight
 } from 'react-native';
+
+import { CheckBox } from 'react-native-elements'
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
@@ -96,6 +97,14 @@ async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotReg
     return alternatives;
 }
 
+const initialState = {flags: []};
+
+function reducer(state, action) {
+    state.flags[action.index] = !state.flags[action.index];
+    return state;
+}
+
+
 const SecretSearchScreen = props => {
     const [isDatePickerVisibleA, setDatePickerVisibilityA] = useState(false);
     const [isDatePickerVisibleD, setDatePickerVisibilityD] = useState(false);
@@ -105,21 +114,34 @@ const SecretSearchScreen = props => {
     const [maxStar, setMaxStar] = useState(5);
 
     const [selectedValue, setSelectedValue] = useState("Cagliari");
-    const [selectedTurism, setSelectedTurism] = useState(null);
+    const [selectedTourism, setSelectedTourism] = useState(null);
     const [pickerItems, setPickerItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [state, dispatchReducer] = useReducer(reducer, initialState);
     const dispatch = useDispatch();
-    console.log(modalVisible);
 
     useEffect(() => {
         async function fetchCities(dispatch) {
             const cities = await getCities(dispatch);
 
             if (cities !== null) {
+                for (let i = 0; i < cities.length; ++i)
+                    initialState.flags[i] = false;
+
                 const citiesItems = [];
-                const items = cities.map((s, i) => {
-                    citiesItems.push({label: s.name, value: s.name})
-                });
+                    cities.forEach((city, i) => {
+                        citiesItems.push(<CheckBox
+                            title={city.name}
+                            checked={state.flags[i]}
+                            onPress={() => {
+                                console.log(i)
+                                dispatchReducer({index: i})
+                            }}
+                            key={i}
+                        />);
+                    }
+                );
+
                 setPickerItems(citiesItems);
             }
         }
@@ -246,7 +268,9 @@ const SecretSearchScreen = props => {
                                                 </View>
                                                 <Button
                                                     title="Seleziona le città"
-                                                    onPress={() => {setModalVisible(true)}}
+                                                    onPress={() => {
+                                                        setModalVisible(true)
+                                                    }}
                                                     color={Colors.primary}
                                                 />
                                                 <Modal
@@ -259,16 +283,20 @@ const SecretSearchScreen = props => {
                                                 >
                                                     <View style={styles.centeredView}>
                                                         <View style={styles.modalView}>
-                                                            <Text style={styles.modalText}>Hello World!</Text>
-
-                                                            <TouchableHighlight
-                                                                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                                                                onPress={() => {
-                                                                    setModalVisible(false);
-                                                                }}
-                                                            >
-                                                                <Text style={styles.textStyle}>Hide Modal</Text>
-                                                            </TouchableHighlight>
+                                                            <View>
+                                                                {pickerItems}
+                                                                <TouchableHighlight
+                                                                    style={{
+                                                                        ...styles.openButton,
+                                                                        backgroundColor: "#2196F3"
+                                                                    }}
+                                                                    onPress={() => {
+                                                                        setModalVisible(false);
+                                                                    }}
+                                                                >
+                                                                    <Text style={styles.textStyle}>Hide Modal</Text>
+                                                                </TouchableHighlight>
+                                                            </View>
                                                         </View>
                                                     </View>
                                                 </Modal>
@@ -329,7 +357,7 @@ const SecretSearchScreen = props => {
                                                             value: null,
                                                         }}
                                                         selectedValue={selectedValue}
-                                                        onValueChange={(value) => setSelectedTurism(value)}
+                                                        onValueChange={(value) => setSelectedTourism(value)}
                                                         items={[
                                                             {label: 'Balneare', value: 'balneare'},
                                                             {label: 'Naturalistico', value: 'naturalistico'},
