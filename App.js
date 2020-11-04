@@ -10,6 +10,7 @@ import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import normalSearchReducer from "./store/reducers/ns";
 import secretSearchReducer from "./store/reducers/ss";
+import citiesReducer from "./store/reducers/cities";
 import _ from 'lodash';
 
 YellowBox.ignoreWarnings(['componentWillReceiveProps']);
@@ -23,7 +24,8 @@ console.warn = message => {
 const rootReducer = combineReducers({
     auth: authReducer,
     normalSearch: normalSearchReducer,
-    secretSearch: secretSearchReducer
+    secretSearch: secretSearchReducer,
+    cities: citiesReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

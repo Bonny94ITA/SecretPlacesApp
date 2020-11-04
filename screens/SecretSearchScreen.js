@@ -14,14 +14,14 @@ import {
     TouchableHighlight
 } from 'react-native';
 
-import { CheckBox } from 'react-native-elements'
+import {CheckBox} from 'react-native-elements'
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
 import {AntDesign} from '@expo/vector-icons';
 import {Formik} from 'formik';
 import serverURL from '../components/ServerInfo';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import * as authActions from '../store/actions/auth';
 import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import {setAlternatives} from '../store/actions/ss';
@@ -44,23 +44,6 @@ function timeout(milliseconds, promise) {
         }, milliseconds);
         promise.then(resolve, reject);
     });
-}
-
-async function getCities(dispatch) {
-    let cities = null;
-
-    await timeout(5000, fetch(serverURL + '/hotels/cities'))
-        .then(async function (response) {
-            cities = await response.json();
-        }, function (error) {
-            dispatch(authActions.submitLogout());
-            console.log(error);
-        }).catch(function (error) {
-            dispatch(authActions.submitLogout());
-            console.log(error);
-        });
-
-    return cities;
 }
 
 async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotRegion,
@@ -97,11 +80,12 @@ async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotReg
     return alternatives;
 }
 
-const initialState = {flags: []};
+const initialState = {flags: [false, false, false, false, false, false]};
 
 function reducer(state, action) {
-    state.flags[action.index] = !state.flags[action.index];
-    return state;
+    let newState = Object.assign({}, state);
+    newState.flags[action.index] = !newState.flags[action.index];
+    return newState;
 }
 
 
@@ -117,37 +101,31 @@ const SecretSearchScreen = props => {
     const [selectedTourism, setSelectedTourism] = useState(null);
     const [pickerItems, setPickerItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+
+    const cities = useSelector(state => state.cities.cities);
     const [state, dispatchReducer] = useReducer(reducer, initialState);
     const dispatch = useDispatch();
 
+    console.log("dsadsadasd")
+
     useEffect(() => {
-        async function fetchCities(dispatch) {
-            const cities = await getCities(dispatch);
+        if (cities != null) {
+            //dispatchReducer({type: 'init', paylaod: cities.lenght});
 
-            if (cities !== null) {
-                for (let i = 0; i < cities.length; ++i)
-                    initialState.flags[i] = false;
+            const citiesItems = [];
+            cities.forEach((city, i) => {
+                    citiesItems.push(<CheckBox
+                        title={city.name}
+                        checked={state.flags[i]}
+                        onPress={() => dispatchReducer({index: i})}
+                        key={i}
+                    />);
+                }
+            );
 
-                const citiesItems = [];
-                    cities.forEach((city, i) => {
-                        citiesItems.push(<CheckBox
-                            title={city.name}
-                            checked={state.flags[i]}
-                            onPress={() => {
-                                console.log(i)
-                                dispatchReducer({index: i})
-                            }}
-                            key={i}
-                        />);
-                    }
-                );
-
-                setPickerItems(citiesItems);
-            }
+            setPickerItems(citiesItems);
         }
-
-        fetchCities(dispatch);
-    }, []);
+    }, [state]);
 
     const showDatePickerA = () => {
         setDatePickerVisibilityA(true);

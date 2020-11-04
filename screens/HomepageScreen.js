@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     View,
     StyleSheet,
@@ -9,8 +9,49 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
+import serverURL from "../components/ServerInfo";
+import * as authActions from "../store/actions/auth";
+import {CheckBox} from "react-native-elements";
+import {useDispatch} from "react-redux";
+import {setCities} from '../store/actions/cities';
+
+function timeout(milliseconds, promise) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject(new Error("Timeout exceeded."))
+        }, milliseconds);
+        promise.then(resolve, reject);
+    });
+}
+
+async function getCities(dispatch) {
+    let cities = null;
+
+    await timeout(5000, fetch(serverURL + '/hotels/cities'))
+        .then(async function (response) {
+            cities = await response.json();
+        }, function (error) {
+            dispatch(authActions.submitLogout());
+            console.log(error);
+        }).catch(function (error) {
+            dispatch(authActions.submitLogout());
+            console.log(error);
+        });
+
+    return cities;
+}
 
 const HomepageScreen = props => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        async function fetchCities(dispatch) {
+            return await getCities(dispatch);
+        }
+
+        fetchCities(dispatch).then(cities => dispatch(setCities(cities)));
+    }, []);
+
     return (
         <View style={styles.header}>
             <Header title={"Homepage "}/>
@@ -92,15 +133,15 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10
     },
-    faq:{
+    faq: {
         color: Colors.title,
         fontSize: 30,
         fontFamily: 'Caveat-B',
     },
-    question:{
+    question: {
         color: Colors.title,
         fontSize: 20,
-        alignSelf:'flex-start',
+        alignSelf: 'flex-start',
         paddingTop: 10,
         paddingBottom: 10
     }
