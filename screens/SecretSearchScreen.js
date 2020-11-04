@@ -70,22 +70,24 @@ async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotReg
     })).then(async function (response) {
         alternatives = await response.json();
     }, function (error) {
-        //dispatch(authActions.submitLogout());
+        dispatch(authActions.submitLogout());
         console.log(error);
     }).catch(function (error) {
-        //dispatch(authActions.submitLogout());
+        dispatch(authActions.submitLogout());
         console.log(error);
     });
 
     return alternatives;
 }
 
-const initialState = {flags: [false, false, false, false, false, false]};
+const initialState = {index: -1};
+const flags = [];
 
 function reducer(state, action) {
-    let newState = Object.assign({}, state);
-    newState.flags[action.index] = !newState.flags[action.index];
-    return newState;
+    // let newState = Object.assign({}, state);
+    // newState.flags[action.index] = !newState.flags[action.index];
+    // return newState;
+    return {index: action.index}
 }
 
 
@@ -110,18 +112,40 @@ const SecretSearchScreen = props => {
 
     useEffect(() => {
         if (cities != null) {
+            console.log("Once")
             //dispatchReducer({type: 'init', paylaod: cities.lenght});
 
             const citiesItems = [];
+
+            for (let i = 0; i < cities.lenght; ++i)
+                flags.push(false);
+
             cities.forEach((city, i) => {
                     citiesItems.push(<CheckBox
                         title={city.name}
-                        checked={state.flags[i]}
+                        checked={flags[i]}
                         onPress={() => dispatchReducer({index: i})}
                         key={i}
                     />);
                 }
             );
+
+            setPickerItems(citiesItems);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (state.index >= 0) {
+            console.log("update")
+            flags[state.index] = !flags[state.index];
+            const citiesItems = pickerItems.slice();
+
+            citiesItems[state.index] = (<CheckBox
+                title={cities[state.index].name}
+                checked={flags[state.index]}
+                onPress={() => dispatchReducer({index: state.index})}
+                key={state.index}
+            />);
 
             setPickerItems(citiesItems);
         }
