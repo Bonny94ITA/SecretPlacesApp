@@ -229,9 +229,12 @@ const SecretSearchScreen = props => {
                                                 }
                                             }
 
+                                            const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
+                                            const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
+
                                             const alternatives = await secretSearch(cities_,
                                                 values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion, maxStars, minStars,
-                                                ["balenare", "lacustre", "naturalistico"], dateArrival, dateDeparture, dispatch);
+                                                ["balenare", "lacustre", "naturalistico"], arrival, departure, dispatch);
 
                                             alternatives.forEach((element, index) => {
                                                 const formattedSojourns = [];
