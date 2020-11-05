@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: 300,
-        maxWidth: '80%',
+        maxWidth: '85%',
         alignItems: 'center',
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 2},

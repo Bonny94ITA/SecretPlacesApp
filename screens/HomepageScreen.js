@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         paddingTop: 20
     },
     textTitle: {
-        color: Colors.title,
+        color: Colors.containerBackground,
         fontSize: 70,
         fontFamily: 'Caveat-B',
     },

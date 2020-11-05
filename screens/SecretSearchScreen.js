@@ -313,28 +313,26 @@ const SecretSearchScreen = props => {
                                                 {/*        items={pickerItems}*/}
                                                 {/*    />*/}
                                                 {/*</View>*/}
+                                                <Text>Numero di persone:</Text>
+                                                <TextInput
+                                                    placeholder={"Numero"}
+                                                    returnKeyType='next'
+                                                    keyboardType='numeric'
+                                                    onChangeText={handleChange('Numero')}
+                                                    onBlur={handleBlur('Numero')}
+                                                    //value={values.minBudget}
+                                                    style={styles.picker}
+                                                />
                                                 <Text>Seleziona il tuo budget:</Text>
-
-                                                <View style={styles.rowContainer}>
-                                                    <TextInput
-                                                        placeholder={"Min Budget"}
-                                                        returnKeyType='next'
-                                                        keyboardType='numeric'
-                                                        onChangeText={handleChange('Min Budget')}
-                                                        onBlur={handleBlur('Min Budget')}
-                                                        //value={values.minBudget}
-                                                        style={styles.inputBudget}
-                                                    />
-                                                    <TextInput
-                                                        placeholder={"Max Budget"}
-                                                        returnKeyType='next'
-                                                        keyboardType='numeric'
-                                                        onChangeText={handleChange('Max Budget')}
-                                                        onBlur={handleBlur('Max Budget')}
-                                                        //value={values.maxBudget}
-                                                        style={styles.inputBudget}
-                                                    />
-                                                </View>
+                                                <TextInput
+                                                    placeholder={"Max Budget"}
+                                                    returnKeyType='next'
+                                                    keyboardType='numeric'
+                                                    onChangeText={handleChange('Max Budget')}
+                                                    onBlur={handleBlur('Max Budget')}
+                                                    //value={values.minBudget}
+                                                    style={styles.picker}
+                                                />
                                                 <Text>Stelle minime dell'hotel:</Text>
                                                 <Rating
                                                     type='star'
@@ -352,24 +350,31 @@ const SecretSearchScreen = props => {
                                                     onFinishRating={ratingMaxCompleted}
                                                 />
                                                 <Text>Tipo di turismo:</Text>
-                                                <View style={styles.picker}>
-                                                    <RNPickerSelect
-                                                        placeholder={{
-                                                            label: 'Seleziona tipologia di turismo...',
-                                                            value: null,
-                                                        }}
-                                                        selectedValue={selectedValue}
-                                                        onValueChange={(value) => setSelectedTourism(value)}
-                                                        items={[
-                                                            {label: 'Balneare', value: 'balneare'},
-                                                            {label: 'Naturalistico', value: 'naturalistico'},
-                                                            {label: 'Montano', value: 'montano'},
-                                                            {label: 'Lacustre', value: 'lacustre'},
-                                                            {label: 'Termale', value: 'termale'},
-                                                            {label: 'Sportivo', value: 'sportivo'}
-                                                        ]}
-                                                    />
-                                                </View>
+                                                {/*<View style={styles.picker}>*/}
+                                                {/*    <RNPickerSelect*/}
+                                                {/*        placeholder={{*/}
+                                                {/*            label: 'Seleziona tipologia di turismo...',*/}
+                                                {/*            value: null,*/}
+                                                {/*        }}*/}
+                                                {/*        selectedValue={selectedValue}*/}
+                                                {/*        onValueChange={(value) => setSelectedTourism(value)}*/}
+                                                {/*        items={[*/}
+                                                {/*            {label: 'Balneare', value: 'balneare'},*/}
+                                                {/*            {label: 'Naturalistico', value: 'naturalistico'},*/}
+                                                {/*            {label: 'Montano', value: 'montano'},*/}
+                                                {/*            {label: 'Lacustre', value: 'lacustre'},*/}
+                                                {/*            {label: 'Termale', value: 'termale'},*/}
+                                                {/*            {label: 'Sportivo', value: 'sportivo'}*/}
+                                                {/*        ]}*/}
+                                                {/*    />*/}
+                                                {/*</View>*/}
+                                                <Button
+                                                    title="Seleziona il turismo..."
+                                                    onPress={() => {
+                                                        setModalVisible(true)
+                                                    }}
+                                                    color={Colors.primary}
+                                                />
                                                 <View style={{marginVertical: 5}}>
                                                     <Button
                                                         title="Ricerca"
@@ -409,7 +414,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: 300,
-        maxWidth: '80%',
+        maxWidth: '85%',
         alignItems: 'center',
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 2},
@@ -476,7 +481,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     openButton: {
-        backgroundColor: "#F194FF",
+        backgroundColor: Colors.primary,
         borderRadius: 20,
         padding: 10,
         elevation: 2
