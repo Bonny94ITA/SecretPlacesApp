@@ -81,7 +81,8 @@ async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotReg
 }
 
 const initialState = {index: -1};
-const flags = [];
+
+//const flags = [];
 
 function reducer(state, action) {
     // let newState = Object.assign({}, state);
@@ -96,8 +97,8 @@ const SecretSearchScreen = props => {
     const [isDatePickerVisibleD, setDatePickerVisibilityD] = useState(false);
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
-    const [minStar, setMinStar] = useState(0);
-    const [maxStar, setMaxStar] = useState(5);
+    const [minStars, setMinStars] = useState(0);
+    const [maxStars, setMaxStars] = useState(5);
 
     const [selectedValue, setSelectedValue] = useState("Cagliari");
     const [selectedTourism, setSelectedTourism] = useState(null);
@@ -106,6 +107,8 @@ const SecretSearchScreen = props => {
 
     const cities = useSelector(state => state.cities.cities);
     const [state, dispatchReducer] = useReducer(reducer, initialState);
+    const [flags, setFlags] = useState([]);
+    const [index, setIndex] = useState(-1);
     const dispatch = useDispatch();
 
     console.log("dsadsadasd")
@@ -113,43 +116,51 @@ const SecretSearchScreen = props => {
     useEffect(() => {
         if (cities != null) {
             console.log("Once")
-            //dispatchReducer({type: 'init', paylaod: cities.lenght});
 
             const citiesItems = [];
-
+            const flags_ = [];
             for (let i = 0; i < cities.lenght; ++i)
-                flags.push(false);
+                flags_.push(false);
 
             cities.forEach((city, i) => {
                     citiesItems.push(<CheckBox
                         title={city.name}
                         checked={flags[i]}
-                        onPress={() => dispatchReducer({index: i})}
+                        onPress={() => {
+                            const flags_ = flags.slice();
+                            flags_[i] = !flags_[i];
+                            setFlags(flags_);
+                            setIndex(i);
+                        }}
                         key={i}
                     />);
                 }
             );
 
+            setFlags(flags_);
             setPickerItems(citiesItems);
         }
     }, []);
 
     useEffect(() => {
-        if (state.index >= 0) {
-            console.log("update")
-            flags[state.index] = !flags[state.index];
-            const citiesItems = pickerItems.slice();
+        if (index >= 0) {
+            console.log("update");
 
-            citiesItems[state.index] = (<CheckBox
-                title={cities[state.index].name}
-                checked={flags[state.index]}
-                onPress={() => dispatchReducer({index: state.index})}
-                key={state.index}
+            const items = pickerItems.slice();
+            items[index] = (<CheckBox
+                title={cities[index].name}
+                checked={flags[index]}
+                onPress={() => {
+                    const flags_ = flags.slice();
+                    flags_[index] = !flags_[index];
+                    setFlags(flags_);
+                }}
+                key={index}
             />);
 
-            setPickerItems(citiesItems);
+            setPickerItems(items);
         }
-    }, [state]);
+    }, [index, flags]);
 
     const showDatePickerA = () => {
         setDatePickerVisibilityA(true);
@@ -178,12 +189,12 @@ const SecretSearchScreen = props => {
     };
 
     const ratingMinCompleted = (star) => {
-        setMinStar(star);
+        setMinStars(star);
         console.log("Rating is min: " + star)
     };
 
     const ratingMaxCompleted = (star) => {
-        setMaxStar(star);
+        setMaxStars(star);
         console.log("Rating is max: " + star)
     };
 
@@ -193,22 +204,34 @@ const SecretSearchScreen = props => {
             <TouchableWithoutFeedback onPress={() => {
                 Keyboard.dismiss();
             }}>
-                <View style={styles.container}>
-                    <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
-                        <ScrollView>
+                <ScrollView>
+                    <View style={styles.container}>
+                        <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
+
                             <View style={styles.screen}>
                                 <View style={styles.inputContainer}>
                                     <Formik
                                         // modificare la formica (quando si andrà a leggere da input)
-                                        initialValues={{city: '', arrival: '', departure: ''}}
+                                        initialValues={{
+                                            maxBudget: '',
+                                            numPeople: '',
+                                            onlyRegion: '',
+                                            onlyNotRegion: ''
+                                        }}
                                         onSubmit={async values => {
-                                            const formattedAlteratives = [];
-                                            const alternatives = await secretSearch([{
-                                                    region: "Sardegna",
-                                                    city: "Nuoro"
-                                                }, {region: "Sardegna", city: "Cagliari"}],
-                                                500, 3, "Sardegna", "Sicilia", 4, 2,
-                                                ["balenare", "lacustre", "naturalistico"], "12/07/2020", "24/08/2020", dispatch);
+                                            console.log(values)
+                                            const formattedAlternatives = [];
+
+                                            const cities_ = [];
+                                            for (let i = 0; i < flags.length; ++i) {
+                                                if (flags[i]) {
+                                                    cities_.push({region: cities[i].region, city: cities[i].name});
+                                                }
+                                            }
+
+                                            const alternatives = await secretSearch(cities_,
+                                                values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion, maxStars, minStars,
+                                                ["balenare", "lacustre", "naturalistico"], dateArrival, dateDeparture, dispatch);
 
                                             alternatives.forEach((element, index) => {
                                                 const formattedSojourns = [];
@@ -227,7 +250,7 @@ const SecretSearchScreen = props => {
                                                         totalPrice: sojourn.totalPrice
                                                     });
                                                 });
-                                                formattedAlteratives.push({
+                                                formattedAlternatives.push({
                                                     id: index,
                                                     days: element.days,
                                                     sojourns: formattedSojourns,
@@ -236,7 +259,7 @@ const SecretSearchScreen = props => {
                                             });
 
                                             dispatch(clearFreeRooms());
-                                            dispatch(setAlternatives(formattedAlteratives));
+                                            dispatch(setAlternatives(formattedAlternatives));
                                             props.navigation.navigate('resultsSearch');
                                         }}
                                     >
@@ -318,8 +341,8 @@ const SecretSearchScreen = props => {
                                                     placeholder={"Numero"}
                                                     returnKeyType='next'
                                                     keyboardType='numeric'
-                                                    onChangeText={handleChange('Numero')}
-                                                    onBlur={handleBlur('Numero')}
+                                                    onChangeText={handleChange('numPeople')}
+                                                    onBlur={handleBlur('numPeople')}
                                                     //value={values.minBudget}
                                                     style={styles.picker}
                                                 />
@@ -328,8 +351,8 @@ const SecretSearchScreen = props => {
                                                     placeholder={"Max Budget"}
                                                     returnKeyType='next'
                                                     keyboardType='numeric'
-                                                    onChangeText={handleChange('Max Budget')}
-                                                    onBlur={handleBlur('Max Budget')}
+                                                    onChangeText={handleChange('maxBudget')}
+                                                    onBlur={handleBlur('maxBudget')}
                                                     //value={values.minBudget}
                                                     style={styles.picker}
                                                 />
@@ -387,9 +410,10 @@ const SecretSearchScreen = props => {
                                     </Formik>
                                 </View>
                             </View>
-                        </ScrollView>
-                    </ImageBackground>
-                </View>
+
+                        </ImageBackground>
+                    </View>
+                </ScrollView>
             </TouchableWithoutFeedback>
         </View>
     );
@@ -413,8 +437,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     inputContainer: {
-        width: 300,
-        maxWidth: '85%',
+        width: 400,
+        maxWidth: '88%',
         alignItems: 'center',
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 2},
@@ -430,7 +454,7 @@ const styles = StyleSheet.create({
         borderColor: 'orange',
         borderWidth: 1,
         marginVertical: 5,
-        width: 225,
+        width: 240,
         borderRadius: 10,
         textAlign: 'center',
         padding: 10
