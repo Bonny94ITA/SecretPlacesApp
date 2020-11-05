@@ -15,8 +15,8 @@ import Colors from '../constants/colors';
 import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
-import serverURL from "../components/ServerInfo";
-import * as authActions from "../store/actions/auth";
+import serverURL from '../components/ServerInfo';
+import * as authActions from '../store/actions/auth';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {

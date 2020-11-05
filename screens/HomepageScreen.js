@@ -9,10 +9,9 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
-import serverURL from "../components/ServerInfo";
-import * as authActions from "../store/actions/auth";
-import {CheckBox} from "react-native-elements";
-import {useDispatch} from "react-redux";
+import serverURL from '../components/ServerInfo';
+import * as authActions from '../store/actions/auth';
+import {useDispatch} from 'react-redux';
 import {setCities} from '../store/actions/cities';
 
 function timeout(milliseconds, promise) {
