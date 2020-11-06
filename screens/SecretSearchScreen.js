@@ -401,6 +401,15 @@ const SecretSearchScreen = props => {
                                                     }}
                                                     color={Colors.primary}
                                                 />
+                                                <Text>Regione da escludere:</Text>
+                                                <TextInput
+                                                    placeholder={"Regione"}
+                                                    returnKeyType='next'
+                                                    onChangeText={handleChange('region')}
+                                                    onBlur={handleBlur('region')}
+                                                    //value={values.region}
+                                                    style={styles.picker}
+                                                />
                                                 <View style={{marginVertical: 5}}>
                                                     <Button
                                                         title="Ricerca"
