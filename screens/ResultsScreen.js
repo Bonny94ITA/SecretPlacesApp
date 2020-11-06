@@ -145,11 +145,13 @@ const Alternative = ({item, alternatives, setAlternatives, image}) => {
         <View>
             <View style={styles.item}>
                 {sojourns}
-                <Button
-                    title="Prenota"
-                    onPress={addBooking_}
-                    color={Colors.primary}
-                />
+                <View style={{marginVertical: 5}}>
+                    <Button
+                        title="Prenota"
+                        onPress={addBooking_}
+                        color={Colors.primary}
+                    />
+                </View>
             </View>
         </View>
     );
@@ -233,11 +235,13 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
                     </View>
                 </View>
             </View>
-            <Button
-                title="Prenota"
-                onPress={addBooking_}
-                color={Colors.primary}
-            />
+            <View style={{marginVertical: 5}}>
+                <Button
+                    title="Prenota"
+                    onPress={addBooking_}
+                    color={Colors.primary}
+                />
+            </View>
         </View>
     );
 }

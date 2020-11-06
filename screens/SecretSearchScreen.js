@@ -29,14 +29,6 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 
-import Dialog, {
-    SlideAnimation,
-    DialogFooter,
-    DialogButton,
-    DialogContent
-} from 'react-native-popup-dialog';
-
-
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -204,14 +196,13 @@ const SecretSearchScreen = props => {
             <TouchableWithoutFeedback onPress={() => {
                 Keyboard.dismiss();
             }}>
-                <ScrollView>
-                    <View style={styles.container}>
-                        <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
 
+                <View style={styles.container}>
+                    <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
+                        <ScrollView>
                             <View style={styles.screen}>
                                 <View style={styles.inputContainer}>
                                     <Formik
-                                        // modificare la formica (quando si andrà a leggere da input)
                                         initialValues={{
                                             maxBudget: '',
                                             numPeople: '',
@@ -401,13 +392,22 @@ const SecretSearchScreen = props => {
                                                     }}
                                                     color={Colors.primary}
                                                 />
+                                                <Text>Regione preferita:</Text>
+                                                <TextInput
+                                                    placeholder={"Regione"}
+                                                    returnKeyType='next'
+                                                    onChangeText={handleChange('onlyRegion')}
+                                                    onBlur={handleBlur('onlyRegion')}
+                                                    //value={values.onlyRegion}
+                                                    style={styles.picker}
+                                                />
                                                 <Text>Regione da escludere:</Text>
                                                 <TextInput
                                                     placeholder={"Regione"}
                                                     returnKeyType='next'
-                                                    onChangeText={handleChange('region')}
-                                                    onBlur={handleBlur('region')}
-                                                    //value={values.region}
+                                                    onChangeText={handleChange('onlyNotRegion')}
+                                                    onBlur={handleBlur('onlyNotRegion')}
+                                                    //value={values.onlyNotRegion}
                                                     style={styles.picker}
                                                 />
                                                 <View style={{marginVertical: 5}}>
@@ -422,10 +422,10 @@ const SecretSearchScreen = props => {
                                     </Formik>
                                 </View>
                             </View>
+                        </ScrollView>
+                    </ImageBackground>
 
-                        </ImageBackground>
-                    </View>
-                </ScrollView>
+                </View>
             </TouchableWithoutFeedback>
         </View>
     );
@@ -449,13 +449,13 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     inputContainer: {
-        width: 400,
-        maxWidth: '88%',
+        width: 350,
+        maxWidth: '87%',
         alignItems: 'center',
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 2},
         shadowRadius: 6,
-        shadowOpacity: 0.25,
+        shadowOpacity: 0.26,
         elevation: 8,
         backgroundColor: 'white',
         padding: 20,

@@ -96,15 +96,19 @@ const Item = ({item, bookings, setBookings, image}) => {
         <View>
             <View style={styles.item}>
                 {sojourns}
-                <Button
-                    title="Paga"
-                    color={Colors.primary}
-                />
-                <Button
-                    title="Cancella"
-                    onPress={deleteBooking_}
-                    color={Colors.primary}
-                />
+                <View style={{marginVertical: 5}}>
+                    <Button
+                        title="Paga"
+                        color={Colors.primary}
+                    />
+                </View>
+                <View style={{marginVertical: 5}}>
+                    <Button
+                        title="Cancella"
+                        onPress={deleteBooking_}
+                        color={Colors.primary}
+                    />
+                </View>
             </View>
         </View>
     );

@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     inputContainer: {
-        width: '100%',
+        width: 350,
+        maxWidth: '87%',
         alignItems: 'center',
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 2},

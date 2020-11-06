@@ -2,7 +2,7 @@ import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createDrawerNavigator, DrawerItems} from 'react-navigation-drawer';
-import {View, Button, SafeAreaView} from 'react-native';
+import {View, Button, SafeAreaView, StyleSheet} from 'react-native';
 import Colors from '../constants/colors';
 import * as authActions from '../store/actions/auth';
 
@@ -49,7 +49,7 @@ const DrawerNavigator = createDrawerNavigator(
         contentComponent: props => {
             const dispatch = useDispatch();
             return (
-                <View style={{flex: 1, paddingTop: 20}}>
+                <View style={styles.container}>
                     <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
                         <DrawerItems {...props}
                                      onItemPress={
@@ -68,13 +68,15 @@ const DrawerNavigator = createDrawerNavigator(
                                              }
                                          }
                                      }/>
-                        <Button
-                            title="Logout"
-                            color={Colors.primary}
-                            onPress={() => {
-                                dispatch(authActions.submitLogout());
-                            }}
-                        />
+                        <View style={{marginVertical: 10}}>
+                            <Button
+                                title="Logout"
+                                color={Colors.primary}
+                                onPress={() => {
+                                    dispatch(authActions.submitLogout());
+                                }}
+                            />
+                        </View>
                     </SafeAreaView>
                 </View>
             );
@@ -97,6 +99,14 @@ const MainNavigator = createSwitchNavigator({
     Startup: StartupScreen,
     Login: AuthNavigator,
     Homepage: DrawerNavigator
+});
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.background,
+        padding: 10,
+    },
 });
 
 export default createAppContainer(MainNavigator);
