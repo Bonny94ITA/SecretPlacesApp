@@ -103,8 +103,6 @@ const SecretSearchScreen = props => {
     const [index, setIndex] = useState(-1);
     const dispatch = useDispatch();
 
-    console.log("dsadsadasd")
-
     useEffect(() => {
         if (cities != null) {
             console.log("Once")
@@ -305,10 +303,7 @@ const SecretSearchScreen = props => {
                                                             <View>
                                                                 {pickerItems}
                                                                 <TouchableHighlight
-                                                                    style={{
-                                                                        ...styles.openButton,
-                                                                        backgroundColor: "#2196F3"
-                                                                    }}
+                                                                    style={styles.hideButton}
                                                                     onPress={() => {
                                                                         setModalVisible(false);
                                                                     }}
@@ -471,20 +466,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10
     },
-    rowContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    inputBudget: {
-        height: 40,
-        borderColor: 'orange',
-        borderWidth: 1,
-        marginVertical: 5,
-        width: 100,
-        borderRadius: 10,
-        textAlign: 'center',
-        padding: 10
-    },
+    // rowContainer: {
+    //     flexDirection: 'row',
+    //     justifyContent: 'space-between'
+    // },
+    // inputBudget: {
+    //     height: 40,
+    //     borderColor: 'orange',
+    //     borderWidth: 1,
+    //     marginVertical: 5,
+    //     width: 100,
+    //     borderRadius: 10,
+    //     textAlign: 'center',
+    //     padding: 10
+    // },
     dateContainer: {
         padding: 10,
         flexDirection: 'row',
@@ -503,30 +498,25 @@ const styles = StyleSheet.create({
     },
     modalView: {
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: Colors.primary,
         shadowOffset: {width: 0, height: 2},
         shadowRadius: 6,
-        shadowOpacity: 0.25,
+        shadowOpacity: 0.26,
         elevation: 8,
         backgroundColor: 'white',
         padding: 20,
         margin: 20,
         borderRadius: 10
     },
-    openButton: {
+    hideButton: {
         backgroundColor: Colors.primary,
-        borderRadius: 20,
+        borderRadius: 10,
         padding: 10,
-        elevation: 2
     },
     textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center"
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center'
     }
 });
 
