@@ -39,8 +39,7 @@
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "rxjs": "^6.6.3",
-    "expo-sqlite": "~8.2.1"
+    "rxjs": "^6.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
