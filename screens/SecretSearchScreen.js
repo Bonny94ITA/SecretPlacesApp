@@ -94,8 +94,10 @@ const SecretSearchScreen = props => {
 
     const [selectedValue, setSelectedValue] = useState("Cagliari");
     const [selectedTourism, setSelectedTourism] = useState(null);
+    const [tourismCheckBoxes, setTourismCheckBoxes] = useState([]);
     const [pickerItems, setPickerItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalTTVisible, setModalTTVisible] = useState(false);
 
     const cities = useSelector(state => state.cities.cities);
     const [state, dispatchReducer] = useReducer(reducer, initialState);
@@ -104,6 +106,21 @@ const SecretSearchScreen = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const tourismTypes = ["balneare", "montano", "lacustre", "naturalistico", "culturale",
+            "termale", "religioso", "sportivo", "enogastronomico"];
+
+        const ttCheckBoxes = [];
+        for (let i = 0; i < tourismTypes.length; ++i) {
+            ttCheckBoxes.push(<CheckBox
+                title={tourismTypes[i]}
+                checked={false}
+                onPress={() => {
+
+                }}
+                key={i}
+            />);
+        }
+
         if (cities != null) {
             console.log("Once")
 
@@ -129,6 +146,7 @@ const SecretSearchScreen = props => {
 
             setFlags(flags_);
             setPickerItems(citiesItems);
+            setTourismCheckBoxes(ttCheckBoxes);
         }
     }, []);
 
@@ -191,237 +209,258 @@ const SecretSearchScreen = props => {
     return (
         <View style={styles.header}>
             <Header title={"Ricerca Segreta "}/>
-            <TouchableWithoutFeedback onPress={() => {
-                Keyboard.dismiss();
-            }}>
+            <View style={styles.container}>
+                <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
+                    <ScrollView>
+                        <View style={styles.screen}>
+                            <View style={styles.inputContainer}>
+                                <Formik
+                                    initialValues={{
+                                        maxBudget: '',
+                                        numPeople: '',
+                                        onlyRegion: '',
+                                        onlyNotRegion: ''
+                                    }}
+                                    onSubmit={async values => {
+                                        console.log(values)
+                                        const formattedAlternatives = [];
 
-                <View style={styles.container}>
-                    <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
-                        <ScrollView>
-                            <View style={styles.screen}>
-                                <View style={styles.inputContainer}>
-                                    <Formik
-                                        initialValues={{
-                                            maxBudget: '',
-                                            numPeople: '',
-                                            onlyRegion: '',
-                                            onlyNotRegion: ''
-                                        }}
-                                        onSubmit={async values => {
-                                            console.log(values)
-                                            const formattedAlternatives = [];
-
-                                            const cities_ = [];
-                                            for (let i = 0; i < flags.length; ++i) {
-                                                if (flags[i]) {
-                                                    cities_.push({region: cities[i].region, city: cities[i].name});
-                                                }
+                                        const cities_ = [];
+                                        for (let i = 0; i < flags.length; ++i) {
+                                            if (flags[i]) {
+                                                cities_.push({region: cities[i].region, city: cities[i].name});
                                             }
+                                        }
 
-                                            const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
-                                            const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
+                                        const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
+                                        const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
 
-                                            const alternatives = await secretSearch(cities_,
-                                                values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion, maxStars, minStars,
-                                                ["balenare", "lacustre", "naturalistico"], arrival, departure, dispatch);
+                                        const alternatives = await secretSearch(cities_,
+                                            values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion, maxStars, minStars,
+                                            ["balenare", "lacustre", "naturalistico"], arrival, departure, dispatch);
 
-                                            alternatives.forEach((element, index) => {
-                                                const formattedSojourns = [];
-                                                element.sojourns.forEach((sojourn, sojIndex) => {
-                                                    formattedSojourns.push({
-                                                        id: sojIndex,
-                                                        arrival: sojourn.arrival,
-                                                        departure: sojourn.departure,
-                                                        hotelName: sojourn.room.hotel.name,
-                                                        address: sojourn.room.hotel.address,
-                                                        hotelCity: sojourn.room.hotel.city.name,
-                                                        idRoom: sojourn.room.id,
-                                                        stars: sojourn.room.hotel.stars,
-                                                        numPlaces: sojourn.room.numPlaces,
-                                                        pricePerNight: sojourn.room.pricePerNight,
-                                                        totalPrice: sojourn.totalPrice
-                                                    });
-                                                });
-                                                formattedAlternatives.push({
-                                                    id: index,
-                                                    days: element.days,
-                                                    sojourns: formattedSojourns,
-                                                    totalPrice: element.totalPrice
+                                        alternatives.forEach((element, index) => {
+                                            const formattedSojourns = [];
+                                            element.sojourns.forEach((sojourn, sojIndex) => {
+                                                formattedSojourns.push({
+                                                    id: sojIndex,
+                                                    arrival: sojourn.arrival,
+                                                    departure: sojourn.departure,
+                                                    hotelName: sojourn.room.hotel.name,
+                                                    address: sojourn.room.hotel.address,
+                                                    hotelCity: sojourn.room.hotel.city.name,
+                                                    idRoom: sojourn.room.id,
+                                                    stars: sojourn.room.hotel.stars,
+                                                    numPlaces: sojourn.room.numPlaces,
+                                                    pricePerNight: sojourn.room.pricePerNight,
+                                                    totalPrice: sojourn.totalPrice
                                                 });
                                             });
+                                            formattedAlternatives.push({
+                                                id: index,
+                                                days: element.days,
+                                                sojourns: formattedSojourns,
+                                                totalPrice: element.totalPrice
+                                            });
+                                        });
 
-                                            dispatch(clearFreeRooms());
-                                            dispatch(setAlternatives(formattedAlternatives));
-                                            props.navigation.navigate('resultsSearch');
-                                        }}
-                                    >
-                                        {({handleChange, handleBlur, handleSubmit, values}) => (
-                                            <View>
-                                                <View style={styles.dateContainer}>
-                                                    <TouchableOpacity onPress={showDatePickerA} style={styles.item}>
-                                                        <AntDesign name="calendar" size={40} color="black"/>
-                                                    </TouchableOpacity>
-                                                    <DateTimePickerModal
-                                                        isVisible={isDatePickerVisibleA}
-                                                        mode="date"
-                                                        onConfirm={handleConfirmArrival}
-                                                        onCancel={hideDatePickerA}
-                                                    />
-                                                    <Text
-                                                        style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
-                                                </View>
-                                                <View style={styles.dateContainer}>
-                                                    <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
-                                                        <AntDesign name="calendar" size={40} color="black"/>
-                                                    </TouchableOpacity>
-                                                    <DateTimePickerModal
-                                                        isVisible={isDatePickerVisibleD}
-                                                        mode="date"
-                                                        onConfirm={handleConfirmDeparture}
-                                                        onCancel={hideDatePickerD}
-                                                    />
-                                                    <Text
-                                                        style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
-                                                </View>
-                                                <Button
-                                                    title="Seleziona le città"
-                                                    onPress={() => {
-                                                        setModalVisible(true)
-                                                    }}
-                                                    color={Colors.primary}
+                                        dispatch(clearFreeRooms());
+                                        dispatch(setAlternatives(formattedAlternatives));
+                                        props.navigation.navigate('resultsSearch');
+                                    }}
+                                >
+                                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                                        <View>
+                                            <View style={styles.dateContainer}>
+                                                <TouchableOpacity onPress={showDatePickerA} style={styles.item}>
+                                                    <AntDesign name="calendar" size={40} color="black"/>
+                                                </TouchableOpacity>
+                                                <DateTimePickerModal
+                                                    isVisible={isDatePickerVisibleA}
+                                                    mode="date"
+                                                    onConfirm={handleConfirmArrival}
+                                                    onCancel={hideDatePickerA}
                                                 />
-                                                <Modal
-                                                    animationType="slide"
-                                                    transparent={true}
-                                                    visible={modalVisible}
-                                                    onRequestClose={() => {
-                                                        Alert.alert("Modal has been closed.");
-                                                    }}
-                                                >
-                                                    <View style={styles.centeredView}>
-                                                        <View style={styles.modalView}>
-                                                            <View>
-                                                                {pickerItems}
-                                                                <TouchableHighlight
-                                                                    style={styles.hideButton}
-                                                                    onPress={() => {
-                                                                        setModalVisible(false);
-                                                                    }}
-                                                                >
-                                                                    <Text style={styles.textStyle}>Hide Modal</Text>
-                                                                </TouchableHighlight>
-                                                            </View>
+                                                <Text
+                                                    style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
+                                            </View>
+                                            <View style={styles.dateContainer}>
+                                                <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
+                                                    <AntDesign name="calendar" size={40} color="black"/>
+                                                </TouchableOpacity>
+                                                <DateTimePickerModal
+                                                    isVisible={isDatePickerVisibleD}
+                                                    mode="date"
+                                                    onConfirm={handleConfirmDeparture}
+                                                    onCancel={hideDatePickerD}
+                                                />
+                                                <Text
+                                                    style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
+                                            </View>
+                                            <Button
+                                                title="Seleziona le città"
+                                                onPress={() => {
+                                                    setModalVisible(true)
+                                                }}
+                                                color={Colors.primary}
+                                            />
+                                            <Modal
+                                                animationType="slide"
+                                                transparent={true}
+                                                visible={modalVisible}
+                                                onRequestClose={() => {
+                                                    Alert.alert("Modal has been closed.");
+                                                }}
+                                            >
+                                                <View style={styles.centeredView}>
+                                                    <View style={styles.modalView}>
+                                                        <View>
+                                                            {pickerItems}
+                                                            <TouchableHighlight
+                                                                style={styles.hideButton}
+                                                                onPress={() => {
+                                                                    setModalVisible(false);
+                                                                }}
+                                                            >
+                                                                <Text style={styles.textStyle}>Hide Modal</Text>
+                                                            </TouchableHighlight>
                                                         </View>
                                                     </View>
-                                                </Modal>
-                                                {/*<View style={styles.picker}>*/}
-                                                {/*    <RNPickerSelect*/}
-                                                {/*        placeholder={{*/}
-                                                {/*            label: 'Seleziona una città...',*/}
-                                                {/*            value: null,*/}
-                                                {/*        }}*/}
-                                                {/*        selectedValue={selectedValue}*/}
-                                                {/*        onValueChange={(itemValue) => setSelectedValue(itemValue)}*/}
-                                                {/*        items={pickerItems}*/}
-                                                {/*    />*/}
-                                                {/*</View>*/}
-                                                <Text>Numero di persone:</Text>
-                                                <TextInput
-                                                    placeholder={"Numero"}
-                                                    returnKeyType='next'
-                                                    keyboardType='numeric'
-                                                    onChangeText={handleChange('numPeople')}
-                                                    onBlur={handleBlur('numPeople')}
-                                                    //value={values.minBudget}
-                                                    style={styles.picker}
-                                                />
-                                                <Text>Seleziona il tuo budget:</Text>
-                                                <TextInput
-                                                    placeholder={"Max Budget"}
-                                                    returnKeyType='next'
-                                                    keyboardType='numeric'
-                                                    onChangeText={handleChange('maxBudget')}
-                                                    onBlur={handleBlur('maxBudget')}
-                                                    //value={values.minBudget}
-                                                    style={styles.picker}
-                                                />
-                                                <Text>Stelle minime dell'hotel:</Text>
-                                                <Rating
-                                                    type='star'
-                                                    ratingCount={5}
-                                                    imageSize={30}
-                                                    style={{padding: 10}}
-                                                    onFinishRating={ratingMinCompleted}
-                                                />
-                                                <Text>Stelle massime dell'hotel:</Text>
-                                                <Rating
-                                                    type='star'
-                                                    ratingCount={5}
-                                                    imageSize={30}
-                                                    style={{padding: 10}}
-                                                    onFinishRating={ratingMaxCompleted}
-                                                />
-                                                <Text>Tipo di turismo:</Text>
-                                                {/*<View style={styles.picker}>*/}
-                                                {/*    <RNPickerSelect*/}
-                                                {/*        placeholder={{*/}
-                                                {/*            label: 'Seleziona tipologia di turismo...',*/}
-                                                {/*            value: null,*/}
-                                                {/*        }}*/}
-                                                {/*        selectedValue={selectedValue}*/}
-                                                {/*        onValueChange={(value) => setSelectedTourism(value)}*/}
-                                                {/*        items={[*/}
-                                                {/*            {label: 'Balneare', value: 'balneare'},*/}
-                                                {/*            {label: 'Naturalistico', value: 'naturalistico'},*/}
-                                                {/*            {label: 'Montano', value: 'montano'},*/}
-                                                {/*            {label: 'Lacustre', value: 'lacustre'},*/}
-                                                {/*            {label: 'Termale', value: 'termale'},*/}
-                                                {/*            {label: 'Sportivo', value: 'sportivo'}*/}
-                                                {/*        ]}*/}
-                                                {/*    />*/}
-                                                {/*</View>*/}
+                                                </View>
+
+                                            </Modal>
+                                            {/*<View style={styles.picker}>*/}
+                                            {/*    <RNPickerSelect*/}
+                                            {/*        placeholder={{*/}
+                                            {/*            label: 'Seleziona una città...',*/}
+                                            {/*            value: null,*/}
+                                            {/*        }}*/}
+                                            {/*        selectedValue={selectedValue}*/}
+                                            {/*        onValueChange={(itemValue) => setSelectedValue(itemValue)}*/}
+                                            {/*        items={pickerItems}*/}
+                                            {/*    />*/}
+                                            {/*</View>*/}
+                                            <Text>Numero di persone:</Text>
+                                            <TextInput
+                                                placeholder={"Numero"}
+                                                returnKeyType='next'
+                                                keyboardType='numeric'
+                                                onChangeText={handleChange('numPeople')}
+                                                onBlur={handleBlur('numPeople')}
+                                                //value={values.minBudget}
+                                                style={styles.picker}
+                                            />
+                                            <Text>Seleziona il tuo budget:</Text>
+                                            <TextInput
+                                                placeholder={"Max Budget"}
+                                                returnKeyType='next'
+                                                keyboardType='numeric'
+                                                onChangeText={handleChange('maxBudget')}
+                                                onBlur={handleBlur('maxBudget')}
+                                                //value={values.minBudget}
+                                                style={styles.picker}
+                                            />
+                                            <Text>Stelle minime dell'hotel:</Text>
+                                            <Rating
+                                                type='star'
+                                                ratingCount={5}
+                                                imageSize={30}
+                                                style={{padding: 10}}
+                                                onFinishRating={ratingMinCompleted}
+                                            />
+                                            <Text>Stelle massime dell'hotel:</Text>
+                                            <Rating
+                                                type='star'
+                                                ratingCount={5}
+                                                imageSize={30}
+                                                style={{padding: 10}}
+                                                onFinishRating={ratingMaxCompleted}
+                                            />
+                                            <Text>Tipo di turismo:</Text>
+                                            {/*<View style={styles.picker}>*/}
+                                            {/*    <RNPickerSelect*/}
+                                            {/*        placeholder={{*/}
+                                            {/*            label: 'Seleziona tipologia di turismo...',*/}
+                                            {/*            value: null,*/}
+                                            {/*        }}*/}
+                                            {/*        selectedValue={selectedValue}*/}
+                                            {/*        onValueChange={(value) => setSelectedTourism(value)}*/}
+                                            {/*        items={[*/}
+                                            {/*            {label: 'Balneare', value: 'balneare'},*/}
+                                            {/*            {label: 'Naturalistico', value: 'naturalistico'},*/}
+                                            {/*            {label: 'Montano', value: 'montano'},*/}
+                                            {/*            {label: 'Lacustre', value: 'lacustre'},*/}
+                                            {/*            {label: 'Termale', value: 'termale'},*/}
+                                            {/*            {label: 'Sportivo', value: 'sportivo'}*/}
+                                            {/*        ]}*/}
+                                            {/*    />*/}
+                                            {/*</View>*/}
+                                            <Modal
+                                                animationType="slide"
+                                                transparent={true}
+                                                visible={modalTTVisible}
+                                                onRequestClose={() => {
+                                                    Alert.alert("Modal has been closed.");
+                                                }}
+                                            >
+                                                <View style={styles.centeredView}>
+                                                    <View style={styles.modalView}>
+                                                        <View>
+                                                            {tourismCheckBoxes}
+                                                            <TouchableHighlight
+                                                                style={styles.hideButton}
+                                                                onPress={() => {
+                                                                    setModalVisible(false);
+                                                                    setModalTTVisible(false);
+                                                                }}
+                                                            >
+                                                                <Text style={styles.textStyle}>Hide Modal</Text>
+                                                            </TouchableHighlight>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </Modal>
+                                            <Button
+                                                title="Seleziona il turismo"
+                                                onPress={() => {
+                                                    setModalTTVisible(true)
+                                                }}
+                                                color={Colors.primary}
+                                            />
+                                            <Text>Regione preferita:</Text>
+                                            <TextInput
+                                                placeholder={"Regione"}
+                                                returnKeyType='next'
+                                                onChangeText={handleChange('onlyRegion')}
+                                                onBlur={handleBlur('onlyRegion')}
+                                                //value={values.onlyRegion}
+                                                style={styles.picker}
+                                            />
+                                            <Text>Regione da escludere:</Text>
+                                            <TextInput
+                                                placeholder={"Regione"}
+                                                returnKeyType='next'
+                                                onChangeText={handleChange('onlyNotRegion')}
+                                                onBlur={handleBlur('onlyNotRegion')}
+                                                //value={values.onlyNotRegion}
+                                                style={styles.picker}
+                                            />
+                                            <View style={{marginVertical: 5}}>
                                                 <Button
-                                                    title="Seleziona il turismo..."
-                                                    onPress={() => {
-                                                        setModalVisible(true)
-                                                    }}
+                                                    title="Ricerca"
+                                                    onPress={handleSubmit}
                                                     color={Colors.primary}
                                                 />
-                                                <Text>Regione preferita:</Text>
-                                                <TextInput
-                                                    placeholder={"Regione"}
-                                                    returnKeyType='next'
-                                                    onChangeText={handleChange('onlyRegion')}
-                                                    onBlur={handleBlur('onlyRegion')}
-                                                    //value={values.onlyRegion}
-                                                    style={styles.picker}
-                                                />
-                                                <Text>Regione da escludere:</Text>
-                                                <TextInput
-                                                    placeholder={"Regione"}
-                                                    returnKeyType='next'
-                                                    onChangeText={handleChange('onlyNotRegion')}
-                                                    onBlur={handleBlur('onlyNotRegion')}
-                                                    //value={values.onlyNotRegion}
-                                                    style={styles.picker}
-                                                />
-                                                <View style={{marginVertical: 5}}>
-                                                    <Button
-                                                        title="Ricerca"
-                                                        onPress={handleSubmit}
-                                                        color={Colors.primary}
-                                                    />
-                                                </View>
                                             </View>
-                                        )}
-                                    </Formik>
-                                </View>
+                                        </View>
+                                    )}
+                                </Formik>
                             </View>
-                        </ScrollView>
-                    </ImageBackground>
+                        </View>
+                    </ScrollView>
+                </ImageBackground>
 
-                </View>
-            </TouchableWithoutFeedback>
+            </View>
         </View>
     );
 };

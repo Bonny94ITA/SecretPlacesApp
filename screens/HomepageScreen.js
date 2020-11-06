@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
+import * as SQLite from 'expo-sqlite';
 import {
     View,
     StyleSheet,
     ImageBackground,
     Text,
-    ScrollView
+    ScrollView,
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -44,6 +45,26 @@ const HomepageScreen = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const db = SQLite.openDatabase("DB.db");
+        const executeQuery = "INSERT INTO images(id,img) VALUES (?,?);";
+
+        db.transaction(tx => {
+                tx.executeSql(
+                    'create table if not exists images (id integer primary key not null, img BLOB);'
+                )
+                // tx.executeSql(
+                //     executeQuery, [0, "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/bg_resorts/6f87c6143fbd51a0bb5d15ca3b9cf84211ab0884.jpg"]
+                // )
+                // tx.executeSql('Select * from images', [], function (tx, results) {
+                //     console.log(results);
+                // });
+            }, (err) => {
+                console.log(err)
+            },
+            () => {
+                console.log("Success")
+            });
+
         async function fetchCities(dispatch) {
             return await getCities(dispatch);
         }
