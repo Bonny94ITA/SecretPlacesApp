@@ -182,6 +182,10 @@ const BookingsScreen = props => {
             const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
             const formattedBookings = [];
 
+            //Tiri giu il mapping immagine: idRoom
+            //Tiri giu tutte le immagini che ti servono da DB
+            //Carichi il dizionario
+
             for (let i = 0; i < bookings.length; ++i)
                 dict[bookings[i].id] = Pic();
 

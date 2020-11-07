@@ -1,4 +1,5 @@
 import React, {useState, useReducer} from 'react';
+import * as SQLite from 'expo-sqlite';
 import {
     View,
     StyleSheet,
@@ -17,6 +18,7 @@ import {AntDesign, Entypo} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
+import base64 from "react-native-base64";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -251,9 +253,34 @@ const ResultsScreen = props => {
     const alternatives = useSelector(state => state.secretSearch.alternatives);
     const [freeRooms_, setFreeRooms_] = useState(freeRooms);
     const [alternatives_, setAlternative_] = useState(alternatives);
+    const db = SQLite.openDatabase("DB.db");
+    const executeQuery = "INSERT INTO mapping(idImg, idRoom) VALUES (?,?);";
     const dict = {};
 
     if (freeRooms != null) {
+        db.transaction(tx => {
+                tx.executeSql(
+                    'create table if not exists mapping (id_img integer not null, id_room integer not null);'
+                )
+
+                //count per sapere il numero delle immagini in DB
+
+                // for (let i = 0; i < freeRooms.length; ++i) {
+                    //randomizzi il numero di un'immagine (es. 4)
+                //     tx.executeSql(
+                           //Conditional insert
+                //         executeQuery, [4, freeRooms[i].idRoom]
+                //     )
+                    //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
+                    //Carico il dict idRoom: immagine
+                // }
+
+            }, (err) => {
+                console.log(err)
+            },
+            () => {
+                //console.log("Success")
+            });
 
         for (let i = 0; i < freeRooms.length; ++i)
             dict[freeRooms[i].idRoom] = Pic();
@@ -282,6 +309,28 @@ const ResultsScreen = props => {
             </View>
         );
     } else {
+        db.transaction(tx => {
+                tx.executeSql(
+                    'create table if not exists mapping (id_img integer not null, id_room integer not null);'
+                )
+
+                //count per sapere il numero delle immagini in DB
+
+                // for (let i = 0; i < item.sojourns.length; ++i) {
+                    //randomizzi il numero di un'immagine (es. 4)
+                //     tx.executeSql(
+                           //Conditional insert
+                //         executeQuery, [4, item.sojourns[i].idRoom]
+                //     )
+                    //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
+                    //Carico il dict idRoom: immagine
+                // }
+            }, (err) => {
+                console.log(err)
+            },
+            () => {
+                //console.log("Success")
+            });
 
         for (let i = 0; i < alternatives.length; ++i)
             dict[alternatives[i].id] = Pic();
