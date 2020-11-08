@@ -72,6 +72,9 @@ const HomepageScreen = props => {
                 tx.executeSql(
                     'create table if not exists images (id integer primary key not null, url text);'
                 )
+                tx.executeSql(
+                    'create table if not exists mapping (id_img integer not null, id_room integer not null);'
+                )
 
                 for (let i = 0; i < pics.length; ++i) {
                     tx.executeSql(
@@ -86,7 +89,7 @@ const HomepageScreen = props => {
                 console.log(err)
             },
             () => {
-                //console.log("Success")
+                console.log("Success")
             });
     }, []);
 

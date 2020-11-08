@@ -19,6 +19,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import base64 from "react-native-base64";
+import {round} from "react-native-reanimated";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -254,35 +255,40 @@ const ResultsScreen = props => {
     const [freeRooms_, setFreeRooms_] = useState(freeRooms);
     const [alternatives_, setAlternative_] = useState(alternatives);
     const db = SQLite.openDatabase("DB.db");
-    const executeQuery = "INSERT INTO mapping(idImg, idRoom) VALUES (?,?);";
+    const executeQuery = "INSERT OR REPLACE INTO mapping(id_img, id_room) VALUES (?,?);";
     const dict = {};
+    let images = 0;
 
     if (freeRooms != null) {
         db.transaction(tx => {
                 tx.executeSql(
-                    'create table if not exists mapping (id_img integer not null, id_room integer not null);'
+                    'select count(id) from images;', [], function (tx, result) {
+                        images = result.rows.item(0).get()
+                        console.log (images)
+                    }
                 )
-                // tx.executeSql(
-                //     'select count(*) from mapping;'
-                // )
 
-                //count per sapere il numero delle immagini in DB
+                for (let i = 0; i < freeRooms.length; ++i) {
+                    let img = round(Math.random() * (images - 1))
+                    // console.log (images)
+                    // console.log("babaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    tx.executeSql(executeQuery, [img, freeRooms[i].idRoom])
+                    tx.executeSql(
+                        'select url from images where id = ?;', [img], function (tx, result) {
+                            // console.log(result)
+                            // console.log("caiidi")
+                        }
+                    )
+                }
+                //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
+                //Carico il dict idRoom: immagine
 
-                // for (let i = 0; i < freeRooms.length; ++i) {
-                    //randomizzi il numero di un'immagine (es. 4)
-                //     tx.executeSql(
-                           //Conditional insert
-                //         executeQuery, [4, freeRooms[i].idRoom]
-                //     )
-                    //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
-                    //Carico il dict idRoom: immagine
-                // }
 
             }, (err) => {
                 console.log(err)
             },
             () => {
-                //console.log("Success")
+                console.log("Success")
             });
 
         for (let i = 0; i < freeRooms.length; ++i)
@@ -313,20 +319,17 @@ const ResultsScreen = props => {
         );
     } else {
         db.transaction(tx => {
-                tx.executeSql(
-                    'create table if not exists mapping (id_img integer not null, id_room integer not null);'
-                )
 
                 //count per sapere il numero delle immagini in DB
 
                 // for (let i = 0; i < item.sojourns.length; ++i) {
-                    //randomizzi il numero di un'immagine (es. 4)
+                //randomizzi il numero di un'immagine (es. 4)
                 //     tx.executeSql(
-                           //Conditional insert
+                //Conditional insert
                 //         executeQuery, [4, item.sojourns[i].idRoom]
                 //     )
-                    //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
-                    //Carico il dict idRoom: immagine
+                //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
+                //Carico il dict idRoom: immagine
                 // }
             }, (err) => {
                 console.log(err)
