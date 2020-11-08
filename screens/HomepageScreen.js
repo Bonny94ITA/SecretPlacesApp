@@ -55,6 +55,7 @@ const HomepageScreen = props => {
     }, []);
 
     useEffect(() => {
+        console.log("78979")
         const pics = ["https://cf.bstatic.com/static/img/theme-index/carousel_320x240/bg_resorts/6f87c6143fbd51a0bb5d15ca3b9cf84211ab0884.jpg",
             "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/card-image-apartments_300/9f60235dc09a3ac3f0a93adbc901c61ecd1ce72e.jpg",
             "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/card-image-villas_300/dd0d7f8202676306a661aa4f0cf1ffab31286211.jpg",
@@ -63,17 +64,19 @@ const HomepageScreen = props => {
             "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/bg_glamping/6e181b9e942c160f4605239be7ddc1728cbcc4c8.jpg",
             "https://cf.bstatic.com/static/img/theme-index/carousel_320x240/bg_aparthotel/10e092f390b128dcff92727912299eef7824b751.jpg"];
         const db = SQLite.openDatabase("DB.db");
-        const executeQuery = "INSERT INTO images(id, url) VALUES (?,?);";
+        const executeQuery = "INSERT OR REPLACE INTO images(id, url) VALUES (?,?);";
 
         db.transaction(tx => {
-                // tx.executeSql(
-                //     'DROP TABLE images'
-                // )
                 tx.executeSql(
-                    'create table if not exists images (id integer primary key not null, url text);'
+                    'create table if not exists images (id integer primary key not null, url text);', [], function (tx, results) {
+                        console.log("dssadsa")
+                    }
                 )
+
                 tx.executeSql(
-                    'create table if not exists mapping (id_img integer not null, id_room integer not null);'
+                    'create table if not exists mapping (id_img integer not null, id_room integer type UNIQUE not null);', [], function (tx, results) {
+                        console.log("AAAAAAAAAAAAA")
+                    }
                 )
 
                 for (let i = 0; i < pics.length; ++i) {
@@ -85,6 +88,18 @@ const HomepageScreen = props => {
                 tx.executeSql('Select * from images', [], function (tx, results) {
                     console.log(results);
                 });
+
+                // tx.executeSql(
+                //     'DROP TABLE images', [], function (tx, results) {
+                //         console.log("1")
+                //     }
+                // )
+                //
+                // tx.executeSql(
+                //     'DROP TABLE mapping', [], function (tx, results) {
+                //         console.log("2")
+                //     }
+                // )
             }, (err) => {
                 console.log(err)
             },

@@ -257,32 +257,27 @@ const ResultsScreen = props => {
     const db = SQLite.openDatabase("DB.db");
     const executeQuery = "INSERT OR REPLACE INTO mapping(id_img, id_room) VALUES (?,?);";
     const dict = {};
-    let images = 0;
+    let imagesNum;
 
     if (freeRooms != null) {
         db.transaction(tx => {
                 tx.executeSql(
-                    'select count(id) from images;', [], function (tx, result) {
-                        images = result.rows.item(0).get()
-                        console.log (images)
+                    'Select count(id) from images;', [], function (tx, result) {
+                        imagesNum = result.rows._array[0]["count(id)"];
+
+                        for (let i = 0; i < freeRooms.length; ++i) {
+                            let img = Math.round(Math.random() * (imagesNum - 1))
+                            tx.executeSql(executeQuery, [img, freeRooms[i].idRoom])
+                            tx.executeSql(
+                                'select url from images where id = ?;', [img], function (tx, result) {
+                                    dict[freeRooms[i].idRoom] = base64.decode(result.rows._array[0]["url"]);
+                                }
+                            )
+                        }
+                    }, function (err) {
+                        console.log(err)
                     }
                 )
-
-                for (let i = 0; i < freeRooms.length; ++i) {
-                    let img = round(Math.random() * (images - 1))
-                    // console.log (images)
-                    // console.log("babaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                    tx.executeSql(executeQuery, [img, freeRooms[i].idRoom])
-                    tx.executeSql(
-                        'select url from images where id = ?;', [img], function (tx, result) {
-                            // console.log(result)
-                            // console.log("caiidi")
-                        }
-                    )
-                }
-                //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
-                //Carico il dict idRoom: immagine
-
 
             }, (err) => {
                 console.log(err)
@@ -290,9 +285,6 @@ const ResultsScreen = props => {
             () => {
                 console.log("Success")
             });
-
-        for (let i = 0; i < freeRooms.length; ++i)
-            dict[freeRooms[i].idRoom] = Pic();
 
         return (
             <View style={styles.header}>
@@ -319,23 +311,35 @@ const ResultsScreen = props => {
         );
     } else {
         db.transaction(tx => {
+                tx.executeSql(
+                    'Select count(id) from images;', [], function (tx, result) {
+                        imagesNum = result.rows._array[0]["count(id)"];
 
-                //count per sapere il numero delle immagini in DB
+                        for (let a = 0; a < alternatives.length; ++a) {
+                            for (let i = 0; i < alternatives[a].sojourns.length; ++i) {
+                                let img = Math.round(Math.random() * (imagesNum - 1))
+                                tx.executeSql(executeQuery, [img, alternatives[a].sojourns[i].idRoom])
+                                tx.executeSql(
+                                    'select url from images where id = ?;', [img], function (tx, result) {
+                                        dict[alternatives[a].sojourns[i].idRoom] = base64.decode(result.rows._array[0]["url"]);
+                                    }
+                                )
+                            }
+                        }
 
-                // for (let i = 0; i < item.sojourns.length; ++i) {
-                //randomizzi il numero di un'immagine (es. 4)
-                //     tx.executeSql(
-                //Conditional insert
-                //         executeQuery, [4, item.sojourns[i].idRoom]
-                //     )
-                //Select da DB dell'immagine con ir Randomizzato (4 DA ESEMPIO)
-                //Carico il dict idRoom: immagine
-                // }
+                        tx.executeSql('Select * from mapping;', [], function (tx, result) {
+                            console.log(result)
+                        })
+                    }, function (err) {
+                        console.log(err)
+                    }
+                )
+
             }, (err) => {
                 console.log(err)
             },
             () => {
-                //console.log("Success")
+                console.log("Success")
             });
 
         for (let i = 0; i < alternatives.length; ++i)
