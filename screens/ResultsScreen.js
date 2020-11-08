@@ -262,6 +262,9 @@ const ResultsScreen = props => {
                 tx.executeSql(
                     'create table if not exists mapping (id_img integer not null, id_room integer not null);'
                 )
+                // tx.executeSql(
+                //     'select count(*) from mapping;'
+                // )
 
                 //count per sapere il numero delle immagini in DB
 
