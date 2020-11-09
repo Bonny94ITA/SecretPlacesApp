@@ -1,4 +1,4 @@
-import React, {useState, useReducer} from 'react';
+import React, {useState, useReducer, useEffect} from 'react';
 import * as SQLite from 'expo-sqlite';
 import {
     View,
@@ -60,10 +60,10 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const Alternative = ({item, alternatives, setAlternatives, image}) => {
+const Alternative = ({item, alternatives, setAlternatives, images}) => {
     const dispatch = useDispatch();
 
-    const sojourns = item.sojourns.map(sojourn =>
+    const sojourns = item.sojourns.map((sojourn, index) =>
         <Sojourn key={sojourn.id.toString()}
                  sojourn={
                      <View style={styles.columnContainer}>
@@ -92,7 +92,7 @@ const Alternative = ({item, alternatives, setAlternatives, image}) => {
                                  <Image
                                      style={styles.image}
                                      source={{
-                                         uri: image
+                                         uri: images[item.sojourns[index].idRoom]
                                      }}
                                  />
                              </View>
@@ -249,42 +249,76 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
     );
 }
 
-const ResultsScreen = props => {
-    const freeRooms = useSelector(state => state.normalSearch.freeRooms);
-    const alternatives = useSelector(state => state.secretSearch.alternatives);
-    const [freeRooms_, setFreeRooms_] = useState(freeRooms);
-    const [alternatives_, setAlternative_] = useState(alternatives);
-    const db = SQLite.openDatabase("DB.db");
-    const executeQuery = "INSERT OR REPLACE INTO mapping(id_img, id_room) VALUES (?,?);";
-    const dict = {};
-    let imagesNum;
+async function fillDictionary(rooms, db, executeQuery) {
+    return new Promise((resolve, reject) => {
+        const dict_ = {};
+        let imagesNum;
 
-    if (freeRooms != null) {
         db.transaction(tx => {
+                tx.executeSql('DELETE from mapping;');
+
                 tx.executeSql(
                     'Select count(id) from images;', [], function (tx, result) {
                         imagesNum = result.rows._array[0]["count(id)"];
 
-                        for (let i = 0; i < freeRooms.length; ++i) {
+                        for (let i = 0; i < rooms.length; ++i) {
                             let img = Math.round(Math.random() * (imagesNum - 1))
-                            tx.executeSql(executeQuery, [img, freeRooms[i].idRoom])
-                            tx.executeSql(
-                                'select url from images where id = ?;', [img], function (tx, result) {
-                                    dict[freeRooms[i].idRoom] = base64.decode(result.rows._array[0]["url"]);
-                                }
-                            )
+                            tx.executeSql(executeQuery, [img, rooms[i]]);
                         }
-                    }, function (err) {
-                        console.log(err)
                     }
-                )
-
+                );
             }, (err) => {
                 console.log(err)
             },
             () => {
                 console.log("Success")
             });
+
+        db.transaction(tx => {
+                tx.executeSql('Select * from mapping;');
+
+                for (let i = 0; i < rooms.length; ++i) {
+                    tx.executeSql(
+                        'select url from images, mapping where id_room = ? and id_img = images.id;',
+                        [rooms[i]], function (tx, result) {
+                            dict_[rooms[i]] = base64.decode(result.rows._array[0]["url"]);
+                        }
+                    )
+                }
+
+            }, (err) => {
+                console.log(err)
+            },
+            () => {
+                console.log("Success")
+                resolve(dict_);
+            });
+    });
+}
+
+const ResultsScreen = props => {
+    console.log("render")
+    const freeRooms = useSelector(state => state.normalSearch.freeRooms);
+    const alternatives = useSelector(state => state.secretSearch.alternatives);
+    const [freeRooms_, setFreeRooms_] = useState(freeRooms);
+    const [alternatives_, setAlternative_] = useState(alternatives);
+    const [dict, setDict] = useState({});
+    const db = SQLite.openDatabase("DB.db");
+    const executeQuery = "INSERT INTO mapping (id_img, id_room) VALUES (?,?);";
+
+    if (freeRooms != null) {
+        useEffect(() => {
+            const rooms = []
+            for (let i = 0; i < freeRooms.length; ++i) {
+                if (rooms.indexOf(freeRooms[i].idRoom) === -1) {
+                    rooms.push(freeRooms[i].idRoom);
+                }
+            }
+
+            fillDictionary(rooms, db, executeQuery).then(r => {
+                setDict(r);
+            });
+        }, []);
 
         return (
             <View style={styles.header}>
@@ -310,40 +344,20 @@ const ResultsScreen = props => {
             </View>
         );
     } else {
-        db.transaction(tx => {
-                tx.executeSql(
-                    'Select count(id) from images;', [], function (tx, result) {
-                        imagesNum = result.rows._array[0]["count(id)"];
-
-                        for (let a = 0; a < alternatives.length; ++a) {
-                            for (let i = 0; i < alternatives[a].sojourns.length; ++i) {
-                                let img = Math.round(Math.random() * (imagesNum - 1))
-                                tx.executeSql(executeQuery, [img, alternatives[a].sojourns[i].idRoom])
-                                tx.executeSql(
-                                    'select url from images where id = ?;', [img], function (tx, result) {
-                                        dict[alternatives[a].sojourns[i].idRoom] = base64.decode(result.rows._array[0]["url"]);
-                                    }
-                                )
-                            }
-                        }
-
-                        tx.executeSql('Select * from mapping;', [], function (tx, result) {
-                            console.log(result)
-                        })
-                    }, function (err) {
-                        console.log(err)
+        useEffect(() => {
+            const rooms = []
+            for (let a = 0; a < alternatives.length; ++a) {
+                for (let i = 0; i < alternatives[a].sojourns.length; ++i) {
+                    if (rooms.indexOf(alternatives[a].sojourns[i].idRoom) === -1) {
+                        rooms.push(alternatives[a].sojourns[i].idRoom);
                     }
-                )
+                }
+            }
 
-            }, (err) => {
-                console.log(err)
-            },
-            () => {
-                console.log("Success")
+            fillDictionary(rooms, db, executeQuery).then(r => {
+                setDict(r);
             });
-
-        for (let i = 0; i < alternatives.length; ++i)
-            dict[alternatives[i].id] = Pic();
+        }, []);
 
         return (
             <View style={styles.header}>
@@ -359,7 +373,7 @@ const ResultsScreen = props => {
                                             item={item}
                                             alternatives={alternatives_}
                                             setAlternatives={setAlternative_}
-                                            image={dict[item.id]}
+                                            images={dict}
                                         />
                                     );
                                 }
