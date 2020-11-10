@@ -13,13 +13,11 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
-import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import base64 from "react-native-base64";
-import {round} from "react-native-reanimated";
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -63,7 +61,7 @@ const Sojourn = (props) => {
 const Alternative = ({item, alternatives, setAlternatives, images}) => {
     const dispatch = useDispatch();
 
-    const sojourns = item.sojourns.map((sojourn, index) =>
+    const sojourns = item.sojourns.map(sojourn =>
         <Sojourn key={sojourn.id.toString()}
                  sojourn={
                      <View style={styles.columnContainer}>
@@ -92,7 +90,7 @@ const Alternative = ({item, alternatives, setAlternatives, images}) => {
                                  <Image
                                      style={styles.image}
                                      source={{
-                                         uri: images[item.sojourns[index].idRoom]
+                                         uri: images[sojourn.idRoom]
                                      }}
                                  />
                              </View>
@@ -190,8 +188,6 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
 
                             await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
 
-                            console.log(freeRooms)
-
                             return freeRooms.filter(function (fr) {
                                 return fr.idRoom !== item.idRoom;
                             });
@@ -275,17 +271,21 @@ async function fillDictionary(rooms, db, executeQuery) {
             });
 
         db.transaction(tx => {
-                tx.executeSql('Select * from mapping;');
-
-                for (let i = 0; i < rooms.length; ++i) {
+                tx.executeSql('Select * from mapping;', [], function (tx, mapping) {
                     tx.executeSql(
-                        'select url from images, mapping where id_room = ? and id_img = images.id;',
-                        [rooms[i]], function (tx, result) {
-                            dict_[rooms[i]] = base64.decode(result.rows._array[0]["url"]);
+                        'Select * from images;',
+                        [], function (tx, result) {
+                            for (let i = 0; i < mapping.rows.length; ++i) {
+                                for (let j = 0; j < result.rows.length; ++j) {
+                                    if (result.rows._array[j]["id"] === mapping.rows._array[i]["id_img"])
+                                        dict_[mapping.rows._array[i]["id_room"]] = base64.decode(result.rows._array[j]["url"]);
+                                }
+                            }
                         }
                     )
-                }
 
+                    console.log(mapping)
+                });
             }, (err) => {
                 console.log(err)
             },
@@ -297,7 +297,6 @@ async function fillDictionary(rooms, db, executeQuery) {
 }
 
 const ResultsScreen = props => {
-    console.log("render")
     const freeRooms = useSelector(state => state.normalSearch.freeRooms);
     const alternatives = useSelector(state => state.secretSearch.alternatives);
     const [freeRooms_, setFreeRooms_] = useState(freeRooms);

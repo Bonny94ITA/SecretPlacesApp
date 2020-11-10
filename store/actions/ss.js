@@ -5,6 +5,6 @@ export const setAlternatives = (alternatives) => {
     return {type: SET_ALTERNATIVES, alts: alternatives};
 };
 
-export const clearAternatives = () => {
+export const clearAlternatives = () => {
     return {type: CLEAR};
 };

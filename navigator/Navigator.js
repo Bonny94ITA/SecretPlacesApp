@@ -64,7 +64,6 @@ const DrawerNavigator = createDrawerNavigator(
                                                  }
 
                                                  props.onItemPress(route);
-                                                 return;
                                              }
                                          }
                                      }/>

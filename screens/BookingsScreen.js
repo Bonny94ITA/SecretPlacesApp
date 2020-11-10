@@ -1,4 +1,5 @@
-import React, {useEffect, useState, useReducer} from 'react';
+import React, {useEffect, useState} from 'react';
+import base64 from "react-native-base64";
 import {
     AsyncStorage,
     Button,
@@ -12,17 +13,17 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
-import Pic from '../constants/pics';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
+import * as SQLite from "expo-sqlite";
 
 const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const Item = ({item, bookings, setBookings, image}) => {
+const Item = ({item, bookings, setBookings, images}) => {
     const dispatch = useDispatch();
 
     const sojourns = item.sojourns.map((sojourn) =>
@@ -54,7 +55,7 @@ const Item = ({item, bookings, setBookings, image}) => {
                                  <Image
                                      style={styles.image}
                                      source={{
-                                         uri: image
+                                         uri: images[sojourn.idRoom]
                                      }}
                                  />
                              </View>
@@ -170,59 +171,96 @@ async function deleteBooking(dispatch, token, bookingId) {
     return res;
 }
 
+async function fetchBookings(dispatch) {
+    const userData = await AsyncStorage.getItem('userData');
+    const jsonObj = JSON.parse(userData);
+    const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
+    const formattedBookings = [];
+
+    bookings.forEach(booking => {
+        const formattedSojourns = [];
+        booking.sojourns.forEach(element => {
+            formattedSojourns.push({
+                id: element.id,
+                arrival: element.arrival,
+                departure: element.departure,
+                hotelName: element.room.hotel.name,
+                address: element.room.hotel.address,
+                hotelCity: element.room.hotel.city.name,
+                stars: element.room.hotel.stars,
+                idRoom: element.room.id,
+                numPlaces: element.room.numPlaces,
+                pricePerNight: element.room.pricePerNight,
+                totalPrice: element.totalPrice
+            })
+        })
+
+        formattedBookings.push({
+            id: booking.id,
+            sojourns: formattedSojourns,
+            totalPrice: booking.totalPrice
+        });
+    });
+
+    return formattedBookings;
+}
+
+async function fillDictionary() {
+    return new Promise((resolve, reject) => {
+        const db = SQLite.openDatabase("DB.db");
+        const dict_ = {};
+        db.transaction(tx => {
+                const images = {};
+                tx.executeSql(
+                    'select * from mapping;',
+                    [], function (tx, mapping) {
+                        console.log(mapping)
+                        tx.executeSql(
+                            'select * from images;',
+                            [], function (tx, result) {
+                                for (let i = 0; i < result.rows._array.length; ++i)
+                                    images[result.rows._array[i]["id"]] = result.rows._array[i]["url"];
+
+                                for (let i = 0; i < mapping.rows.length; ++i) {
+                                    dict_[mapping.rows._array[i]["id_room"]] =
+                                        base64.decode(images[mapping.rows._array[i]["id_img"]])
+                                }
+                            }
+                        )
+                    }
+                )
+            }, (err) => {
+                console.log(err)
+            },
+            () => {
+                console.log("Success")
+                resolve(dict_);
+            });
+    });
+}
+
 const BookingsScreen = props => {
+    console.log("render")
     const [bookings, setBookings] = useState([]);
+    const [dict, setDict] = useState({});
     const dispatch = useDispatch();
-    const dict = {};
 
     useEffect(() => {
-        async function fetchBookings(dispatch) {
-            const userData = await AsyncStorage.getItem('userData');
-            const jsonObj = JSON.parse(userData);
-            const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
-            const formattedBookings = [];
-
-            //Tiri giu il mapping immagine: idRoom
-            //Tiri giu tutte le immagini che ti servono da DB
-            //Carichi il dizionario
-
-            for (let i = 0; i < bookings.length; ++i)
-                dict[bookings[i].id] = Pic();
-
-            bookings.forEach(booking => {
-                const formattedSojourns = [];
-                booking.sojourns.forEach(element => {
-                    formattedSojourns.push({
-                        id: element.id,
-                        arrival: element.arrival,
-                        departure: element.departure,
-                        hotelName: element.room.hotel.name,
-                        address: element.room.hotel.address,
-                        hotelCity: element.room.hotel.city.name,
-                        stars: element.room.hotel.stars,
-                        numPlaces: element.room.numPlaces,
-                        pricePerNight: element.room.pricePerNight,
-                        totalPrice: element.totalPrice
-                    })
-                })
-
-                formattedBookings.push({
-                    id: booking.id,
-                    sojourns: formattedSojourns,
-                    totalPrice: booking.totalPrice
-                });
-            });
-
-            return formattedBookings;
-        }
-
+        //Rimuovere listener prima di aver fatto logout
         props.navigation.addListener('didFocus', async () => {
             const fb = await fetchBookings(dispatch);
+            const dict_ = await fillDictionary();
             setBookings(fb);
+            setDict(dict_);
         });
 
-        fetchBookings(dispatch).then(r => setBookings(r));
-    }, [])
+        fetchBookings(dispatch).then(bookings_ => {
+            fillDictionary().then(dict_ => {
+                setBookings(bookings_);
+                setDict(dict_);
+            });
+        });
+    }, []);
 
     return (
         <View style={styles.header}>
@@ -238,7 +276,7 @@ const BookingsScreen = props => {
                                         item={item}
                                         bookings={bookings}
                                         setBookings={setBookings}
-                                        image={dict[item.id]}
+                                        images={dict}
                                     />
                                 );
                             }

@@ -20,7 +20,7 @@ import * as authActions from '../store/actions/auth';
 import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
-import {clearAternatives} from '../store/actions/ss';
+import {clearAlternatives} from '../store/actions/ss';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -156,7 +156,7 @@ const NormalSearchScreen = props => {
                                             });
                                         });
 
-                                        dispatch(clearAternatives());
+                                        dispatch(clearAlternatives());
                                         dispatch(setFreeRooms(formattedFreeRooms));
                                         props.navigation.navigate('resultsSearch');
                                     }}
