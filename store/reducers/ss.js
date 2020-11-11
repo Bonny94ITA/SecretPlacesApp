@@ -1,4 +1,4 @@
-import {SET_ALTERNATIVES, CLEAR} from "../actions/ss";
+import {SET_ALTERNATIVES, CLEAR_ALTERNATIVES} from "../actions/ss";
 
 const initialState = {
     alternatives: null
@@ -9,7 +9,7 @@ const ss = (state = initialState, action) => {
     switch (action.type) {
         case SET_ALTERNATIVES:
             return {alternatives: action.alts};
-        case CLEAR:
+        case CLEAR_ALTERNATIVES:
             return initialState;
         default:
             return state;

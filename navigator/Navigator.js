@@ -5,6 +5,7 @@ import {createDrawerNavigator, DrawerItems} from 'react-navigation-drawer';
 import {View, Button, SafeAreaView, StyleSheet} from 'react-native';
 import Colors from '../constants/colors';
 import * as authActions from '../store/actions/auth';
+import {removeListener} from  '../store/actions/listener';
 
 import HomepageScreen from '../screens/HomepageScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -72,6 +73,7 @@ const DrawerNavigator = createDrawerNavigator(
                                 title="Logout"
                                 color={Colors.primary}
                                 onPress={() => {
+                                    dispatch(removeListener());
                                     dispatch(authActions.submitLogout());
                                 }}
                             />

@@ -11,21 +11,23 @@ import ReduxThunk from 'redux-thunk';
 import normalSearchReducer from "./store/reducers/ns";
 import secretSearchReducer from "./store/reducers/ss";
 import citiesReducer from "./store/reducers/cities";
+import listenerReducer from "./store/reducers/listener";
 import _ from 'lodash';
 
-YellowBox.ignoreWarnings(['componentWillReceiveProps']);
-const _console = _.clone(console);
-console.warn = message => {
-    if (message.indexOf('componentWillReceiveProps') <= -1) {
-        _console.warn(message);
-    }
-};
+// YellowBox.ignoreWarnings(['componentWillReceiveProps']);
+// const _console = _.clone(console);
+// console.warn = message => {
+//     if (message.indexOf('componentWillReceiveProps') <= -1) {
+//         _console.warn(message);
+//     }
+// };
 
 const rootReducer = combineReducers({
     auth: authReducer,
     normalSearch: normalSearchReducer,
     secretSearch: secretSearchReducer,
-    cities: citiesReducer
+    cities: citiesReducer,
+    focusListener: listenerReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

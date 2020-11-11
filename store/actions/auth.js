@@ -1,6 +1,5 @@
 import {AsyncStorage} from 'react-native';
 import serverURL from '../../components/ServerInfo';
-
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 

@@ -16,6 +16,7 @@ import Colors from '../constants/colors';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
+import {setListener} from '../store/actions/listener';
 import {useDispatch} from 'react-redux';
 import * as SQLite from "expo-sqlite";
 
@@ -214,7 +215,7 @@ async function fillDictionary() {
                 tx.executeSql(
                     'select * from mapping;',
                     [], function (tx, mapping) {
-                        console.log(mapping)
+                        // console.log(mapping)
                         tx.executeSql(
                             'select * from images;',
                             [], function (tx, result) {
@@ -246,13 +247,14 @@ const BookingsScreen = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        //Rimuovere listener prima di aver fatto logout
-        props.navigation.addListener('didFocus', async () => {
+        const focusListener = props.navigation.addListener('didFocus', async () => {
             const fb = await fetchBookings(dispatch);
             const dict_ = await fillDictionary();
             setBookings(fb);
             setDict(dict_);
         });
+
+        dispatch(setListener(focusListener));
 
         fetchBookings(dispatch).then(bookings_ => {
             fillDictionary().then(dict_ => {
