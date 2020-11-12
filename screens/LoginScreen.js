@@ -18,11 +18,57 @@ import {useDispatch} from 'react-redux';
 import {JSHash, CONSTANTS} from 'react-native-hash';
 import {submitLogin} from '../store/actions/auth';
 import {Formik} from 'formik';
+import * as Google from 'expo-google-app-auth';
+
 
 const LoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
+
+
+    /////////////////////////////// tentativo 1
+    async function signInWithGoogleAsync() {
+        try {
+            const result = await Google.logInAsync({
+                androidClientId: YOUR_CLIENT_ID_HERE,
+                iosClientId: YOUR_CLIENT_ID_HERE,
+                scopes: ['profile', 'email'],
+            });
+
+            if (result.type === 'success') {
+                return result.accessToken;
+            } else {
+                return {cancelled: true};
+            }
+        } catch (e) {
+            return {error: true};
+        }
+    }
+
+    /////////////////////////////// tentativo 2
+    async function signInWithGoogleAsync() {
+        const config = {
+            expoClientId: `<YOUR_WEB_CLIENT_ID>`,
+            iosClientId: `<YOUR_IOS_CLIENT_ID>`,
+            androidClientId: `<YOUR_ANDROID_CLIENT_ID>`,
+            iosStandaloneAppClientId: `<YOUR_IOS_CLIENT_ID>`,
+            androidStandaloneAppClientId: `<YOUR_ANDROID_CLIENT_ID>`,
+        };
+
+        // First- obtain access token from Expo's Google API
+        const {type, accessToken, user} = await Google.logInAsync(config);
+
+        if (type === 'success') {
+            // Then you can use the Google REST API
+            let userInfoResponse = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                headers: {Authorization: `Bearer ${accessToken}`},
+            });
+        }
+    }
+
+    //////////////////////////////
+
 
     const login = async (email, password) => {
         setError(null);
@@ -101,6 +147,7 @@ const LoginScreen = props => {
                             }}>
                                 <Text style={styles.RegistrationStyle}>Registrazione</Text>
                             </TouchableOpacity>
+                            <Button title="google" onPress={console.log("ciao")}/>
                         </View>
                     </View>
                 </ImageBackground>
