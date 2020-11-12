@@ -19,6 +19,7 @@ import {JSHash, CONSTANTS} from 'react-native-hash';
 import {submitGoogleLogin, submitLogin} from '../store/actions/auth';
 import {Formik} from 'formik';
 import * as Google from 'expo-google-app-auth';
+import {SocialIcon} from 'react-native-elements';
 
 async function signInWithGoogleAsync() {
     try {
@@ -115,16 +116,46 @@ const LoginScreen = props => {
                                     </View>
                                 )}
                             </Formik>
+                            <Text>Ti sei già registrato?</Text>
                             <TouchableOpacity onPress={() => {
                                 props.navigation.navigate('Registrazione')
                             }}>
                                 <Text style={styles.RegistrationStyle}>Registrazione</Text>
                             </TouchableOpacity>
-                            <Button onPress={async () => {
-                                const info = await signInWithGoogleAsync();
-                                await dispatch(submitGoogleLogin(info));
-                                props.navigation.navigate('Homepage');
-                            }} title="Sign in with Google" />
+                            <View
+                                style={{flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingBottom: 20}}>
+                                <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
+                                <View>
+                                    <Text style={{width: 50, textAlign: 'center', color: Colors.title}}>Oppure</Text>
+                                </View>
+                                <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
+                            </View>
+                            <View style={{textAlign: 'center'}}>
+                                <SocialIcon
+                                    title='Login con Google'
+                                    onPress={async () => {
+                                        const info = await signInWithGoogleAsync();
+                                        await dispatch(submitGoogleLogin(info));
+                                        props.navigation.navigate('Homepage');
+                                    }}
+                                    button
+                                    type='google'
+                                    iconStyle={{width: '100%'}}
+                                    style={{paddingLeft: 10, paddingRight: 10}}
+                                />
+                                <SocialIcon
+                                    title='Login con Facebook'
+                                    onPress={async () => {
+                                        const info = await signInWithGoogleAsync();
+                                        await dispatch(submitGoogleLogin(info));
+                                        props.navigation.navigate('Homepage');
+                                    }}
+                                    button
+                                    type='facebook'
+                                    iconStyle={{width: '100%'}}
+                                    style={{paddingLeft: 10, paddingRight: 10}}
+                                />
+                            </View>
                         </View>
                     </View>
                 </ImageBackground>
@@ -144,7 +175,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     titleContainer: {
-        flex: 0.5,
+        flex: 0.45,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
@@ -184,7 +215,7 @@ const styles = StyleSheet.create({
     },
     RegistrationStyle: {
         color: Colors.title,
-        marginTop: 10
+        paddingTop: 5
     },
     loading: {
         flex: 1,
