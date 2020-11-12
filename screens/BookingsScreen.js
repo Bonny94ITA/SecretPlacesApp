@@ -125,18 +125,19 @@ function timeout(milliseconds, promise) {
     });
 }
 
-async function getBookings(dispatch, token, userId) {
+async function getBookings(dispatch, token, tokenType, userId) {
     let bookings = null;
 
     await timeout(5000, fetch(serverURL + '/bookings/id/' + +userId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            token_info: JSON.stringify({token: token, type: 0})
+            token_info: JSON.stringify({token: token, type: tokenType})
         }
     }))
         .then(async function (response) {
             bookings = await response.json();
+            console.log(bookings)
         }, function (error) {
             dispatch(authActions.submitLogout());
             console.log(error);
@@ -175,7 +176,7 @@ async function deleteBooking(dispatch, token, bookingId) {
 async function fetchBookings(dispatch) {
     const userData = await AsyncStorage.getItem('userData');
     const jsonObj = JSON.parse(userData);
-    const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.userId);
+    const bookings = await getBookings(dispatch, jsonObj.token, 1, jsonObj.userId);
     const formattedBookings = [];
 
     bookings.forEach(booking => {

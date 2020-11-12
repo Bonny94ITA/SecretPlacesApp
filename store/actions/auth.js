@@ -42,7 +42,6 @@ const setLogoutTimer = expirationTime => {
 };
 
 export const submitLogin = (email, password) => {
-    //Nelle prossime chiamate (in cui serve il token di sessione), si dovrà passare come parametro anche getState
     return async dispatch => {
         await timeout(5000, fetch(serverURL + '/guests/login', {
             method: 'POST',
@@ -67,6 +66,43 @@ export const submitLogin = (email, password) => {
             );
 
             saveDataToStorage(resData.token.idToken, resData.guest.id, expirationDate);
+        }).catch(function(error) {
+            throw new Error(error);
+        });
+    };
+};
+
+export const submitGoogleLogin = (info) => {
+    return async dispatch => {
+
+        console.log(info)
+        await timeout(5000, fetch(serverURL + '/guests/socialLogin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                token_info: JSON.stringify({token: info.idToken, type: 1})
+            },
+            body: JSON.stringify({
+                email: info.user.email,
+                pwd: "",
+                name: "",
+                social_auth: ""
+            })
+        })).then(async function(response) {
+            const resData = await response.json();
+            console.log(resData)
+
+            dispatch(
+                authenticate(
+                    resData,
+                    info.idToken,
+                    "3600000"));
+
+            const expirationDate = new Date(
+                new Date().getTime() + parseInt("3600000")
+            );
+
+            saveDataToStorage(info.idToken, resData, expirationDate);
         }).catch(function(error) {
             throw new Error(error);
         });
