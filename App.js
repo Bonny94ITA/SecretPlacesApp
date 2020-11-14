@@ -8,9 +8,9 @@ import {createStore, combineReducers, applyMiddleware} from 'redux';
 import authReducer from './store/reducers/auth';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
-import normalSearchReducer from "./store/reducers/ns";
-import secretSearchReducer from "./store/reducers/ss";
-import citiesReducer from "./store/reducers/cities";
+import normalSearchReducer from './store/reducers/ns';
+import secretSearchReducer from './store/reducers/ss';
+import citiesReducer from './store/reducers/cities';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 

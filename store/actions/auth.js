@@ -1,5 +1,6 @@
 import {AsyncStorage, Platform} from 'react-native';
 import serverURL from '../../components/ServerInfo';
+
 export const SET_LISTENER = 'SET_LISTENER';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
@@ -57,7 +58,7 @@ export const submitLogin = (email, password) => {
                 email: email,
                 pwd: password
             })
-        })).then(async function(response) {
+        })).then(async function (response) {
             const resData = await response.json();
 
             dispatch(
@@ -72,7 +73,7 @@ export const submitLogin = (email, password) => {
             );
 
             saveDataToStorage(resData.token.idToken, 0, resData.guest.id, expirationDate);
-        }).catch(function(error) {
+        }).catch(function (error) {
             throw new Error(error);
         });
     };
@@ -92,7 +93,7 @@ export const submitFacebookLogin = (info) => {
                 name: "",
                 social_auth: ""
             })
-        })).then(async function(response) {
+        })).then(async function (response) {
             const resData = await response.json();
 
             dispatch(
@@ -107,7 +108,7 @@ export const submitFacebookLogin = (info) => {
             );
 
             saveDataToStorage(info.token, 2, resData, expirationDate);
-        }).catch(function(error) {
+        }).catch(function (error) {
             throw new Error(error);
         });
     };
@@ -133,7 +134,7 @@ export const submitGoogleLogin = (info) => {
                 name: "",
                 social_auth: ""
             })
-        })).then(async function(response) {
+        })).then(async function (response) {
             const resData = await response.json();
             console.log(resData)
 
@@ -149,7 +150,7 @@ export const submitGoogleLogin = (info) => {
             );
 
             saveDataToStorage(info.idToken, type, resData, expirationDate);
-        }).catch(function(error) {
+        }).catch(function (error) {
             throw new Error(error);
         });
     };
@@ -167,7 +168,7 @@ export const submitRegister = (email, password, username) => {
                 pwd: password,
                 name: username
             })
-        })).catch(function(error) {
+        })).catch(function (error) {
             throw new Error(error);
         })
     };

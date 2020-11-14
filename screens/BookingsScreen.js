@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import base64 from "react-native-base64";
+import base64 from 'react-native-base64';
 import {
     AsyncStorage,
     Button,
@@ -17,7 +17,7 @@ import {AntDesign, Entypo} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
-import * as SQLite from "expo-sqlite";
+import * as SQLite from 'expo-sqlite';
 
 const Sojourn = (props) => {
     return props.sojourn;

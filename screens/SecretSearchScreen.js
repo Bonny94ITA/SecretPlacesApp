@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useReducer} from 'react';
 import {
     Button,
-    Keyboard,
     StyleSheet,
-    TouchableWithoutFeedback,
     View,
     Text,
     ImageBackground,
@@ -26,7 +24,6 @@ import * as authActions from '../store/actions/auth';
 import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import {setAlternatives} from '../store/actions/ss';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import RNPickerSelect from 'react-native-picker-select';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 
 function timeout(milliseconds, promise) {

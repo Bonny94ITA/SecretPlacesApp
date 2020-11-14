@@ -1,4 +1,4 @@
-import React, {useState, useReducer, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import * as SQLite from 'expo-sqlite';
 import {
     View,
@@ -8,7 +8,7 @@ import {
     Button,
     Image,
     AsyncStorage,
-    Alert, Platform
+    Alert
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -17,7 +17,7 @@ import {AntDesign, Entypo} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
-import base64 from "react-native-base64";
+import base64 from 'react-native-base64';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
