@@ -8,7 +8,7 @@ import {
     Button,
     Image,
     AsyncStorage,
-    Alert
+    Alert, Platform
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -28,14 +28,14 @@ function timeout(milliseconds, promise) {
     });
 }
 
-async function addBooking(dispatch, booking, guestId, token) {
+async function addBooking(dispatch, booking, guestId, token, tt) {
     let res = null;
 
     await timeout(5000, fetch(serverURL + '/bookings/insert', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            token_info: JSON.stringify({token: token, type: 0})
+            token_info: JSON.stringify({token: token, type: tt})
         },
         body: JSON.stringify({
             guest: guestId,
@@ -102,7 +102,7 @@ const Alternative = ({item, alternatives, setAlternatives, images}) => {
 
     const addBooking_ = () =>
         Alert.alert(
-            "Sei sicuro di voler prenotare?",
+            "Sei sicuro di voler salvare la ricerca?",
             "",
             [
                 {
@@ -128,7 +128,7 @@ const Alternative = ({item, alternatives, setAlternatives, images}) => {
                                 sojourns: sojs
                             }
 
-                            await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                            await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token, jsonObj.tokenType);
 
                             return alternatives.filter(function (alt) {
                                 return alt.id !== item.id;
@@ -148,7 +148,7 @@ const Alternative = ({item, alternatives, setAlternatives, images}) => {
                 {sojourns}
                 <View style={{marginVertical: 5}}>
                     <Button
-                        title="Prenota"
+                        title="Salva"
                         onPress={addBooking_}
                         color={Colors.primary}
                     />
@@ -163,7 +163,7 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
 
     const addBooking_ = () =>
         Alert.alert(
-            "Sei sicuro di voler prenotare?",
+            "Sei sicuro di voler salvare la ricerca?",
             "",
             [
                 {
@@ -186,7 +186,7 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
                                 ]
                             }
 
-                            await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token);
+                            await addBooking(dispatch, booking, jsonObj.userId, jsonObj.token, jsonObj.tokenType);
 
                             return freeRooms.filter(function (fr) {
                                 return fr.idRoom !== item.idRoom;
@@ -236,7 +236,7 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
             </View>
             <View style={{marginVertical: 5}}>
                 <Button
-                    title="Prenota"
+                    title="Salva"
                     onPress={addBooking_}
                     color={Colors.primary}
                 />

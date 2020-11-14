@@ -1,25 +1,53 @@
 import React, {useState} from 'react';
 import {
-    View,
-    Text,
-    StyleSheet,
-    TextInput,
-    Button,
-    Keyboard,
-    ImageBackground,
-    TouchableWithoutFeedback,
     ActivityIndicator,
     Alert,
-    TouchableOpacity
+    Button,
+    ImageBackground,
+    Keyboard,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
 } from 'react-native';
 
 import Colors from '../constants/colors';
 import {useDispatch} from 'react-redux';
-import {JSHash, CONSTANTS} from 'react-native-hash';
-import {submitGoogleLogin, submitLogin} from '../store/actions/auth';
+import {CONSTANTS, JSHash} from 'react-native-hash';
+import {submitFacebookLogin, submitGoogleLogin, submitLogin} from '../store/actions/auth';
 import {Formik} from 'formik';
 import * as Google from 'expo-google-app-auth';
+import * as Facebook from 'expo-facebook';
 import {SocialIcon} from 'react-native-elements';
+
+async function signInWithFacebookAsync() {
+    try {
+        await Facebook.initializeAsync('246982563186236');
+
+        const {
+            type,
+            token,
+            expirationDate,
+            permissions,
+            declinedPermissions,
+        } = await Facebook.logInWithReadPermissionsAsync({
+            permissions: ['public_profile', 'email'],
+        });
+        if (type === 'success') {
+            const response = await (await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email`)).json();
+            response.token = token;
+            console.log("e");
+            console.log(response)
+            return response;
+        } else {
+            // type === 'cancel'
+        }
+    } catch ({message}) {
+        alert(`Facebook Login Error: ${message}`);
+    }
+}
 
 async function signInWithGoogleAsync() {
     try {
@@ -146,8 +174,8 @@ const LoginScreen = props => {
                                 <SocialIcon
                                     title='Login con Facebook'
                                     onPress={async () => {
-                                        const info = await signInWithGoogleAsync();
-                                        await dispatch(submitGoogleLogin(info));
+                                        const info = await signInWithFacebookAsync();
+                                        await dispatch(submitFacebookLogin(info));
                                         props.navigation.navigate('Homepage');
                                     }}
                                     button

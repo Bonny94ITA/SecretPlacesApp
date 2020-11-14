@@ -1,14 +1,19 @@
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage, Platform} from 'react-native';
 import serverURL from '../../components/ServerInfo';
+export const SET_LISTENER = 'SET_LISTENER';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 
 let timer;
 
-export const authenticate = (userId, token, expiryTime) => {
+export const setListener = (listener) => {
+    return {type: SET_LISTENER, subscription: listener};
+};
+
+export const authenticate = (userId, token, tokenType, expiryTime) => {
     return dispatch => {
         dispatch(setLogoutTimer(expiryTime));
-        dispatch({type: AUTHENTICATE, userId: userId, token: token});
+        dispatch({type: AUTHENTICATE, userId: userId, token: token, tokenType: tokenType});
     };
 };
 
@@ -59,28 +64,68 @@ export const submitLogin = (email, password) => {
                 authenticate(
                     resData.guest.id,
                     resData.token.idToken,
+                    0,
                     parseInt(resData.token.ttl)));
 
             const expirationDate = new Date(
                 new Date().getTime() + parseInt(resData.token.ttl)
             );
 
-            saveDataToStorage(resData.token.idToken, resData.guest.id, expirationDate);
+            saveDataToStorage(resData.token.idToken, 0, resData.guest.id, expirationDate);
         }).catch(function(error) {
             throw new Error(error);
         });
     };
 };
 
-export const submitGoogleLogin = (info) => {
+export const submitFacebookLogin = (info) => {
     return async dispatch => {
-
-        console.log(info)
         await timeout(5000, fetch(serverURL + '/guests/socialLogin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                token_info: JSON.stringify({token: info.idToken, type: 1})
+                token_info: JSON.stringify({token: info.token, type: 2})
+            },
+            body: JSON.stringify({
+                email: info.email,
+                pwd: "",
+                name: "",
+                social_auth: ""
+            })
+        })).then(async function(response) {
+            const resData = await response.json();
+
+            dispatch(
+                authenticate(
+                    resData,
+                    info.token,
+                    2,
+                    parseInt("3600000")));
+
+            const expirationDate = new Date(
+                new Date().getTime() + parseInt("3600000")
+            );
+
+            saveDataToStorage(info.token, 2, resData, expirationDate);
+        }).catch(function(error) {
+            throw new Error(error);
+        });
+    };
+}
+
+export const submitGoogleLogin = (info) => {
+    return async dispatch => {
+        let type;
+        if (Platform.OS === 'ios')
+            type = 11;
+        else if (Platform.OS === 'android')
+            type = 12;
+
+        await timeout(5000, fetch(serverURL + '/guests/socialLogin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                token_info: JSON.stringify({token: info.idToken, type: type})
             },
             body: JSON.stringify({
                 email: info.user.email,
@@ -96,13 +141,14 @@ export const submitGoogleLogin = (info) => {
                 authenticate(
                     resData,
                     info.idToken,
-                    "3600000"));
+                    type,
+                    parseInt("3600000")));
 
             const expirationDate = new Date(
                 new Date().getTime() + parseInt("3600000")
             );
 
-            saveDataToStorage(info.idToken, resData, expirationDate);
+            saveDataToStorage(info.idToken, type, resData, expirationDate);
         }).catch(function(error) {
             throw new Error(error);
         });
@@ -127,11 +173,12 @@ export const submitRegister = (email, password, username) => {
     };
 };
 
-const saveDataToStorage = (token, userId, expirationDate) => {
+const saveDataToStorage = (token, tt, userId, expirationDate) => {
     AsyncStorage.setItem(
         'userData',
         JSON.stringify({
             token: token,
+            tokenType: tt,
             userId: userId,
             expiryDate: expirationDate.toISOString()
         })

@@ -5,7 +5,6 @@ import {createDrawerNavigator, DrawerItems} from 'react-navigation-drawer';
 import {View, Button, SafeAreaView, StyleSheet} from 'react-native';
 import Colors from '../constants/colors';
 import * as authActions from '../store/actions/auth';
-import {removeListener} from  '../store/actions/listener';
 
 import HomepageScreen from '../screens/HomepageScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -43,8 +42,8 @@ const DrawerNavigator = createDrawerNavigator(
     {
         "Homepage": HomepageScreen,
         "Ricerca Normale": NormalSearchStackNavigator,
-        "Ricerca Segreta": SecretSearchStackNavigator,
-        "Prenotazioni": BookingsScreen
+        "Ricerca Esperta": SecretSearchStackNavigator,
+        "Ricerche Salvate": BookingsScreen
     },
     {
         contentComponent: props => {
@@ -60,7 +59,7 @@ const DrawerNavigator = createDrawerNavigator(
                                                      console.log("resetto Stacknav");
                                                  }
 
-                                                 if (route.route.routeName === "Ricerca Segreta") {
+                                                 if (route.route.routeName === "Ricerca Esperta") {
                                                      console.log("resetto Stacknav");
                                                  }
 
@@ -73,7 +72,6 @@ const DrawerNavigator = createDrawerNavigator(
                                 title="Logout"
                                 color={Colors.primary}
                                 onPress={() => {
-                                    dispatch(removeListener());
                                     dispatch(authActions.submitLogout());
                                 }}
                             />

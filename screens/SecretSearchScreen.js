@@ -208,7 +208,7 @@ const SecretSearchScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Ricerca Segreta "}/>
+            <Header title={"Ricerca Esperta "}/>
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/sunset2.jpg')} style={styles.image}>
                     <ScrollView>

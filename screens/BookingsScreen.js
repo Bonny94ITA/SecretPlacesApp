@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Text,
     View,
-    Alert
+    Alert, Platform
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -16,7 +16,6 @@ import Colors from '../constants/colors';
 import {AntDesign, Entypo} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
-import {setListener} from '../store/actions/listener';
 import {useDispatch} from 'react-redux';
 import * as SQLite from "expo-sqlite";
 
@@ -68,7 +67,7 @@ const Item = ({item, bookings, setBookings, images}) => {
 
     const deleteBooking_ = () =>
         Alert.alert(
-            "Vuoi cancellare la prenotazione?",
+            "Vuoi cancellare la ricerca?",
             "",
             [
                 {
@@ -80,7 +79,7 @@ const Item = ({item, bookings, setBookings, images}) => {
                         async function httpRequest() {
                             const userData = await AsyncStorage.getItem('userData');
                             const jsonObj = JSON.parse(userData);
-                            await deleteBooking(dispatch, jsonObj.token, item.id);
+                            await deleteBooking(dispatch, jsonObj.token, jsonObj.tokenType, item.id);
 
                             return bookings.filter(function (booking) {
                                 return booking.id !== item.id;
@@ -125,14 +124,14 @@ function timeout(milliseconds, promise) {
     });
 }
 
-async function getBookings(dispatch, token, tokenType, userId) {
+async function getBookings(dispatch, token, tt, userId) {
     let bookings = null;
 
     await timeout(5000, fetch(serverURL + '/bookings/id/' + +userId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            token_info: JSON.stringify({token: token, type: tokenType})
+            token_info: JSON.stringify({token: token, type: tt})
         }
     }))
         .then(async function (response) {
@@ -149,14 +148,14 @@ async function getBookings(dispatch, token, tokenType, userId) {
     return bookings;
 }
 
-async function deleteBooking(dispatch, token, bookingId) {
+async function deleteBooking(dispatch, token, tt, bookingId) {
     let res = null;
 
     await timeout(5000, fetch(serverURL + '/bookings/delete/' + +bookingId, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            token_info: JSON.stringify({token: token, type: 0})
+            token_info: JSON.stringify({token: token, type: tt})
         }
     }))
         .then(async function (response) {
@@ -176,7 +175,7 @@ async function deleteBooking(dispatch, token, bookingId) {
 async function fetchBookings(dispatch) {
     const userData = await AsyncStorage.getItem('userData');
     const jsonObj = JSON.parse(userData);
-    const bookings = await getBookings(dispatch, jsonObj.token, 1, jsonObj.userId);
+    const bookings = await getBookings(dispatch, jsonObj.token, jsonObj.tokenType, jsonObj.userId);
     const formattedBookings = [];
 
     bookings.forEach(booking => {
@@ -255,7 +254,7 @@ const BookingsScreen = props => {
             setDict(dict_);
         });
 
-        dispatch(setListener(focusListener));
+        dispatch(authActions.setListener(focusListener));
 
         fetchBookings(dispatch).then(bookings_ => {
             fillDictionary().then(dict_ => {
@@ -267,7 +266,7 @@ const BookingsScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Prenotazioni "}/>
+            <Header title={"Ricerche Salvate "}/>
             <View style={styles.container}>
                 <View style={styles.outputContainer}>
                     <FlatList
