@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Text,
     View,
-    Alert, Platform
+    Alert
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -93,6 +93,13 @@ const Item = ({item, bookings, setBookings, images}) => {
             {cancelable: false}
         );
 
+    const alert = () => {
+        Alert.alert(
+            "Pagato!",
+            ""
+        )
+    };
+
     return (
         <View>
             <View style={styles.item}>
@@ -100,6 +107,7 @@ const Item = ({item, bookings, setBookings, images}) => {
                 <View style={{marginVertical: 5}}>
                     <Button
                         title="Paga"
+                        onPress={alert}
                         color={Colors.primary}
                     />
                 </View>
