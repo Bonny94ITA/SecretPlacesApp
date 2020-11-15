@@ -121,48 +121,18 @@ const SecretSearchScreen = props => {
         "termale", "religioso", "sportivo", "enogastronomico"];
 
     useEffect(() => {
-        const ttsItems = [];
         const flags_ = [];
         for (let i = 0; i < tourismTypes.length; ++i)
             flags_.push(false);
 
-        // tourismTypes.forEach((tt, i) => {
-        //         ttsItems.push(<CheckBox
-        //             title={tt}
-        //             checked={false}
-        //             onPress={() => {
-        //                 dispatchTts({type: {name: 'setFlag', index: i}});
-        //             }}
-        //             key={i}
-        //         />);
-        //     }
-        // );
-
         dispatchTts({type: {name: 'setFlags', flags: flags_}});
-        //setPickerTts(ttsItems);
 
         if (cities != null) {
-            console.log("Once")
-
-            const citiesItems = [];
             const flags_ = [];
             for (let i = 0; i < cities.length; ++i)
                 flags_.push(false);
 
-            // cities.forEach((city, i) => {
-            //         citiesItems.push(<CheckBox
-            //             title={city.name}
-            //             checked={false}
-            //             onPress={() => {
-            //                 dispatchCities({type: {name: 'setFlag', index: i}});
-            //             }}
-            //             key={i}
-            //         />);
-            //     }
-            // );
-
             dispatchCities({type: {name: 'setFlags', flags: flags_}});
-            //setPickerCities(citiesItems);
         }
     }, []);
 
@@ -172,7 +142,7 @@ const SecretSearchScreen = props => {
 
             const items = pickerTts.slice();
             items[stateTts.index] = (<CheckBox
-                title={tourismTypes[stateTts.index].name}
+                title={tourismTypes[stateTts.index]}
                 checked={stateTts.flags[stateTts.index]}
                 onPress={() => {
                     dispatchTts({type: {name: 'setFlag', index: stateTts.index}});
@@ -198,27 +168,6 @@ const SecretSearchScreen = props => {
             setPickerTts(ttsItems);
         }
     }, [stateTts]);
-
-    // useEffect(() => {
-    //     if (indexTts >= 0) {
-    //         console.log("update");
-    //
-    //         const items = pickerTts.slice();
-    //         items[indexTts] = (<CheckBox
-    //             title={tourismTypes[indexTts]}
-    //             checked={flagsTts[indexTts]}
-    //             onPress={() => {
-    //                 const flags_ = flagsTts.slice();
-    //                 flags_[indexTts] = !flags_[indexTts];
-    //                 setFlagsTts(flags_);
-    //                 setIndexTts(indexTts);
-    //             }}
-    //             key={indexTts}
-    //         />);
-    //
-    //         setPickerTts(items);
-    //     }
-    // }, [indexTts, flagsTts]);
 
     useEffect(() => {
         if (stateCities.index >= 0) {
@@ -442,7 +391,6 @@ const SecretSearchScreen = props => {
                                                             <TouchableHighlight
                                                                 style={styles.hideButton}
                                                                 onPress={() => {
-                                                                    setModalVisible(false);
                                                                     setModalTTVisible(false);
                                                                 }}
                                                             >
