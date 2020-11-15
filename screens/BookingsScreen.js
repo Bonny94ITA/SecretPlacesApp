@@ -60,6 +60,9 @@ const Item = ({item, bookings, setBookings, images}) => {
                                  />
                              </View>
                          </View>
+                         <View style={styles.orContainer}>
+                             <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
+                         </View>
                      </View>
                  }
         />
@@ -343,11 +346,10 @@ const styles = StyleSheet.create({
         height: 150,
         borderRadius: 25
     },
-    popup: {
-        fontWeight: 'bold',
-        fontSize: 15,
-        paddingTop: 25,
-        textAlign: 'center'
+    orContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10
     }
 });
 

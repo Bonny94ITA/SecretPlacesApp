@@ -110,7 +110,7 @@ const SecretSearchScreen = props => {
             flags_.push(false);
 
         tourismTypes.forEach((tt, i) => {
-            ttCheckBoxes.push(<CheckBox
+                ttCheckBoxes.push(<CheckBox
                     title={tt}
                     checked={false}
                     onPress={() => {
@@ -374,17 +374,6 @@ const SecretSearchScreen = props => {
                                                 </View>
 
                                             </Modal>
-                                            {/*<View style={styles.picker}>*/}
-                                            {/*    <RNPickerSelect*/}
-                                            {/*        placeholder={{*/}
-                                            {/*            label: 'Seleziona una città...',*/}
-                                            {/*            value: null,*/}
-                                            {/*        }}*/}
-                                            {/*        selectedValue={selectedValue}*/}
-                                            {/*        onValueChange={(itemValue) => setSelectedValue(itemValue)}*/}
-                                            {/*        items={pickerItems}*/}
-                                            {/*    />*/}
-                                            {/*</View>*/}
                                             <Text>Numero di persone:</Text>
                                             <TextInput
                                                 placeholder={"Numero"}
@@ -421,24 +410,6 @@ const SecretSearchScreen = props => {
                                                 style={{padding: 10}}
                                                 onFinishRating={ratingMaxCompleted}
                                             />
-                                            {/*<View style={styles.picker}>*/}
-                                            {/*    <RNPickerSelect*/}
-                                            {/*        placeholder={{*/}
-                                            {/*            label: 'Seleziona tipologia di turismo...',*/}
-                                            {/*            value: null,*/}
-                                            {/*        }}*/}
-                                            {/*        selectedValue={selectedValue}*/}
-                                            {/*        onValueChange={(value) => setSelectedTourism(value)}*/}
-                                            {/*        items={[*/}
-                                            {/*            {label: 'Balneare', value: 'balneare'},*/}
-                                            {/*            {label: 'Naturalistico', value: 'naturalistico'},*/}
-                                            {/*            {label: 'Montano', value: 'montano'},*/}
-                                            {/*            {label: 'Lacustre', value: 'lacustre'},*/}
-                                            {/*            {label: 'Termale', value: 'termale'},*/}
-                                            {/*            {label: 'Sportivo', value: 'sportivo'}*/}
-                                            {/*        ]}*/}
-                                            {/*    />*/}
-                                            {/*</View>*/}
                                             <Modal
                                                 animationType="slide"
                                                 transparent={true}
@@ -496,7 +467,6 @@ const SecretSearchScreen = props => {
                         </View>
                     </ScrollView>
                 </ImageBackground>
-
             </View>
         </View>
     );
@@ -588,6 +558,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primary,
         borderRadius: 10,
         padding: 10,
+        marginTop: 10
     },
     textStyle: {
         color: 'white',

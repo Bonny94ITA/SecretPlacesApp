@@ -95,6 +95,9 @@ const Alternative = ({item, alternatives, setAlternatives, images}) => {
                                  />
                              </View>
                          </View>
+                         <View style={styles.orContainer}>
+                             <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
+                         </View>
                      </View>
                  }
         />
@@ -232,6 +235,9 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
                             }}
                         />
                     </View>
+                </View>
+                <View style={styles.orContainer}>
+                    <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
                 </View>
             </View>
             <View style={{marginVertical: 5}}>
@@ -430,11 +436,10 @@ const styles = StyleSheet.create({
         height: 150,
         borderRadius: 25
     },
-    popup: {
-        fontWeight: 'bold',
-        fontSize: 15,
-        paddingTop: 25,
-        textAlign: 'center'
+    orContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10
     }
 });
 

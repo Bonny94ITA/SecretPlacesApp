@@ -7,7 +7,8 @@ import {
     View,
     Text,
     ImageBackground,
-    TouchableOpacity
+    TouchableOpacity,
+    Platform
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -250,6 +251,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     picker: {
+        flex: Platform.OS === 'ios' ? 0 : 1,
         height: 40,
         borderColor: 'orange',
         borderWidth: 1,
@@ -257,7 +259,8 @@ const styles = StyleSheet.create({
         width: 225,
         borderRadius: 10,
         textAlign: 'center',
-        padding: 10
+        padding: Platform.OS === 'ios' ? 10 : 0,
+        paddingBottom: 10
     },
     dateContainer: {
         padding: 10,

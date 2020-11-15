@@ -105,7 +105,7 @@ const LoginScreen = props => {
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/sunset3.jpg')} style={styles.image}>
                     <View style={styles.titleContainer}>
-                        <Text style={styles.textTitle}>Secret Places </Text>
+                        <Text style={styles.textTitle}>Holiday Plan </Text>
                     </View>
                     <View style={styles.screen}>
                         <View style={styles.inputContainer}>
@@ -150,15 +150,14 @@ const LoginScreen = props => {
                             }}>
                                 <Text style={styles.RegistrationStyle}>Registrazione</Text>
                             </TouchableOpacity>
-                            <View
-                                style={{flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingBottom: 20}}>
+                            <View style={styles.orContainer}>
                                 <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
                                 <View>
-                                    <Text style={{width: 50, textAlign: 'center', color: Colors.title}}>Oppure</Text>
+                                    <Text style={styles.or}>Oppure</Text>
                                 </View>
                                 <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
                             </View>
-                            <View style={{textAlign: 'center'}}>
+                            <View>
                                 <SocialIcon
                                     title='Login con Google'
                                     onPress={async () => {
@@ -169,7 +168,7 @@ const LoginScreen = props => {
                                     button
                                     type='google'
                                     iconStyle={{width: '100%'}}
-                                    style={{paddingLeft: 10, paddingRight: 10}}
+                                    style={styles.icon}
                                 />
                                 <SocialIcon
                                     title='Login con Facebook'
@@ -181,7 +180,7 @@ const LoginScreen = props => {
                                     button
                                     type='facebook'
                                     iconStyle={{width: '100%'}}
-                                    style={{paddingLeft: 10, paddingRight: 10}}
+                                    style={styles.icon}
                                 />
                             </View>
                         </View>
@@ -244,6 +243,21 @@ const styles = StyleSheet.create({
     RegistrationStyle: {
         color: Colors.title,
         paddingTop: 5
+    },
+    orContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop: 20,
+        paddingBottom: 20
+    },
+    or: {
+        width: 50,
+        textAlign: 'center',
+        color: Colors.title
+    },
+    icon: {
+        paddingLeft: 25,
+        paddingRight: 25
     },
     loading: {
         flex: 1,

@@ -113,25 +113,36 @@ const HomepageScreen = props => {
                 <ImageBackground source={require('../assets/sunset.jpg')} style={styles.image}>
                     <ScrollView>
                         <View style={styles.titleContainer}>
-                            <Text style={styles.textTitle}>Secret Places </Text>
+                            <Text style={styles.textTitle}>Holiday Plan </Text>
+                        </View>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.textCit}>"La propria destinazione non è mai un luogo, ma un nuovo modo di vedere le cose." </Text>
                         </View>
                         <View style={styles.screen}>
                             <View style={styles.inputContainer}>
+                                <Text style={styles.faq}>Chi siamo? </Text>
+                                <Text style={styles.question}>Con Holiday Plan puoi prepararti per il tuo
+                                    prossimo viaggio. In questa app puoi provare e testare i vantaggi di un sistema esperto.
+                                    Puoi anche salvare il tuo viaggio. Buon divertimento con
+                                    Holiday Plan e nella realizzazione della tua prossima avventura.
+                                </Text>
+                            </View>
+                            <View style={styles.inputContainer}>
                                 <Text style={styles.faq}>FAQ </Text>
-                                <Text style={styles.question}>How does free trial work?</Text>
+                                <Text style={styles.question}>Come funziona la prova?</Text>
                                 <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec
                                     augue tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
                                 </Text>
-                                <Text style={styles.question}>Can I cancel any time?</Text>
+                                <Text style={styles.question}>Posso cancellarmi?</Text>
                                 <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec
                                     augue tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
                                 </Text>
-                                <Text style={styles.question}>What happens after my trial ended?</Text>
+                                <Text style={styles.question}>Cosa succede dopo aver pagato?</Text>
                                 <Text>
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec augue
                                     tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
                                 </Text>
-                                <Text style={styles.question}>Can I have a discount?</Text>
+                                <Text style={styles.question}>Posso avere uno sconto?</Text>
                                 <Text>
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a diam nec augue
                                     tincidunt accumsan. In dignissim laoreet ipsum eu interdum.
@@ -167,11 +178,18 @@ const styles = StyleSheet.create({
     textTitle: {
         color: Colors.containerBackground,
         fontSize: 70,
+        fontFamily: 'Caveat-B'
+    },
+    textCit: {
+        color: Colors.containerBackground,
+        fontSize: 25,
         fontFamily: 'Caveat-B',
+        width: 350,
+        maxWidth: '87%'
     },
     screen: {
         flex: 1,
-        paddingTop: '50%',
+        paddingTop: '20%',
         padding: 10,
         alignItems: 'center'
     },
@@ -186,6 +204,7 @@ const styles = StyleSheet.create({
         elevation: 8,
         backgroundColor: 'white',
         padding: 20,
+        marginTop: 20,
         borderRadius: 10
     },
     faq: {
