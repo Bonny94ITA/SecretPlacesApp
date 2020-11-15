@@ -89,34 +89,43 @@ const SecretSearchScreen = props => {
     const [minStars, setMinStars] = useState(0);
     const [maxStars, setMaxStars] = useState(5);
 
-    const [selectedValue, setSelectedValue] = useState("Cagliari");
-    const [selectedTourism, setSelectedTourism] = useState(null);
-    const [tourismCheckBoxes, setTourismCheckBoxes] = useState([]);
-    const [pickerItems, setPickerItems] = useState([]);
+    const [pickerCities, setPickerCities] = useState([]);
+    const [pickerTts, setPickerTts] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalTTVisible, setModalTTVisible] = useState(false);
 
+    const tourismTypes = ["balneare", "montano", "lacustre", "naturalistico", "culturale",
+        "termale", "religioso", "sportivo", "enogastronomico"];
     const cities = useSelector(state => state.cities.cities);
-    const [state, dispatchReducer] = useReducer(reducer, initialState);
-    const [flags, setFlags] = useState([]);
-    const [index, setIndex] = useState(-1);
+    const [flagsCity, setFlagsCity] = useState([]);
+    const [indexCity, setIndexCity] = useState(-1);
+    const [flagsTts, setFlagsTts] = useState([]);
+    const [indexTts, setIndexTts] = useState(-1);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const tourismTypes = ["balneare", "montano", "lacustre", "naturalistico", "culturale",
-            "termale", "religioso", "sportivo", "enogastronomico"];
-
         const ttCheckBoxes = [];
-        for (let i = 0; i < tourismTypes.length; ++i) {
-            ttCheckBoxes.push(<CheckBox
-                title={tourismTypes[i]}
-                checked={false}
-                onPress={() => {
+        const flags_ = [];
+        for (let i = 0; i < tourismTypes.lenght; ++i)
+            flags_.push(false);
 
-                }}
-                key={i}
-            />);
-        }
+        tourismTypes.forEach((tt, i) => {
+            ttCheckBoxes.push(<CheckBox
+                    title={tt}
+                    checked={false}
+                    onPress={() => {
+                        const flags_ = flagsTts.slice();
+                        flags_[i] = !flags_[i];
+                        setFlagsTts(flags_);
+                        setIndexTts(i);
+                    }}
+                    key={i}
+                />);
+            }
+        );
+
+        setFlagsTts(flags_);
+        setPickerTts(ttCheckBoxes);
 
         if (cities != null) {
             console.log("Once")
@@ -129,43 +138,64 @@ const SecretSearchScreen = props => {
             cities.forEach((city, i) => {
                     citiesItems.push(<CheckBox
                         title={city.name}
-                        checked={flags[i]}
+                        checked={false}
                         onPress={() => {
-                            const flags_ = flags.slice();
+                            const flags_ = flagsCity.slice();
                             flags_[i] = !flags_[i];
-                            setFlags(flags_);
-                            setIndex(i);
+                            setFlagsCity(flags_);
+                            setIndexCity(i);
                         }}
                         key={i}
                     />);
                 }
             );
 
-            setFlags(flags_);
-            setPickerItems(citiesItems);
-            setTourismCheckBoxes(ttCheckBoxes);
+            setFlagsCity(flags_);
+            setPickerCities(citiesItems);
         }
     }, []);
 
     useEffect(() => {
-        if (index >= 0) {
+        if (indexTts >= 0) {
             console.log("update");
 
-            const items = pickerItems.slice();
-            items[index] = (<CheckBox
-                title={cities[index].name}
-                checked={flags[index]}
+            const items = pickerTts.slice();
+            items[indexTts] = (<CheckBox
+                title={tourismTypes[indexTts]}
+                checked={flagsTts[indexTts]}
                 onPress={() => {
-                    const flags_ = flags.slice();
-                    flags_[index] = !flags_[index];
-                    setFlags(flags_);
+                    const flags_ = flagsTts.slice();
+                    flags_[indexTts] = !flags_[indexTts];
+                    setFlagsTts(flags_);
+                    setIndexTts(indexTts);
                 }}
-                key={index}
+                key={indexTts}
             />);
 
-            setPickerItems(items);
+            setPickerTts(items);
         }
-    }, [index, flags]);
+    }, [indexTts, flagsTts]);
+
+    useEffect(() => {
+        if (indexCity >= 0) {
+            console.log("update");
+
+            const items = pickerCities.slice();
+            items[indexCity] = (<CheckBox
+                title={cities[indexCity].name}
+                checked={flagsCity[indexCity]}
+                onPress={() => {
+                    const flags_ = flagsCity.slice();
+                    flags_[indexCity] = !flags_[indexCity];
+                    setFlagsCity(flags_);
+                    setIndexCity(indexCity);
+                }}
+                key={indexCity}
+            />);
+
+            setPickerCities(items);
+        }
+    }, [indexCity, flagsCity]);
 
     const showDatePickerA = () => {
         setDatePickerVisibilityA(true);
@@ -223,8 +253,8 @@ const SecretSearchScreen = props => {
                                         const formattedAlternatives = [];
 
                                         const cities_ = [];
-                                        for (let i = 0; i < flags.length; ++i) {
-                                            if (flags[i]) {
+                                        for (let i = 0; i < flagsCity.length; ++i) {
+                                            if (flagsCity[i]) {
                                                 cities_.push({region: cities[i].region, city: cities[i].name});
                                             }
                                         }
@@ -319,14 +349,14 @@ const SecretSearchScreen = props => {
                                                 <View style={styles.centeredView}>
                                                     <View style={styles.modalView}>
                                                         <View>
-                                                            {pickerItems}
+                                                            {pickerCities}
                                                             <TouchableHighlight
                                                                 style={styles.hideButton}
                                                                 onPress={() => {
                                                                     setModalVisible(false);
                                                                 }}
                                                             >
-                                                                <Text style={styles.textStyle}>Hide Modal</Text>
+                                                                <Text style={styles.textStyle}>{"Nascondi"}</Text>
                                                             </TouchableHighlight>
                                                         </View>
                                                     </View>
@@ -409,7 +439,7 @@ const SecretSearchScreen = props => {
                                                 <View style={styles.centeredView}>
                                                     <View style={styles.modalView}>
                                                         <View>
-                                                            {tourismCheckBoxes}
+                                                            {pickerTts}
                                                             <TouchableHighlight
                                                                 style={styles.hideButton}
                                                                 onPress={() => {
@@ -417,7 +447,7 @@ const SecretSearchScreen = props => {
                                                                     setModalTTVisible(false);
                                                                 }}
                                                             >
-                                                                <Text style={styles.textStyle}>Hide Modal</Text>
+                                                                <Text style={styles.textStyle}>{"Nascondi"}</Text>
                                                             </TouchableHighlight>
                                                         </View>
                                                     </View>
