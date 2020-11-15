@@ -69,15 +69,33 @@ async function secretSearch(cities, maxBudget, numPeople, onlyRegion, onlyNotReg
     return alternatives;
 }
 
-const initialState = {index: -1};
+const initialCitiesState = {flags: [], index: -1};
 
-//const flags = [];
+function citiesReducer(state, action) {
+    switch (action.type.name) {
+        case 'setFlag':
+            state.flags[action.type.index] = !state.flags[action.type.index]
+            return {flags: state.flags, index: action.type.index};
+        case 'setFlags':
+            return {flags: action.type.flags, index: -1};
+        default:
+            throw new Error();
+    }
+}
 
-function reducer(state, action) {
-    // let newState = Object.assign({}, state);
-    // newState.flags[action.index] = !newState.flags[action.index];
-    // return newState;
-    return {index: action.index}
+
+const initialTtsState = {flags: [], index: -1};
+
+function ttsReducer(state, action) {
+    switch (action.type.name) {
+        case 'setFlag':
+            state.flags[action.type.index] = !state.flags[action.type.index]
+            return {flags: state.flags, index: action.type.index};
+        case 'setFlags':
+            return {flags: action.type.flags, index: -1};
+        default:
+            throw new Error();
+    }
 }
 
 
@@ -94,38 +112,34 @@ const SecretSearchScreen = props => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalTTVisible, setModalTTVisible] = useState(false);
 
-    const tourismTypes = ["balneare", "montano", "lacustre", "naturalistico", "culturale",
-        "termale", "religioso", "sportivo", "enogastronomico"];
     const cities = useSelector(state => state.cities.cities);
-    const [flagsCity, setFlagsCity] = useState([]);
-    const [indexCity, setIndexCity] = useState(-1);
-    const [flagsTts, setFlagsTts] = useState([]);
-    const [indexTts, setIndexTts] = useState(-1);
+    const [stateCities, dispatchCities] = useReducer(citiesReducer, initialCitiesState);
+    const [stateTts, dispatchTts] = useReducer(ttsReducer, initialTtsState);
     const dispatch = useDispatch();
 
+    const tourismTypes = ["balneare", "montano", "lacustre", "naturalistico", "culturale",
+        "termale", "religioso", "sportivo", "enogastronomico"];
+
     useEffect(() => {
-        const ttCheckBoxes = [];
+        const ttsItems = [];
         const flags_ = [];
         for (let i = 0; i < tourismTypes.length; ++i)
             flags_.push(false);
 
-        tourismTypes.forEach((tt, i) => {
-                ttCheckBoxes.push(<CheckBox
-                    title={tt}
-                    checked={false}
-                    onPress={() => {
-                        const flags_ = flagsTts.slice();
-                        flags_[i] = !flags_[i];
-                        setFlagsTts(flags_);
-                        setIndexTts(i);
-                    }}
-                    key={i}
-                />);
-            }
-        );
+        // tourismTypes.forEach((tt, i) => {
+        //         ttsItems.push(<CheckBox
+        //             title={tt}
+        //             checked={false}
+        //             onPress={() => {
+        //                 dispatchTts({type: {name: 'setFlag', index: i}});
+        //             }}
+        //             key={i}
+        //         />);
+        //     }
+        // );
 
-        setFlagsTts(flags_);
-        setPickerTts(ttCheckBoxes);
+        dispatchTts({type: {name: 'setFlags', flags: flags_}});
+        //setPickerTts(ttsItems);
 
         if (cities != null) {
             console.log("Once")
@@ -135,68 +149,109 @@ const SecretSearchScreen = props => {
             for (let i = 0; i < cities.length; ++i)
                 flags_.push(false);
 
-            cities.forEach((city, i) => {
-                    citiesItems.push(<CheckBox
-                        title={city.name}
+            // cities.forEach((city, i) => {
+            //         citiesItems.push(<CheckBox
+            //             title={city.name}
+            //             checked={false}
+            //             onPress={() => {
+            //                 dispatchCities({type: {name: 'setFlag', index: i}});
+            //             }}
+            //             key={i}
+            //         />);
+            //     }
+            // );
+
+            dispatchCities({type: {name: 'setFlags', flags: flags_}});
+            //setPickerCities(citiesItems);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (stateTts.index >= 0) {
+            console.log("lello");
+
+            const items = pickerTts.slice();
+            items[stateTts.index] = (<CheckBox
+                title={tourismTypes[stateTts.index].name}
+                checked={stateTts.flags[stateTts.index]}
+                onPress={() => {
+                    dispatchTts({type: {name: 'setFlag', index: stateTts.index}});
+                }}
+                key={stateTts.index}
+            />);
+
+            setPickerTts(items);
+        } else {
+            const ttsItems = [];
+            tourismTypes.forEach((tt, i) => {
+                    ttsItems.push(<CheckBox
+                        title={tt}
                         checked={false}
                         onPress={() => {
-                            const flags_ = flagsCity.slice();
-                            flags_[i] = !flags_[i];
-                            setFlagsCity(flags_);
-                            setIndexCity(i);
+                            dispatchTts({type: {name: 'setFlag', index: i}});
                         }}
                         key={i}
                     />);
                 }
             );
 
-            setFlagsCity(flags_);
-            setPickerCities(citiesItems);
+            setPickerTts(ttsItems);
         }
-    }, []);
+    }, [stateTts]);
+
+    // useEffect(() => {
+    //     if (indexTts >= 0) {
+    //         console.log("update");
+    //
+    //         const items = pickerTts.slice();
+    //         items[indexTts] = (<CheckBox
+    //             title={tourismTypes[indexTts]}
+    //             checked={flagsTts[indexTts]}
+    //             onPress={() => {
+    //                 const flags_ = flagsTts.slice();
+    //                 flags_[indexTts] = !flags_[indexTts];
+    //                 setFlagsTts(flags_);
+    //                 setIndexTts(indexTts);
+    //             }}
+    //             key={indexTts}
+    //         />);
+    //
+    //         setPickerTts(items);
+    //     }
+    // }, [indexTts, flagsTts]);
 
     useEffect(() => {
-        if (indexTts >= 0) {
-            console.log("update");
-
-            const items = pickerTts.slice();
-            items[indexTts] = (<CheckBox
-                title={tourismTypes[indexTts]}
-                checked={flagsTts[indexTts]}
-                onPress={() => {
-                    const flags_ = flagsTts.slice();
-                    flags_[indexTts] = !flags_[indexTts];
-                    setFlagsTts(flags_);
-                    setIndexTts(indexTts);
-                }}
-                key={indexTts}
-            />);
-
-            setPickerTts(items);
-        }
-    }, [indexTts, flagsTts]);
-
-    useEffect(() => {
-        if (indexCity >= 0) {
-            console.log("update");
+        if (stateCities.index >= 0) {
+            console.log("lello");
 
             const items = pickerCities.slice();
-            items[indexCity] = (<CheckBox
-                title={cities[indexCity].name}
-                checked={flagsCity[indexCity]}
+            items[stateCities.index] = (<CheckBox
+                title={cities[stateCities.index].name}
+                checked={stateCities.flags[stateCities.index]}
                 onPress={() => {
-                    console.log(flagsCity)
-                    const flags_ = flagsCity.slice();
-                    flags_[indexCity] = !flags_[indexCity];
-                    setFlagsCity(flags_);
-                    setIndexCity(indexCity);
+                    dispatchCities({type: {name: 'setFlag', index: stateCities.index}});
                 }}
-                key={indexCity}
+                key={stateCities.index}
             />);
 
             setPickerCities(items);
+        } else {
+            const citiesItems = [];
+            cities.forEach((city, i) => {
+                    citiesItems.push(<CheckBox
+                        title={city.name}
+                        checked={false}
+                        onPress={() => {
+                            dispatchCities({type: {name: 'setFlag', index: i}});
+                        }}
+                        key={i}
+                    />);
+                }
+            );
+
+            setPickerCities(citiesItems);
         }
-    }, [indexCity, flagsCity]);
+    }, [stateCities]);
 
     const showDatePickerA = () => {
         setDatePickerVisibilityA(true);
@@ -250,22 +305,18 @@ const SecretSearchScreen = props => {
                                         onlyNotRegion: ''
                                     }}
                                     onSubmit={async values => {
-                                        console.log(values)
                                         const formattedAlternatives = [];
-
                                         const cities_ = [];
                                         const tts_ = [];
 
-                                        console.log(flagsCity);
-
-                                        for (let i = 0; i < flagsCity.length; ++i) {
-                                            if (flagsCity[i]) {
+                                        for (let i = 0; i < stateCities.flags.length; ++i) {
+                                            if (stateCities.flags[i]) {
                                                 cities_.push({region: cities[i].region, city: cities[i].name});
                                             }
                                         }
 
-                                        for (let i = 0; i < flagsTts.length; ++i) {
-                                            if (flagsTts[i]) {
+                                        for (let i = 0; i < stateTts.flags.length; ++i) {
+                                            if (stateTts.flags[i]) {
                                                 tts_.push(tourismTypes[i]);
                                             }
                                         }
@@ -302,6 +353,8 @@ const SecretSearchScreen = props => {
                                             });
                                         });
 
+                                        dispatchCities({type: {name: 'setFlags', flags: []}});
+                                        dispatchTts({type: {name: 'setFlags', flags: []}});
                                         dispatch(clearFreeRooms());
                                         dispatch(setAlternatives(formattedAlternatives));
                                         props.navigation.navigate('resultsSearch');
@@ -374,6 +427,31 @@ const SecretSearchScreen = props => {
                                                 </View>
 
                                             </Modal>
+                                            <Modal
+                                                animationType="slide"
+                                                transparent={true}
+                                                visible={modalTTVisible}
+                                                onRequestClose={() => {
+                                                    Alert.alert("Modal has been closed.");
+                                                }}
+                                            >
+                                                <View style={styles.centeredView}>
+                                                    <View style={styles.modalView}>
+                                                        <View>
+                                                            {pickerTts}
+                                                            <TouchableHighlight
+                                                                style={styles.hideButton}
+                                                                onPress={() => {
+                                                                    setModalVisible(false);
+                                                                    setModalTTVisible(false);
+                                                                }}
+                                                            >
+                                                                <Text style={styles.textStyle}>{"Nascondi"}</Text>
+                                                            </TouchableHighlight>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </Modal>
                                             <Text>Numero di persone:</Text>
                                             <TextInput
                                                 placeholder={"Numero"}
@@ -410,31 +488,6 @@ const SecretSearchScreen = props => {
                                                 style={{padding: 10}}
                                                 onFinishRating={ratingMaxCompleted}
                                             />
-                                            <Modal
-                                                animationType="slide"
-                                                transparent={true}
-                                                visible={modalTTVisible}
-                                                onRequestClose={() => {
-                                                    Alert.alert("Modal has been closed.");
-                                                }}
-                                            >
-                                                <View style={styles.centeredView}>
-                                                    <View style={styles.modalView}>
-                                                        <View>
-                                                            {pickerTts}
-                                                            <TouchableHighlight
-                                                                style={styles.hideButton}
-                                                                onPress={() => {
-                                                                    setModalVisible(false);
-                                                                    setModalTTVisible(false);
-                                                                }}
-                                                            >
-                                                                <Text style={styles.textStyle}>{"Nascondi"}</Text>
-                                                            </TouchableHighlight>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            </Modal>
                                             <Text>Regione preferita:</Text>
                                             <TextInput
                                                 placeholder={"Regione"}
