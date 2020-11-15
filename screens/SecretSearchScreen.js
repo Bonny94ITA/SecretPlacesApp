@@ -301,6 +301,13 @@ const SecretSearchScreen = props => {
                                                 }}
                                                 color={Colors.primary}
                                             />
+                                            <Button
+                                                title="Seleziona il turismo"
+                                                onPress={() => {
+                                                    setModalTTVisible(true)
+                                                }}
+                                                color={Colors.primary}
+                                            />
                                             <Modal
                                                 animationType="slide"
                                                 transparent={true}
@@ -373,7 +380,6 @@ const SecretSearchScreen = props => {
                                                 style={{padding: 10}}
                                                 onFinishRating={ratingMaxCompleted}
                                             />
-                                            <Text>Tipo di turismo:</Text>
                                             {/*<View style={styles.picker}>*/}
                                             {/*    <RNPickerSelect*/}
                                             {/*        placeholder={{*/}
@@ -417,13 +423,6 @@ const SecretSearchScreen = props => {
                                                     </View>
                                                 </View>
                                             </Modal>
-                                            <Button
-                                                title="Seleziona il turismo"
-                                                onPress={() => {
-                                                    setModalTTVisible(true)
-                                                }}
-                                                color={Colors.primary}
-                                            />
                                             <Text>Regione preferita:</Text>
                                             <TextInput
                                                 placeholder={"Regione"}
