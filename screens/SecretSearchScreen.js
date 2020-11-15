@@ -106,7 +106,7 @@ const SecretSearchScreen = props => {
     useEffect(() => {
         const ttCheckBoxes = [];
         const flags_ = [];
-        for (let i = 0; i < tourismTypes.lenght; ++i)
+        for (let i = 0; i < tourismTypes.length; ++i)
             flags_.push(false);
 
         tourismTypes.forEach((tt, i) => {
@@ -132,7 +132,7 @@ const SecretSearchScreen = props => {
 
             const citiesItems = [];
             const flags_ = [];
-            for (let i = 0; i < cities.lenght; ++i)
+            for (let i = 0; i < cities.length; ++i)
                 flags_.push(false);
 
             cities.forEach((city, i) => {
@@ -185,6 +185,7 @@ const SecretSearchScreen = props => {
                 title={cities[indexCity].name}
                 checked={flagsCity[indexCity]}
                 onPress={() => {
+                    console.log(flagsCity)
                     const flags_ = flagsCity.slice();
                     flags_[indexCity] = !flags_[indexCity];
                     setFlagsCity(flags_);
@@ -253,9 +254,19 @@ const SecretSearchScreen = props => {
                                         const formattedAlternatives = [];
 
                                         const cities_ = [];
+                                        const tts_ = [];
+
+                                        console.log(flagsCity);
+
                                         for (let i = 0; i < flagsCity.length; ++i) {
                                             if (flagsCity[i]) {
                                                 cities_.push({region: cities[i].region, city: cities[i].name});
+                                            }
+                                        }
+
+                                        for (let i = 0; i < flagsTts.length; ++i) {
+                                            if (flagsTts[i]) {
+                                                tts_.push(tourismTypes[i]);
                                             }
                                         }
 
@@ -264,7 +275,7 @@ const SecretSearchScreen = props => {
 
                                         const alternatives = await secretSearch(cities_,
                                             values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion, maxStars, minStars,
-                                            ["balenare", "lacustre", "naturalistico"], arrival, departure, dispatch);
+                                            tts_, arrival, departure, dispatch);
 
                                         alternatives.forEach((element, index) => {
                                             const formattedSojourns = [];
