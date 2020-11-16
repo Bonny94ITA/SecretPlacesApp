@@ -337,20 +337,24 @@ const SecretSearchScreen = props => {
                                                 <Text
                                                     style={styles.item}> {dateDeparture.getDate()}/{dateDeparture.getMonth() + 1}/{dateDeparture.getFullYear()} </Text>
                                             </View>
-                                            <Button
-                                                title="Seleziona le città"
-                                                onPress={() => {
-                                                    setModalVisible(true)
-                                                }}
-                                                color={Colors.primary}
-                                            />
-                                            <Button
-                                                title="Seleziona il turismo"
-                                                onPress={() => {
-                                                    setModalTTVisible(true)
-                                                }}
-                                                color={Colors.primary}
-                                            />
+                                            <View style={{marginVertical: 5}}>
+                                                <Button
+                                                    title="Seleziona le città"
+                                                    onPress={() => {
+                                                        setModalVisible(true)
+                                                    }}
+                                                    color={Colors.primary}
+                                                />
+                                            </View>
+                                            <View style={{marginVertical: 5}}>
+                                                <Button
+                                                    title="Seleziona il turismo"
+                                                    onPress={() => {
+                                                        setModalTTVisible(true)
+                                                    }}
+                                                    color={Colors.primary}
+                                                />
+                                            </View>
                                             <Modal
                                                 animationType="slide"
                                                 transparent={true}
@@ -400,7 +404,9 @@ const SecretSearchScreen = props => {
                                                     </View>
                                                 </View>
                                             </Modal>
-                                            <Text>Numero di persone:</Text>
+                                            <View style={{marginVertical: 5}}>
+                                                <Text>Numero di persone:</Text>
+                                            </View>
                                             <TextInput
                                                 placeholder={"Numero"}
                                                 returnKeyType='next'
