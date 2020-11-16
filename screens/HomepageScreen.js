@@ -108,7 +108,7 @@ const HomepageScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Homepage "}/>
+            <Header title={"Homepage "} navigation={props.navigation} />
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/sunset.jpg')} style={styles.image}>
                     <ScrollView>

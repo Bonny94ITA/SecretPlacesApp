@@ -129,7 +129,7 @@ const NormalSearchScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Ricerca Normale "}/>
+            <Header title={"Ricerca Normale "} navigation={props.navigation}/>
             <TouchableWithoutFeedback onPress={() => {
                 Keyboard.dismiss();
             }}>
@@ -141,8 +141,12 @@ const NormalSearchScreen = props => {
                                     initialValues={{city: '', arrival: '', departure: ''}}
                                     onSubmit={async values => {
                                         const formattedFreeRooms = [];
-                                        const freeRooms = await normalSearch("Cagliari",
-                                            "12/07/2020", "24/08/2020", dispatch);
+
+                                        const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
+                                        const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
+
+                                        const freeRooms = await normalSearch(selectedValue,
+                                            arrival, departure, dispatch);
                                         freeRooms.forEach(element => {
                                             formattedFreeRooms.push({
                                                 hotelName: element.hotel.name,

@@ -60,6 +60,12 @@ const Item = ({item, bookings, setBookings, images}) => {
                                  />
                              </View>
                          </View>
+                         <View style={styles.rowContainer}>
+                             <AntDesign name="calendar" size={20} style={styles.icon}/>
+                             <Text style={styles.text}>{sojourn.arrival}</Text>
+                             <AntDesign name="calendar" size={20} style={styles.icon}/>
+                             <Text style={styles.text}>{sojourn.departure}</Text>
+                         </View>
                          <View style={styles.orContainer}>
                              <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
                          </View>
@@ -107,7 +113,7 @@ const Item = ({item, bookings, setBookings, images}) => {
         <View>
             <View style={styles.item}>
                 {sojourns}
-                <View style={{marginVertical: 5}}>
+                <View>
                     <Button
                         title="Paga"
                         onPress={alert}
@@ -277,7 +283,7 @@ const BookingsScreen = props => {
 
     return (
         <View style={styles.header}>
-            <Header title={"Ricerche Salvate "}/>
+            <Header title={"Ricerche Salvate "} navigation={props.navigation}/>
             <View style={styles.container}>
                 <View style={styles.outputContainer}>
                     <FlatList
