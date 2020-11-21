@@ -9,7 +9,7 @@ import {
     TextInput,
     ScrollView,
     Modal,
-    TouchableHighlight
+    TouchableHighlight, ActivityIndicator
 } from 'react-native';
 
 import {CheckBox} from 'react-native-elements'
@@ -115,6 +115,7 @@ const SecretSearchScreen = props => {
     const cities = useSelector(state => state.cities.cities);
     const [stateCities, dispatchCities] = useReducer(citiesReducer, initialCitiesState);
     const [stateTts, dispatchTts] = useReducer(ttsReducer, initialTtsState);
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
 
     const tourismTypes = ["balneare", "montano", "lacustre", "naturalistico", "culturale",
@@ -238,6 +239,12 @@ const SecretSearchScreen = props => {
         console.log("Rating is max: " + star)
     };
 
+    if (isLoading) {
+        return (<View style={styles.loading}>
+            <ActivityIndicator size={"large"} color={Colors.primary}/>
+        </View>);
+    }
+
     return (
         <View style={styles.header}>
             <Header title={"Ricerca Esperta "} navigation={props.navigation}/>
@@ -258,6 +265,7 @@ const SecretSearchScreen = props => {
                                         const cities_ = [];
                                         const tts_ = [];
 
+                                        setIsLoading(true);
                                         for (let i = 0; i < stateCities.flags.length; ++i) {
                                             if (stateCities.flags[i]) {
                                                 cities_.push({region: cities[i].region, city: cities[i].name});
@@ -307,6 +315,7 @@ const SecretSearchScreen = props => {
                                         dispatch(clearFreeRooms());
                                         dispatch(setAlternatives(formattedAlternatives));
                                         props.navigation.navigate('resultsSearch');
+                                        setIsLoading(false);
                                     }}
                                 >
                                     {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -571,6 +580,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

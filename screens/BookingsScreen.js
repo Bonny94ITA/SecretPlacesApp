@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Text,
     View,
-    Alert
+    Alert, ActivityIndicator
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -153,7 +153,7 @@ async function getBookings(dispatch, token, tt, userId) {
     }))
         .then(async function (response) {
             bookings = await response.json();
-            console.log(bookings)
+            // console.log(bookings)
         }, function (error) {
             dispatch(authActions.submitLogout());
             console.log(error);
@@ -177,7 +177,7 @@ async function deleteBooking(dispatch, token, tt, bookingId) {
     }))
         .then(async function (response) {
             res = await response.json();
-            console.log(res);
+            // console.log(res);
         }, function (error) {
             dispatch(authActions.submitLogout());
             console.log(error);
@@ -261,6 +261,7 @@ const BookingsScreen = props => {
     console.log("render")
     const [bookings, setBookings] = useState([]);
     const [dict, setDict] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -273,13 +274,21 @@ const BookingsScreen = props => {
 
         dispatch(authActions.setListener(focusListener));
 
+        setIsLoading(true);
         fetchBookings(dispatch).then(bookings_ => {
             fillDictionary().then(dict_ => {
                 setBookings(bookings_);
                 setDict(dict_);
             });
         });
+        setIsLoading(false);
     }, []);
+
+    if (isLoading) {
+        return (<View style={styles.loading}>
+            <ActivityIndicator size={"large"} color={Colors.primary}/>
+        </View>);
+    }
 
     return (
         <View style={styles.header}>
@@ -356,6 +365,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 10
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

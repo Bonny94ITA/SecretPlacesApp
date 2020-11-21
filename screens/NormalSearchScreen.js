@@ -8,7 +8,7 @@ import {
     Text,
     ImageBackground,
     TouchableOpacity,
-    Platform
+    Platform, ActivityIndicator
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -81,8 +81,9 @@ const NormalSearchScreen = props => {
     const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
     const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
 
-    const [selectedValue, setSelectedValue] = useState("Cagliari");
+    const [selectedValue, setSelectedValue] = useState(null);
     const [pickerItems, setPickerItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -127,6 +128,12 @@ const NormalSearchScreen = props => {
         hideDatePickerD();
     };
 
+    if (isLoading) {
+        return (<View style={styles.loading}>
+            <ActivityIndicator size={"large"} color={Colors.primary}/>
+        </View>);
+    }
+
     return (
         <View style={styles.header}>
             <Header title={"Ricerca Normale "} navigation={props.navigation}/>
@@ -142,6 +149,7 @@ const NormalSearchScreen = props => {
                                     onSubmit={async values => {
                                         const formattedFreeRooms = [];
 
+                                        setIsLoading(true);
                                         const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
                                         const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
 
@@ -164,6 +172,7 @@ const NormalSearchScreen = props => {
                                         dispatch(clearAlternatives());
                                         dispatch(setFreeRooms(formattedFreeRooms));
                                         props.navigation.navigate('resultsSearch');
+                                        setIsLoading(false);
                                     }}
                                 >
                                     {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -275,6 +284,11 @@ const styles = StyleSheet.create({
     },
     item: {
         width: '50%'
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
