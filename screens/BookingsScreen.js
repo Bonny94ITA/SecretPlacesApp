@@ -26,12 +26,17 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const shareText = (imageurl) => {
-    Share.share({
-        message: imageurl
-    }, {
-        dialogTitle: 'Condividi',
-        tintColor: 'green'
+const shareText =  (imageurl) => {
+    Share.share(
+        {
+            url: imageurl,
+            message: imageurl
+        }
+    ).then(({action, activityType}) => {
+        if (action === Share.sharedAction)
+            console.log('Share was successful');
+        else
+            console.log('Share was dismissed');
     });
 }
 
@@ -45,7 +50,12 @@ const Item = ({item, bookings, setBookings, images, mapping}) => {
                      sojourn={
                          <View style={styles.columnContainer}>
                              <View style={styles.rowContainer}>
-                                 <View style= {{flex:9, flexDirection: "row", justifyContent: 'space-around', alignItems: 'center'}}>
+                                 <View style={{
+                                     flex: 9,
+                                     flexDirection: "row",
+                                     justifyContent: 'space-between',
+                                     alignItems: 'center'
+                                 }}>
                                      <View></View>
                                      <View></View>
                                      <View></View>

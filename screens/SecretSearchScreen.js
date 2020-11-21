@@ -10,7 +10,7 @@ import {
     ScrollView,
     Modal,
     TouchableHighlight,
-    ActivityIndicator
+    ActivityIndicator, Alert
 } from 'react-native';
 
 import {CheckBox} from 'react-native-elements'
@@ -25,7 +25,7 @@ import * as authActions from '../store/actions/auth';
 import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import {setAlternatives} from '../store/actions/ss';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {Rating, AirbnbRating} from 'react-native-ratings';
+import {Rating} from 'react-native-ratings';
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -279,6 +279,12 @@ const SecretSearchScreen = props => {
                                             }
                                         }
 
+                                        // if(dateArrival.getDate()>=dateDeparture.getDate()){
+                                        //     Alert.alert(
+                                        //         "Date!",
+                                        //         ""
+                                        //     )
+                                        // }
                                         const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
                                         const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
 
