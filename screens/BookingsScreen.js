@@ -8,13 +8,15 @@ import {
     StyleSheet,
     Text,
     View,
-    Alert, ActivityIndicator,
-    Share
+    Alert,
+    ActivityIndicator,
+    Share,
+    TouchableOpacity
 } from 'react-native';
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
-import {AntDesign, Entypo} from '@expo/vector-icons';
+import {AntDesign, Entypo, MaterialCommunityIcons} from '@expo/vector-icons';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
@@ -24,17 +26,13 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const shareText = () => {
+const shareText = (imageurl) => {
     Share.share({
-        message: 'http://facebook.github.io/react-native',
-        url: 'http://facebook.github.io/react-native',
-        title: 'React Native'
+        message: imageurl
     }, {
         dialogTitle: 'Condividi',
         tintColor: 'green'
-    })
-        .then(this._showResult)
-        .catch((error) => this.setState({result: 'error: ' + error.message}));
+    });
 }
 
 const Item = ({item, bookings, setBookings, images, mapping}) => {
@@ -42,51 +40,67 @@ const Item = ({item, bookings, setBookings, images, mapping}) => {
     const sojourns = [];
 
     item.sojourns.forEach((sojourn) => {
-        sojourns.push(<Sojourn key={sojourn.id.toString()}
-                               sojourn={
-                                   <View style={styles.columnContainer}>
-                                       <View style={styles.rowContainer}>
-                                           <AntDesign name="home" size={20} style={styles.icon}/>
-                                           <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
-                                           <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                                           <Text style={styles.text}>{sojourn.address}</Text>
-                                       </View>
-                                       <View style={styles.rowContainer}>
-                                           <View style={styles.columnContainer}>
-                                               <View style={styles.rowContainer}>
-                                                   <AntDesign name="staro" size={20} style={styles.icon}/>
-                                                   <Text style={styles.text}>{sojourn.stars}</Text>
-                                               </View>
-                                               <View style={styles.rowContainer}>
-                                                   <AntDesign name="user" size={20} style={styles.icon}/>
-                                                   <Text style={styles.text}>{sojourn.numPlaces}</Text>
-                                               </View>
-                                               <View style={styles.rowContainer}>
-                                                   <Entypo name="credit" size={20} style={styles.icon}/>
-                                                   <Text style={styles.text}>{sojourn.pricePerNight}</Text>
-                                               </View>
-                                           </View>
-                                           <View style={styles.columnContainer}>
-                                               <Image
-                                                   style={styles.image}
-                                                   source={{
-                                                       uri: images[sojourn.idRoom]
-                                                   }}
-                                               />
-                                           </View>
-                                       </View>
-                                       <View style={styles.rowContainer}>
-                                           <AntDesign name="calendar" size={20} style={styles.icon}/>
-                                           <Text style={styles.text}>{sojourn.arrival}</Text>
-                                           <AntDesign name="calendar" size={20} style={styles.icon}/>
-                                           <Text style={styles.text}>{sojourn.departure}</Text>
-                                       </View>
-                                       <View style={styles.orContainer}>
-                                           <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
-                                       </View>
-                                   </View>
-                               }
-        />)
+        sojourns.push(
+            <Sojourn key={sojourn.id.toString()}
+                     sojourn={
+                         <View style={styles.columnContainer}>
+                             <View style={styles.rowContainer}>
+                                 <View style= {{flex:9, flexDirection: "row", justifyContent: 'space-around', alignItems: 'center'}}>
+                                     <View></View>
+                                     <View></View>
+                                     <View></View>
+                                     <View></View>
+                                     <MaterialCommunityIcons name="city-variant-outline" size={20} style={styles.icon}/>
+                                     <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelCity}</Text>
+                                     <View></View>
+                                     <View></View>
+                                     <TouchableOpacity onPress={() => shareText(mapping[sojourn.idRoom])}>
+                                         <AntDesign name="sharealt" size={20} style={styles.icon}/>
+                                     </TouchableOpacity>
+                                 </View>
+                             </View>
+                             <View style={styles.rowContainer}>
+                                 <AntDesign name="home" size={20} style={styles.icon}/>
+                                 <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
+                                 <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                                 <Text style={styles.text}>{sojourn.address}</Text>
+                             </View>
+                             <View style={styles.rowContainer}>
+                                 <View style={styles.columnContainer}>
+                                     <View style={styles.rowContainer}>
+                                         <AntDesign name="staro" size={20} style={styles.icon}/>
+                                         <Text style={styles.text}>{sojourn.stars}</Text>
+                                     </View>
+                                     <View style={styles.rowContainer}>
+                                         <AntDesign name="user" size={20} style={styles.icon}/>
+                                         <Text style={styles.text}>{sojourn.numPlaces}</Text>
+                                     </View>
+                                     <View style={styles.rowContainer}>
+                                         <Entypo name="credit" size={20} style={styles.icon}/>
+                                         <Text style={styles.text}>{sojourn.pricePerNight}</Text>
+                                     </View>
+                                 </View>
+                                 <View style={styles.columnContainer}>
+                                     <Image
+                                         style={styles.image}
+                                         source={{
+                                             uri: images[sojourn.idRoom]
+                                         }}
+                                     />
+                                 </View>
+                             </View>
+                             <View style={styles.rowContainer}>
+                                 <AntDesign name="calendar" size={20} style={styles.icon}/>
+                                 <Text style={styles.text}>{sojourn.arrival}</Text>
+                                 <AntDesign name="calendar" size={20} style={styles.icon}/>
+                                 <Text style={styles.text}>{sojourn.departure}</Text>
+                             </View>
+                             <View style={styles.orContainer}>
+                                 <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
+                             </View>
+                         </View>
+                     }
+            />)
     });
 
     const deleteBooking_ = () =>
@@ -131,9 +145,7 @@ const Item = ({item, bookings, setBookings, images, mapping}) => {
                 <View>
                     <Button
                         title="Paga"
-                        onPress={() => {
-                            shareText();
-                        }}
+                        onPress={alert}
                         color={Colors.primary}
                     />
                 </View>

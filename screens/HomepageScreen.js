@@ -70,7 +70,6 @@ const HomepageScreen = props => {
                     'create table if not exists images (id integer primary key not null, url text);', [], function (tx, results) {
                         tx.executeSql('Select * from images', [], function (tx, results) {
                             if (results.rows.length === 0) {
-                                console.log(13131)
                                 for (let i = 0; i < pics.length; ++i) {
                                     tx.executeSql(
                                         executeQuery, [i, base64.encode(pics[i])]
@@ -83,7 +82,6 @@ const HomepageScreen = props => {
 
                 tx.executeSql(
                     'create table if not exists mapping (id_img integer not null, id_room integer type UNIQUE not null);', [], function (tx, results) {
-                        console.log("AAAAAAAAAAAAA")
                     }
                 )
 

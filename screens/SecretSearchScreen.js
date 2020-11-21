@@ -9,7 +9,8 @@ import {
     TextInput,
     ScrollView,
     Modal,
-    TouchableHighlight, ActivityIndicator
+    TouchableHighlight,
+    ActivityIndicator
 } from 'react-native';
 
 import {CheckBox} from 'react-native-elements'

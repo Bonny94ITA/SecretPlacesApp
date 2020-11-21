@@ -8,7 +8,8 @@ import {
     Text,
     ImageBackground,
     TouchableOpacity,
-    Platform, ActivityIndicator
+    Platform,
+    ActivityIndicator
 } from 'react-native';
 
 import Header from '../components/Header';

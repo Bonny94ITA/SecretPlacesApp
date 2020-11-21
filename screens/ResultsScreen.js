@@ -13,7 +13,7 @@ import {
 
 import Header from '../components/Header';
 import Colors from '../constants/colors';
-import {AntDesign, Entypo} from '@expo/vector-icons';
+import {AntDesign, Entypo, MaterialCommunityIcons} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
 import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
@@ -65,6 +65,10 @@ const Alternative = ({item, alternatives, setAlternatives, images}) => {
         <Sojourn key={sojourn.id.toString()}
                  sojourn={
                      <View style={styles.columnContainer}>
+                         <View style={[styles.rowContainer, {justifyContent: 'center'}]}>
+                             <MaterialCommunityIcons name="city-variant-outline" size={20} style={styles.icon}/>
+                             <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelCity}</Text>
+                         </View>
                          <View style={styles.rowContainer}>
                              <AntDesign name="home" size={20} style={styles.icon}/>
                              <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
@@ -212,6 +216,10 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
     return (
         <View style={styles.item}>
             <View style={styles.columnContainer}>
+                <View style={[styles.rowContainer, {justifyContent: 'center'}]}>
+                    <MaterialCommunityIcons name="city-variant-outline" size={20} style={styles.icon}/>
+                    <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.cityName}</Text>
+                </View>
                 <View style={styles.rowContainer}>
                     <AntDesign name="home" size={20} style={styles.icon}/>
                     <Text style={[styles.text, {fontWeight: 'bold'}]}>{item.hotelName}</Text>
@@ -244,9 +252,11 @@ const FreeRoom = ({item, freeRooms, setFreeRooms, image}) => {
                 </View>
                 <View style={styles.rowContainer}>
                     <AntDesign name="calendar" size={20} style={styles.icon}/>
-                    <Text style={styles.text}>{item.arrival.getDate()}/{item.arrival.getMonth() + 1}/{item.arrival.getFullYear()}</Text>
+                    <Text
+                        style={styles.text}>{item.arrival.getDate()}/{item.arrival.getMonth() + 1}/{item.arrival.getFullYear()}</Text>
                     <AntDesign name="calendar" size={20} style={styles.icon}/>
-                    <Text style={styles.text}>{item.departure.getDate()}/{item.departure.getMonth() + 1}/{item.departure.getFullYear()}</Text>
+                    <Text
+                        style={styles.text}>{item.departure.getDate()}/{item.departure.getMonth() + 1}/{item.departure.getFullYear()}</Text>
                 </View>
                 <View style={styles.orContainer}>
                     <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
