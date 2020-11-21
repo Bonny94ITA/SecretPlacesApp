@@ -102,8 +102,8 @@ function ttsReducer(state, action) {
 const SecretSearchScreen = props => {
     const [isDatePickerVisibleA, setDatePickerVisibilityA] = useState(false);
     const [isDatePickerVisibleD, setDatePickerVisibilityD] = useState(false);
-    const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
-    const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
+    const [dateArrival, setDateArrival] = useState(new Date());
+    const [dateDeparture, setDateDeparture] = useState(new Date());
     const [minStars, setMinStars] = useState(0);
     const [maxStars, setMaxStars] = useState(5);
 

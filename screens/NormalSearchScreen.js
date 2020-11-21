@@ -78,8 +78,8 @@ async function normalSearch(city, arrival, departure, dispatch) {
 const NormalSearchScreen = props => {
     const [isDatePickerVisibleA, setDatePickerVisibilityA] = useState(false);
     const [isDatePickerVisibleD, setDatePickerVisibilityD] = useState(false);
-    const [dateArrival, setDateArrival] = useState(new Date(1598051730000));
-    const [dateDeparture, setDateDeparture] = useState(new Date(1598051730000));
+    const [dateArrival, setDateArrival] = useState(new Date());
+    const [dateDeparture, setDateDeparture] = useState(new Date());
 
     const [selectedValue, setSelectedValue] = useState(null);
     const [pickerItems, setPickerItems] = useState([]);

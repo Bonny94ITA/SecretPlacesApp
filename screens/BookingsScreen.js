@@ -18,6 +18,25 @@ import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
 import * as SQLite from 'expo-sqlite';
+import {PaymentsStripe as Stripe} from 'expo-payments-stripe';
+
+
+const params = {
+    // mandatory
+    number: '4242424242424242',
+    expMonth: 11,
+    expYear: 17,
+    cvc: '223',
+    // optional
+    name: 'Test User',
+    currency: 'usd',
+    addressLine1: '123 Test Street',
+    addressLine2: 'Apt. 5',
+    addressCity: 'Test City',
+    addressState: 'Test State',
+    addressCountry: 'Test Country',
+    addressZip: '55555',
+};
 
 const Sojourn = (props) => {
     return props.sojourn;
@@ -116,7 +135,12 @@ const Item = ({item, bookings, setBookings, images}) => {
                 <View>
                     <Button
                         title="Paga"
-                        onPress={alert}
+                        onPress={async () => {
+                            console.log("ciao1")
+                            const token = await Stripe.createTokenWithCardAsync(params);
+                            console.log("ciao")
+                            console.log(token)
+                        }}
                         color={Colors.primary}
                     />
                 </View>
@@ -263,6 +287,12 @@ const BookingsScreen = props => {
     const [dict, setDict] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
+
+    Stripe.setOptionsAsync({
+        publishableKey: 'pk_test_51HptC0D6nxcG5uxcbjUWspldU65ohYJv3LeLc0blIjfQb2J6uObNlKEAGNqULn7Z0TreU8yYAGObgNrsS6G5Ma5G00OmJP7nPt', // Your key
+        androidPayMode: 'test', // [optional] used to set wallet environment (AndroidPay)
+        merchantId: 'your_merchant_id', // [optional] used for payments with ApplePay
+    });
 
     useEffect(() => {
         const focusListener = props.navigation.addListener('didFocus', async () => {
