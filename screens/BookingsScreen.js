@@ -8,7 +8,8 @@ import {
     StyleSheet,
     Text,
     View,
-    Alert, ActivityIndicator
+    Alert, ActivityIndicator,
+    Share
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -18,80 +19,75 @@ import serverURL from '../components/ServerInfo';
 import * as authActions from '../store/actions/auth';
 import {useDispatch} from 'react-redux';
 import * as SQLite from 'expo-sqlite';
-import {PaymentsStripe as Stripe} from 'expo-payments-stripe';
-
-
-const params = {
-    // mandatory
-    number: '4242424242424242',
-    expMonth: 11,
-    expYear: 17,
-    cvc: '223',
-    // optional
-    name: 'Test User',
-    currency: 'usd',
-    addressLine1: '123 Test Street',
-    addressLine2: 'Apt. 5',
-    addressCity: 'Test City',
-    addressState: 'Test State',
-    addressCountry: 'Test Country',
-    addressZip: '55555',
-};
 
 const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const Item = ({item, bookings, setBookings, images}) => {
-    const dispatch = useDispatch();
+const shareText = () => {
+    Share.share({
+        message: 'http://facebook.github.io/react-native',
+        url: 'http://facebook.github.io/react-native',
+        title: 'React Native'
+    }, {
+        dialogTitle: 'Condividi',
+        tintColor: 'green'
+    })
+        .then(this._showResult)
+        .catch((error) => this.setState({result: 'error: ' + error.message}));
+}
 
-    const sojourns = item.sojourns.map((sojourn) =>
-        <Sojourn key={sojourn.id.toString()}
-                 sojourn={
-                     <View style={styles.columnContainer}>
-                         <View style={styles.rowContainer}>
-                             <AntDesign name="home" size={20} style={styles.icon}/>
-                             <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
-                             <AntDesign name="enviromento" size={20} style={styles.icon}/>
-                             <Text style={styles.text}>{sojourn.address}</Text>
-                         </View>
-                         <View style={styles.rowContainer}>
-                             <View style={styles.columnContainer}>
-                                 <View style={styles.rowContainer}>
-                                     <AntDesign name="staro" size={20} style={styles.icon}/>
-                                     <Text style={styles.text}>{sojourn.stars}</Text>
-                                 </View>
-                                 <View style={styles.rowContainer}>
-                                     <AntDesign name="user" size={20} style={styles.icon}/>
-                                     <Text style={styles.text}>{sojourn.numPlaces}</Text>
-                                 </View>
-                                 <View style={styles.rowContainer}>
-                                     <Entypo name="credit" size={20} style={styles.icon}/>
-                                     <Text style={styles.text}>{sojourn.pricePerNight}</Text>
-                                 </View>
-                             </View>
-                             <View style={styles.columnContainer}>
-                                 <Image
-                                     style={styles.image}
-                                     source={{
-                                         uri: images[sojourn.idRoom]
-                                     }}
-                                 />
-                             </View>
-                         </View>
-                         <View style={styles.rowContainer}>
-                             <AntDesign name="calendar" size={20} style={styles.icon}/>
-                             <Text style={styles.text}>{sojourn.arrival}</Text>
-                             <AntDesign name="calendar" size={20} style={styles.icon}/>
-                             <Text style={styles.text}>{sojourn.departure}</Text>
-                         </View>
-                         <View style={styles.orContainer}>
-                             <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
-                         </View>
-                     </View>
-                 }
-        />
-    );
+const Item = ({item, bookings, setBookings, images, mapping}) => {
+    const dispatch = useDispatch();
+    const sojourns = [];
+
+    item.sojourns.forEach((sojourn) => {
+        sojourns.push(<Sojourn key={sojourn.id.toString()}
+                               sojourn={
+                                   <View style={styles.columnContainer}>
+                                       <View style={styles.rowContainer}>
+                                           <AntDesign name="home" size={20} style={styles.icon}/>
+                                           <Text style={[styles.text, {fontWeight: 'bold'}]}>{sojourn.hotelName}</Text>
+                                           <AntDesign name="enviromento" size={20} style={styles.icon}/>
+                                           <Text style={styles.text}>{sojourn.address}</Text>
+                                       </View>
+                                       <View style={styles.rowContainer}>
+                                           <View style={styles.columnContainer}>
+                                               <View style={styles.rowContainer}>
+                                                   <AntDesign name="staro" size={20} style={styles.icon}/>
+                                                   <Text style={styles.text}>{sojourn.stars}</Text>
+                                               </View>
+                                               <View style={styles.rowContainer}>
+                                                   <AntDesign name="user" size={20} style={styles.icon}/>
+                                                   <Text style={styles.text}>{sojourn.numPlaces}</Text>
+                                               </View>
+                                               <View style={styles.rowContainer}>
+                                                   <Entypo name="credit" size={20} style={styles.icon}/>
+                                                   <Text style={styles.text}>{sojourn.pricePerNight}</Text>
+                                               </View>
+                                           </View>
+                                           <View style={styles.columnContainer}>
+                                               <Image
+                                                   style={styles.image}
+                                                   source={{
+                                                       uri: images[sojourn.idRoom]
+                                                   }}
+                                               />
+                                           </View>
+                                       </View>
+                                       <View style={styles.rowContainer}>
+                                           <AntDesign name="calendar" size={20} style={styles.icon}/>
+                                           <Text style={styles.text}>{sojourn.arrival}</Text>
+                                           <AntDesign name="calendar" size={20} style={styles.icon}/>
+                                           <Text style={styles.text}>{sojourn.departure}</Text>
+                                       </View>
+                                       <View style={styles.orContainer}>
+                                           <View style={{flex: 1, height: 1, backgroundColor: 'orange'}}/>
+                                       </View>
+                                   </View>
+                               }
+        />)
+    });
 
     const deleteBooking_ = () =>
         Alert.alert(
@@ -135,11 +131,8 @@ const Item = ({item, bookings, setBookings, images}) => {
                 <View>
                     <Button
                         title="Paga"
-                        onPress={async () => {
-                            console.log("ciao1")
-                            const token = await Stripe.createTokenWithCardAsync(params);
-                            console.log("ciao")
-                            console.log(token)
+                        onPress={() => {
+                            shareText();
                         }}
                         color={Colors.primary}
                     />
@@ -163,6 +156,28 @@ function timeout(milliseconds, promise) {
         }, milliseconds);
         promise.then(resolve, reject);
     });
+}
+
+async function getAllRooms(dispatch) {
+    let rooms = null;
+
+    await timeout(5000, fetch(serverURL + '/hotels/rooms', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }))
+        .then(async function (response) {
+            rooms = await response.json();
+        }, function (error) {
+            dispatch(authActions.submitLogout());
+            console.log(error);
+        }).catch(function (error) {
+            dispatch(authActions.submitLogout());
+            console.log(error);
+        });
+
+    return rooms;
 }
 
 async function getBookings(dispatch, token, tt, userId) {
@@ -211,6 +226,18 @@ async function deleteBooking(dispatch, token, tt, bookingId) {
         });
 
     return res;
+}
+
+async function fetchRooms(dispatch) {
+    const rooms = await getAllRooms(dispatch);
+    console.log(rooms);
+    const formattedRooms = {}
+
+    rooms.forEach(room => {
+        formattedRooms[room.id] = room.hotel.url
+    });
+
+    return formattedRooms;
 }
 
 async function fetchBookings(dispatch) {
@@ -284,31 +311,31 @@ async function fillDictionary() {
 const BookingsScreen = props => {
     console.log("render")
     const [bookings, setBookings] = useState([]);
+    const [rooms, setRooms] = useState({});
     const [dict, setDict] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
 
-    Stripe.setOptionsAsync({
-        publishableKey: 'pk_test_51HptC0D6nxcG5uxcbjUWspldU65ohYJv3LeLc0blIjfQb2J6uObNlKEAGNqULn7Z0TreU8yYAGObgNrsS6G5Ma5G00OmJP7nPt', // Your key
-        androidPayMode: 'test', // [optional] used to set wallet environment (AndroidPay)
-        merchantId: 'your_merchant_id', // [optional] used for payments with ApplePay
-    });
-
     useEffect(() => {
         const focusListener = props.navigation.addListener('didFocus', async () => {
+            const rooms = fetchRooms(dispatch);
             const fb = await fetchBookings(dispatch);
             const dict_ = await fillDictionary();
             setBookings(fb);
             setDict(dict_);
+            setRooms(rooms);
         });
 
         dispatch(authActions.setListener(focusListener));
 
         setIsLoading(true);
-        fetchBookings(dispatch).then(bookings_ => {
-            fillDictionary().then(dict_ => {
-                setBookings(bookings_);
-                setDict(dict_);
+        fetchRooms(dispatch).then(rooms_ => {
+            fetchBookings(dispatch).then(bookings_ => {
+                fillDictionary().then(dict_ => {
+                    setBookings(bookings_);
+                    setDict(dict_);
+                    setRooms(rooms_);
+                });
             });
         });
         setIsLoading(false);
@@ -335,6 +362,7 @@ const BookingsScreen = props => {
                                         bookings={bookings}
                                         setBookings={setBookings}
                                         images={dict}
+                                        mapping={rooms}
                                     />
                                 );
                             }
