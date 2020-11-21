@@ -325,7 +325,6 @@ const BookingsScreen = props => {
     const [bookings, setBookings] = useState([]);
     const [rooms, setRooms] = useState({});
     const [dict, setDict] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -340,7 +339,6 @@ const BookingsScreen = props => {
 
         dispatch(authActions.setListener(focusListener));
 
-        setIsLoading(true);
         fetchRooms(dispatch).then(rooms_ => {
             fetchBookings(dispatch).then(bookings_ => {
                 fillDictionary().then(dict_ => {
@@ -350,14 +348,7 @@ const BookingsScreen = props => {
                 });
             });
         });
-        setIsLoading(false);
     }, []);
-
-    if (isLoading) {
-        return (<View style={styles.loading}>
-            <ActivityIndicator size={"large"} color={Colors.primary}/>
-        </View>);
-    }
 
     return (
         <View style={styles.header}>
@@ -435,11 +426,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 10
-    },
-    loading: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
     }
 });
 
