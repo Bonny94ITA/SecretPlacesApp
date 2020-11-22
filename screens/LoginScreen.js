@@ -123,7 +123,6 @@ const LoginScreen = props => {
                                             keyboardType='email-address'
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}
-                                            //value={values.email}
                                             style={styles.inputText}
                                         />
                                         <TextInput
@@ -132,7 +131,6 @@ const LoginScreen = props => {
                                             secureTextEntry={true}
                                             onChangeText={handleChange('password')}
                                             onBlur={handleBlur('password')}
-                                            //value={values.password}
                                             style={styles.inputText}
                                         />
                                         <View style={{marginVertical: 5}}>

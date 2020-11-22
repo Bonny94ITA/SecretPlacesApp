@@ -10,7 +10,8 @@ import {
     ScrollView,
     Modal,
     TouchableHighlight,
-    ActivityIndicator, Alert
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 
 import {CheckBox} from 'react-native-elements'
@@ -254,11 +255,7 @@ const SecretSearchScreen = props => {
         maxBudget: yup
             .number()
             .min(100, ({min}) => `Inserisci un valore maggiore di ${min}!`)
-            .required('Il budget è richiesto!'),
-        dateA: yup
-            .date()
-            .max(dateArrival, "xw")
-            .min(new Date(), "csa")
+            .required('Il budget è richiesto!')
     })
 
     return (
@@ -275,14 +272,14 @@ const SecretSearchScreen = props => {
                                         maxBudget: '',
                                         numPeople: '',
                                         onlyRegion: '',
-                                        onlyNotRegion: ''
+                                        onlyNotRegion: '',
+                                        dateA: ''
                                     }}
                                     onSubmit={async values => {
                                         const formattedAlternatives = [];
                                         const cities_ = [];
                                         const tts_ = [];
 
-                                        setIsLoading(true);
                                         for (let i = 0; i < stateCities.flags.length; ++i) {
                                             if (stateCities.flags[i]) {
                                                 cities_.push({region: cities[i].region, city: cities[i].name});
@@ -295,51 +292,53 @@ const SecretSearchScreen = props => {
                                             }
                                         }
 
-                                        // if(dateArrival.getDate()>=dateDeparture.getDate()){
-                                        //     Alert.alert(
-                                        //         "Date!",
-                                        //         ""
-                                        //     )
-                                        // }
                                         const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
                                         const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
 
-                                        const alternatives = await secretSearch(
-                                            cities_, values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion,
-                                            maxStars, minStars, tts_, arrival, departure, dispatch
-                                        );
+                                        if (dateArrival >= dateDeparture || dateArrival < new Date()) {
+                                            Alert.alert(
+                                                "Data non valida!",
+                                                ""
+                                            )
+                                        } else {
+                                            setIsLoading(true);
+                                            const alternatives = await secretSearch(
+                                                cities_, values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion,
+                                                maxStars, minStars, tts_, arrival, departure, dispatch
+                                            );
 
-                                        alternatives.forEach((element, index) => {
-                                            const formattedSojourns = [];
-                                            element.sojourns.forEach((sojourn, sojIndex) => {
-                                                formattedSojourns.push({
-                                                    id: sojIndex,
-                                                    arrival: sojourn.arrival,
-                                                    departure: sojourn.departure,
-                                                    hotelName: sojourn.room.hotel.name,
-                                                    address: sojourn.room.hotel.address,
-                                                    hotelCity: sojourn.room.hotel.city.name,
-                                                    idRoom: sojourn.room.id,
-                                                    stars: sojourn.room.hotel.stars,
-                                                    numPlaces: sojourn.room.numPlaces,
-                                                    pricePerNight: sojourn.room.pricePerNight,
-                                                    totalPrice: sojourn.totalPrice
+                                            alternatives.forEach((element, index) => {
+                                                const formattedSojourns = [];
+                                                element.sojourns.forEach((sojourn, sojIndex) => {
+                                                    formattedSojourns.push({
+                                                        id: sojIndex,
+                                                        arrival: sojourn.arrival,
+                                                        departure: sojourn.departure,
+                                                        hotelName: sojourn.room.hotel.name,
+                                                        address: sojourn.room.hotel.address,
+                                                        hotelCity: sojourn.room.hotel.city.name,
+                                                        idRoom: sojourn.room.id,
+                                                        stars: sojourn.room.hotel.stars,
+                                                        numPlaces: sojourn.room.numPlaces,
+                                                        pricePerNight: sojourn.room.pricePerNight,
+                                                        totalPrice: sojourn.totalPrice
+                                                    });
+                                                });
+                                                formattedAlternatives.push({
+                                                    id: index,
+                                                    days: element.days,
+                                                    sojourns: formattedSojourns,
+                                                    totalPrice: element.totalPrice
                                                 });
                                             });
-                                            formattedAlternatives.push({
-                                                id: index,
-                                                days: element.days,
-                                                sojourns: formattedSojourns,
-                                                totalPrice: element.totalPrice
-                                            });
-                                        });
 
-                                        dispatchCities({type: {name: 'setFlags', flags: []}});
-                                        dispatchTts({type: {name: 'setFlags', flags: []}});
-                                        dispatch(clearFreeRooms());
-                                        dispatch(setAlternatives(formattedAlternatives));
-                                        props.navigation.navigate('resultsSearch');
-                                        setIsLoading(false);
+                                            dispatchCities({type: {name: 'setFlags', flags: []}});
+                                            dispatchTts({type: {name: 'setFlags', flags: []}});
+                                            dispatch(clearFreeRooms());
+                                            dispatch(setAlternatives(formattedAlternatives));
+                                            props.navigation.navigate('resultsSearch');
+                                            setIsLoading(false);
+                                        }
                                     }}
                                 >
                                     {({handleChange, handleBlur, handleSubmit, values, errors, touched, isValid}) => (
@@ -357,9 +356,6 @@ const SecretSearchScreen = props => {
                                                 <Text
                                                     style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
                                             </View>
-                                            {(errors.dateA && touched.dateA) &&
-                                            <Text style={{fontSize: 10, color: 'red'}}>{errors.dateA}</Text>
-                                            }
                                             <View style={styles.dateContainer}>
                                                 <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
                                                     <AntDesign name="calendar" size={40} color="black"/>
@@ -449,7 +445,6 @@ const SecretSearchScreen = props => {
                                                 keyboardType='numeric'
                                                 onChangeText={handleChange('numPeople')}
                                                 onBlur={handleBlur('numPeople')}
-                                                //value={values.numPeople}
                                                 style={styles.picker}
                                             />
                                             {(errors.numPeople && touched.numPeople) &&
@@ -462,7 +457,6 @@ const SecretSearchScreen = props => {
                                                 keyboardType='numeric'
                                                 onChangeText={handleChange('maxBudget')}
                                                 onBlur={handleBlur('maxBudget')}
-                                                //value={values.maxBudget}
                                                 style={styles.picker}
                                             />
                                             {(errors.maxBudget && touched.maxBudget) &&
@@ -490,7 +484,6 @@ const SecretSearchScreen = props => {
                                                 returnKeyType='next'
                                                 onChangeText={handleChange('onlyRegion')}
                                                 onBlur={handleBlur('onlyRegion')}
-                                                //value={values.onlyRegion}
                                                 style={styles.picker}
                                             />
                                             <Text>Regione da escludere:</Text>
@@ -499,7 +492,6 @@ const SecretSearchScreen = props => {
                                                 returnKeyType='next'
                                                 onChangeText={handleChange('onlyNotRegion')}
                                                 onBlur={handleBlur('onlyNotRegion')}
-                                                //value={values.onlyNotRegion}
                                                 style={styles.picker}
                                             />
                                             <View style={{marginVertical: 5}}>

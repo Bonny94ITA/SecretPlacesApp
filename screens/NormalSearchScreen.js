@@ -9,7 +9,7 @@ import {
     ImageBackground,
     TouchableOpacity,
     Platform,
-    ActivityIndicator
+    ActivityIndicator, Alert
 } from 'react-native';
 
 import Header from '../components/Header';
@@ -150,30 +150,36 @@ const NormalSearchScreen = props => {
                                     onSubmit={async values => {
                                         const formattedFreeRooms = [];
 
-                                        setIsLoading(true);
                                         const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
                                         const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
-
-                                        const freeRooms = await normalSearch(selectedValue,
-                                            arrival, departure, dispatch);
-                                        freeRooms.forEach(element => {
-                                            formattedFreeRooms.push({
-                                                hotelName: element.hotel.name,
-                                                hotelStars: element.hotel.stars,
-                                                cityName: element.hotel.city.name,
-                                                address: element.hotel.address,
-                                                idRoom: element.id,
-                                                numPlaces: element.numPlaces,
-                                                ppn: element.pricePerNight,
-                                                arrival: dateArrival,
-                                                departure: dateDeparture
+                                        if (dateArrival >= dateDeparture || dateArrival < new Date()) {
+                                            Alert.alert(
+                                                "Data non valida!",
+                                                ""
+                                            )
+                                        } else {
+                                            setIsLoading(true);
+                                            const freeRooms = await normalSearch(selectedValue,
+                                                arrival, departure, dispatch);
+                                            freeRooms.forEach(element => {
+                                                formattedFreeRooms.push({
+                                                    hotelName: element.hotel.name,
+                                                    hotelStars: element.hotel.stars,
+                                                    cityName: element.hotel.city.name,
+                                                    address: element.hotel.address,
+                                                    idRoom: element.id,
+                                                    numPlaces: element.numPlaces,
+                                                    ppn: element.pricePerNight,
+                                                    arrival: dateArrival,
+                                                    departure: dateDeparture
+                                                });
                                             });
-                                        });
 
-                                        dispatch(clearAlternatives());
-                                        dispatch(setFreeRooms(formattedFreeRooms));
-                                        props.navigation.navigate('resultsSearch');
-                                        setIsLoading(false);
+                                            dispatch(clearAlternatives());
+                                            dispatch(setFreeRooms(formattedFreeRooms));
+                                            props.navigation.navigate('resultsSearch');
+                                            setIsLoading(false);
+                                        }
                                     }}
                                 >
                                     {({handleChange, handleBlur, handleSubmit, values}) => (
