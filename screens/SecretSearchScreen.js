@@ -26,6 +26,8 @@ import {clearFreeRooms, setFreeRooms} from '../store/actions/ns';
 import {setAlternatives} from '../store/actions/ss';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {Rating} from 'react-native-ratings';
+import * as yup from 'yup';
+
 
 function timeout(milliseconds, promise) {
     return new Promise((resolve, reject) => {
@@ -173,8 +175,6 @@ const SecretSearchScreen = props => {
 
     useEffect(() => {
         if (stateCities.index >= 0) {
-            console.log("lello");
-
             const items = pickerCities.slice();
             items[stateCities.index] = (<CheckBox
                 title={cities[stateCities.index].name}
@@ -246,6 +246,20 @@ const SecretSearchScreen = props => {
         </View>);
     }
 
+    const validationSchema = yup.object().shape({
+        numPeople: yup
+            .number()
+            .min(1, "Perfavore inserisci un numero maggiore di 0!")
+            .required('Il numero di persone è richiesto!'),
+        maxBudget: yup
+            .number()
+            .min(100, ({min}) => `Inserisci un valore maggiore di ${min}!`),
+        dateA: yup
+            .date()
+            .max(dateArrival, "xw")
+            .min(new Date(), "csa")
+    })
+
     return (
         <View style={styles.header}>
             <Header title={"Ricerca Esperta "} navigation={props.navigation}/>
@@ -255,6 +269,7 @@ const SecretSearchScreen = props => {
                         <View style={styles.screen}>
                             <View style={styles.inputContainer}>
                                 <Formik
+                                    validationSchema={validationSchema}
                                     initialValues={{
                                         maxBudget: '',
                                         numPeople: '',
@@ -288,9 +303,10 @@ const SecretSearchScreen = props => {
                                         const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
                                         const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
 
-                                        const alternatives = await secretSearch(cities_,
-                                            values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion, maxStars, minStars,
-                                            tts_, arrival, departure, dispatch);
+                                        const alternatives = await secretSearch(
+                                            cities_, values.maxBudget, values.numPeople, values.onlyRegion, values.onlyNotRegion,
+                                            maxStars, minStars, tts_, arrival, departure, dispatch
+                                        );
 
                                         alternatives.forEach((element, index) => {
                                             const formattedSojourns = [];
@@ -325,7 +341,7 @@ const SecretSearchScreen = props => {
                                         setIsLoading(false);
                                     }}
                                 >
-                                    {({handleChange, handleBlur, handleSubmit, values}) => (
+                                    {({handleChange, handleBlur, handleSubmit, values, errors, touched, isValid}) => (
                                         <View>
                                             <View style={styles.dateContainer}>
                                                 <TouchableOpacity onPress={showDatePickerA} style={styles.item}>
@@ -340,6 +356,9 @@ const SecretSearchScreen = props => {
                                                 <Text
                                                     style={styles.item}> {dateArrival.getDate()}/{dateArrival.getMonth() + 1}/{dateArrival.getFullYear()} </Text>
                                             </View>
+                                            {(errors.dateA && touched.dateA) &&
+                                            <Text style={{fontSize: 10, color: 'red'}}>{errors.dateA}</Text>
+                                            }
                                             <View style={styles.dateContainer}>
                                                 <TouchableOpacity onPress={showDatePickerD} style={styles.item}>
                                                     <AntDesign name="calendar" size={40} color="black"/>
@@ -429,9 +448,12 @@ const SecretSearchScreen = props => {
                                                 keyboardType='numeric'
                                                 onChangeText={handleChange('numPeople')}
                                                 onBlur={handleBlur('numPeople')}
-                                                //value={values.minBudget}
+                                                //value={values.numPeople}
                                                 style={styles.picker}
                                             />
+                                            {(errors.numPeople && touched.numPeople) &&
+                                            <Text style={{fontSize: 10, color: 'red'}}>{errors.numPeople}</Text>
+                                            }
                                             <Text>Seleziona il tuo budget:</Text>
                                             <TextInput
                                                 placeholder={"Max Budget"}
@@ -439,9 +461,12 @@ const SecretSearchScreen = props => {
                                                 keyboardType='numeric'
                                                 onChangeText={handleChange('maxBudget')}
                                                 onBlur={handleBlur('maxBudget')}
-                                                //value={values.minBudget}
+                                                //value={values.maxBudget}
                                                 style={styles.picker}
                                             />
+                                            {(errors.maxBudget && touched.maxBudget) &&
+                                            <Text style={{fontSize: 10, color: 'red'}}>{errors.maxBudget}</Text>
+                                            }
                                             <Text>Stelle minime dell'hotel:</Text>
                                             <Rating
                                                 type='star'
@@ -481,6 +506,7 @@ const SecretSearchScreen = props => {
                                                     title="Ricerca"
                                                     onPress={handleSubmit}
                                                     color={Colors.primary}
+                                                    disabled={!isValid}
                                                 />
                                             </View>
                                         </View>
