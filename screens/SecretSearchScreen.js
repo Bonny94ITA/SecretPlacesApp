@@ -253,7 +253,8 @@ const SecretSearchScreen = props => {
             .required('Il numero di persone è richiesto!'),
         maxBudget: yup
             .number()
-            .min(100, ({min}) => `Inserisci un valore maggiore di ${min}!`),
+            .min(100, ({min}) => `Inserisci un valore maggiore di ${min}!`)
+            .required('Il budget è richiesto!'),
         dateA: yup
             .date()
             .max(dateArrival, "xw")

@@ -25,11 +25,12 @@ const Sojourn = (props) => {
     return props.sojourn;
 }
 
-const shareText =  (imageurl) => {
+const shareText =  (imageUrl) => {
+    console.log(imageUrl)
     Share.share(
         {
-            url: imageurl,
-            message: imageurl
+            url: imageUrl,
+            message: imageUrl
         }
     ).then(({action, activityType}) => {
         if (action === Share.sharedAction)
@@ -338,12 +339,12 @@ const BookingsScreen = props => {
 
     useEffect(() => {
         const focusListener = props.navigation.addListener('didFocus', async () => {
-            const rooms = fetchRooms(dispatch);
+            const rooms_ = await fetchRooms(dispatch);
             const fb = await fetchBookings(dispatch);
             const dict_ = await fillDictionary();
             setBookings(fb);
             setDict(dict_);
-            setRooms(rooms);
+            setRooms(rooms_);
         });
 
         dispatch(authActions.setListener(focusListener));
