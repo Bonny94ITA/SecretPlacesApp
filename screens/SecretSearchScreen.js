@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
-        marginBottom: 20
+        marginBottom: 40
     },
     picker: {
         height: 40,
