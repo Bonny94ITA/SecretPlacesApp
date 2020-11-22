@@ -542,7 +542,8 @@ const styles = StyleSheet.create({
         elevation: 8,
         backgroundColor: 'white',
         padding: 20,
-        borderRadius: 10
+        borderRadius: 10,
+        marginBottom: 20
     },
     picker: {
         height: 40,
