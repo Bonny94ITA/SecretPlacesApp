@@ -5,7 +5,6 @@ import {createDrawerNavigator, DrawerItems} from 'react-navigation-drawer';
 import {View, Button, SafeAreaView, StyleSheet} from 'react-native';
 import Colors from '../constants/colors';
 import * as authActions from '../store/actions/auth';
-import { StackActions, NavigationActions } from 'react-navigation';
 
 import HomepageScreen from '../screens/HomepageScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -57,21 +56,11 @@ const DrawerNavigator = createDrawerNavigator(
                                          (route) => {
                                              if (route.route.routeName !== "Logout") {
                                                  if (route.route.routeName === "Ricerca Normale") {
-                                                     const resetAction = StackActions.reset({
-                                                         index: 0,
-                                                         actions: [NavigationActions.navigate({ routeName: 'normalSearch' })],
-                                                     });
-
-                                                     props.navigation._childrenNavigation["Ricerca Normale"]["dispatch"](resetAction);
+                                                        props.navigation._childrenNavigation["Ricerca Normale"].navigate('normalSearch');
                                                  }
 
                                                  if (route.route.routeName === "Ricerca Esperta") {
-                                                     const resetAction = StackActions.reset({
-                                                         index: 0,
-                                                         actions: [NavigationActions.navigate({ routeName: 'secretSearch' })],
-                                                     });
-
-                                                     props.navigation._childrenNavigation["Ricerca Esperta"]["dispatch"](resetAction);
+                                                     props.navigation._childrenNavigation["Ricerca Esperta"].navigate('secretSearch');
                                                  }
 
                                                  props.onItemPress(route);
