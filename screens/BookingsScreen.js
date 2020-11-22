@@ -9,7 +9,6 @@ import {
     Text,
     View,
     Alert,
-    ActivityIndicator,
     Share,
     TouchableOpacity
 } from 'react-native';
