@@ -152,7 +152,7 @@ const NormalSearchScreen = props => {
 
                                         const arrival = dateArrival.getDate() + "/" + (dateArrival.getMonth() + 1) + "/" + dateArrival.getFullYear()
                                         const departure = dateDeparture.getDate() + "/" + (dateDeparture.getMonth() + 1) + "/" + dateDeparture.getFullYear()
-                                        if (dateArrival >= dateDeparture || dateArrival < new Date()) {
+                                        if (dateArrival >= dateDeparture || (dateArrival < new Date() || dateDeparture < new Date())) {
                                             Alert.alert(
                                                 "Data non valida!",
                                                 ""
