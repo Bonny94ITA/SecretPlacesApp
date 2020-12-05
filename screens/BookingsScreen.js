@@ -214,7 +214,7 @@ async function getBookings(dispatch, token, tt, userId) {
     }))
         .then(async function (response) {
             bookings = await response.json();
-            // console.log(bookings)
+            console.log(bookings)
         }, function (error) {
             dispatch(authActions.submitLogout());
             console.log(error);
@@ -252,7 +252,6 @@ async function deleteBooking(dispatch, token, tt, bookingId) {
 
 async function fetchRooms(dispatch) {
     const rooms = await getAllRooms(dispatch);
-    console.log(rooms);
     const formattedRooms = {}
 
     rooms.forEach(room => {

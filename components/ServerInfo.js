@@ -1,4 +1,4 @@
-const serverAddress = 'http://82.54.3.184';
+const serverAddress = 'http://82.48.181.95';
 const serverPort = '8080';
 
 export default (serverAddress + ':' + serverPort);
